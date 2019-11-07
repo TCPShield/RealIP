@@ -42,41 +42,44 @@ public class PacketHandler
         try {
             raw = (String) event.getPacket().getStrings().read(0);
 
-            String[] payload = raw.split("///");
-            if (payload.length >= 4) {
+            String[] payload = raw.split("///", 3);
+            if (payload.length >= 3) {
                 String hostname = payload[0];
                 String ipData = payload[1];
-                int timestamp = Integer.parseInt(payload[2]);
-                String signature = payload[3];
+                String[] ts_sig = payload[2].split("///", 2);
+                if (ts_sig.length >= 2) {
+                    int timestamp = Integer.parseInt(ts_sig[0]);
+                    String signature = ts_sig[1];
 
-                String[] hostnameParts = ipData.split(":");
-                String host = hostnameParts[0];
-                int port = Integer.parseInt(hostnameParts[1]);
+                    String[] hostnameParts = ipData.split(":");
+                    String host = hostnameParts[0];
+                    int port = Integer.parseInt(hostnameParts[1]);
 
-                String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
-                if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
-                    throw new Exception("Couldn't verify signature.");
-                }
-                try {
-                    SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(event.getPlayer());
-                    Object injector = ReflectionUtils.getPrivateField(ignored.getClass(), ignored, "injector");
-                    Object networkManager = ReflectionUtils.getPrivateField(injector.getClass(), injector, "networkManager");
-                    if (this.properField == null) {
-                        this.properField = ReflectionUtils.getProperField(networkManager.getClass());
+                    String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+                    if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
+                        throw new Exception("Couldn't verify signature.");
                     }
-                    Channel channel = (Channel) ReflectionUtils.getPrivateField(injector.getClass(), injector, "originalChannel");
-                    InetSocketAddress newRemoteAddress = new InetSocketAddress(host, port);
-                    proxyConnection = true;
                     try {
-                        ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, this.properField == null ? "l" : this.properField, newRemoteAddress);
+                        SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(event.getPlayer());
+                        Object injector = ReflectionUtils.getPrivateField(ignored.getClass(), ignored, "injector");
+                        Object networkManager = ReflectionUtils.getPrivateField(injector.getClass(), injector, "networkManager");
+                        if (this.properField == null) {
+                            this.properField = ReflectionUtils.getProperField(networkManager.getClass());
+                        }
+                        Channel channel = (Channel) ReflectionUtils.getPrivateField(injector.getClass(), injector, "originalChannel");
+                        InetSocketAddress newRemoteAddress = new InetSocketAddress(host, port);
+                        proxyConnection = true;
+                        try {
+                            ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, this.properField == null ? "l" : this.properField, newRemoteAddress);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", newRemoteAddress);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", newRemoteAddress);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    event.getPacket().getStrings().write(0, hostname);
                 }
-                event.getPacket().getStrings().write(0, hostname);
             }
         } catch (Exception ex) {
             Player player;

@@ -132,54 +132,57 @@ public class TCPShieldBungee
             if (e.getHandshake().getHost().contains("//")) {
                 String raw = e.getHandshake().getHost();
 
-                String[] payload = raw.split("///");
-                if (payload.length >= 4) {
+                String[] payload = raw.split("///", 3);
+                if (payload.length >= 3) {
                     String hostname = payload[0];
                     String ipData = payload[1];
-                    int timestamp = Integer.parseInt(payload[2]);
-                    String signature = payload[3];
+                    String[] ts_sig = payload[2].split("///", 2);
+                    if (ts_sig.length >= 2) {
+                        int timestamp = Integer.parseInt(ts_sig[0]);
+                        String signature = ts_sig[1];
 
-                    String[] hostnameParts = ipData.split(":");
-                    String host = hostnameParts[0];
-                    int port = Integer.parseInt(hostnameParts[1]);
+                        String[] hostnameParts = ipData.split(":");
+                        String host = hostnameParts[0];
+                        int port = Integer.parseInt(hostnameParts[1]);
 
-                    String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
-                    if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
-                        throw new Exception("Couldn't verify signature.");
-                    }
-                    PendingConnection connection = e.getConnection();
-
-                    InetSocketAddress sockadd = new InetSocketAddress(host, port);
-                    proxyConnection = true;
-                    try {
-                        set(wrapper.getClass(), wrapper, "remoteAddress", sockadd);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    try {
-                        set(AbstractChannel.class, ch, "remoteAddress", sockadd);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    try {
-                        set(AbstractChannel.class, ch, "localAddress", sockadd);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    InetSocketAddress virtualHost = new InetSocketAddress(hostname, e.getHandshake().getPort());
-                    try {
-                        set(connection, "virtualHost", virtualHost);
-                    } catch (Exception ex) {
-                        try {
-                            set(connection, "vHost", virtualHost);
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
+                        String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+                        if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
+                            throw new Exception("Couldn't verify signature.");
                         }
-                    }
-                    try {
-                        set(e.getHandshake(), "host", hostname);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        PendingConnection connection = e.getConnection();
+
+                        InetSocketAddress sockadd = new InetSocketAddress(host, port);
+                        proxyConnection = true;
+                        try {
+                            set(wrapper.getClass(), wrapper, "remoteAddress", sockadd);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        try {
+                            set(AbstractChannel.class, ch, "remoteAddress", sockadd);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        try {
+                            set(AbstractChannel.class, ch, "localAddress", sockadd);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        InetSocketAddress virtualHost = new InetSocketAddress(hostname, e.getHandshake().getPort());
+                        try {
+                            set(connection, "virtualHost", virtualHost);
+                        } catch (Exception ex) {
+                            try {
+                                set(connection, "vHost", virtualHost);
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                        try {
+                            set(e.getHandshake(), "host", hostname);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
