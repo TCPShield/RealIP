@@ -149,6 +149,19 @@ public class TCPShieldBungee
                         if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
                             throw new Exception("Couldn't verify signature.");
                         }
+
+                        try {
+                            set(e.getHandshake(), "host", hostname);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        
+                        try {
+                            set(e.getHandshake(), "port", port);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
                         PendingConnection connection = e.getConnection();
 
                         InetSocketAddress sockadd = new InetSocketAddress(host, port);
@@ -177,11 +190,6 @@ public class TCPShieldBungee
                             } catch (Exception e2) {
                                 e2.printStackTrace();
                             }
-                        }
-                        try {
-                            set(e.getHandshake(), "host", hostname);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
                 }

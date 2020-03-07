@@ -1,5 +1,5 @@
 name: TCPShield
-version: 1.3
+version: 1.5
 main: net.tcpshield.realip.TCPShieldBukkit
 depend: ['ProtocolLib']
 author: 'https://tcpshield.com'
