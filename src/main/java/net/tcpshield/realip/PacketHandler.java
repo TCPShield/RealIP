@@ -56,6 +56,11 @@ public class PacketHandler
                     int port = Integer.parseInt(hostnameParts[1]);
 
                     String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+
+                    if (signature.contains("%%%")) {
+                        signature = signature.split("%%%", 2)[0];
+                    }
+
                     if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
                         throw new Exception("Couldn't verify signature.");
                     }
