@@ -146,9 +146,27 @@ public class TCPShieldBungee
                         int port = Integer.parseInt(hostnameParts[1]);
 
                         String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+
+                        if (signature.contains("%%%")) {
+                            signature = signature.split("%%%", 2)[0];
+                        }
+
                         if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
                             throw new Exception("Couldn't verify signature.");
                         }
+                        hostname = hostname.replace("%%%", "\0");
+                        try {
+                            set(e.getHandshake(), "host", hostname);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        
+                        try {
+                            set(e.getHandshake(), "port", port);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
                         PendingConnection connection = e.getConnection();
 
                         InetSocketAddress sockadd = new InetSocketAddress(host, port);
@@ -177,11 +195,6 @@ public class TCPShieldBungee
                             } catch (Exception e2) {
                                 e2.printStackTrace();
                             }
-                        }
-                        try {
-                            set(e.getHandshake(), "host", hostname);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
                 }
