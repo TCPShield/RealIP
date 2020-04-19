@@ -1,1 +1,5 @@
+# Please keep this as true in while using TCPShield!
 only-allow-proxy-connections: true
+
+# Turn on to diagnose connection issues
+debug-mode: false

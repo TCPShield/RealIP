@@ -29,11 +29,13 @@ public class PacketHandler
     private String properField = null;
     private final Logger logger;
     private final boolean onlyProxy;
+    private final boolean debugMode;
 
-    public PacketHandler(Logger logger, boolean onlyProxy) {
+    public PacketHandler(Logger logger, boolean onlyProxy, boolean debugMode) {
         super(TCPShieldBukkit.getInstance(), new PacketType[]{PacketType.Handshake.Client.SET_PROTOCOL});
         this.logger = logger;
         this.onlyProxy = onlyProxy;
+        this.debugMode = debugMode;
     }
 
     public void onPacketReceiving(PacketEvent event) {
@@ -90,10 +92,13 @@ public class PacketHandler
             Player player;
             ex.printStackTrace();
         } finally {
-            if ((this.onlyProxy) &&
-                    (!proxyConnection)) {
+            if ((this.onlyProxy) && (!proxyConnection)) {
                 Player player = event.getPlayer();
-                this.logger.warning("Disconnecting " + player.getAddress() + " because no proxy info was received and only-allow-proxy-connections is enabled.");
+
+                if(this.debugMode) {
+                    this.logger.warning("Disconnecting " + player.getAddress() + " because no proxy info was received and only-allow-proxy-connections is enabled.");
+                }
+
                 if(raw != null) {
                     this.logger.warning(raw);
                 }
