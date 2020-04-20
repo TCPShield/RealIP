@@ -206,8 +206,6 @@ public class TCPShieldBungee
                 }
             }
         } catch (Exception localException) {
-            Logger logger;
-            PendingConnection connection;
             localException.printStackTrace();
         } finally {
             if (this.onlyProxy && !proxyConnection) {
