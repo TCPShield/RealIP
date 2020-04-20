@@ -16,6 +16,7 @@ public class TCPShieldBukkit
     private static TCPShieldBukkit INSTANCE;
     private static Boolean stopping = Boolean.valueOf(false);
     private boolean onlyProxy;
+    private boolean debugMode;
 
     public void onEnable() {
         INSTANCE = this;
@@ -28,8 +29,9 @@ public class TCPShieldBukkit
         saveDefaultConfig();
         FileConfiguration config = getConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
+        this.debugMode = config.getBoolean("debug-mode");
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketHandler(getLogger(), this.onlyProxy));
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketHandler(getLogger(), this.onlyProxy, this.debugMode));
     }
 
     public void onDisable() {

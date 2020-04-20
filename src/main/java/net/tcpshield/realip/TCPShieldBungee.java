@@ -32,6 +32,7 @@ public class TCPShieldBungee
         extends Plugin
         implements Listener {
     private boolean onlyProxy;
+    private boolean debugMode;
 
     public void onEnable() {
         saveDefaultConfig();
@@ -43,6 +44,7 @@ public class TCPShieldBungee
             throw new RuntimeException(e);
         }
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
+        this.debugMode = config.getBoolean("debug-mode");
 
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
@@ -154,18 +156,17 @@ public class TCPShieldBungee
                         if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
                             throw new Exception("Couldn't verify signature.");
                         }
+
+                        long currentTime = System.currentTimeMillis() / 1000;
+
+                        if(!(timestamp >= (currentTime - 2) && timestamp <= (currentTime + 2))) {
+                            if(this.debugMode) {
+                                getLogger().warning("Current time: " + currentTime + ", Timestamp Time: "  + timestamp);
+                            }
+                            throw new Exception("Invalid signature timestamp, please check system's local clock if error persists.");
+                        }
+
                         hostname = hostname.replace("%%%", "\0");
-                        try {
-                            set(e.getHandshake(), "host", hostname);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        
-                        try {
-                            set(e.getHandshake(), "port", port);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
 
                         PendingConnection connection = e.getConnection();
 
@@ -196,19 +197,23 @@ public class TCPShieldBungee
                                 e2.printStackTrace();
                             }
                         }
+                        try {
+                            set(e.getHandshake(), "host", hostname);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
         } catch (Exception localException) {
-            Logger logger;
-            PendingConnection connection;
             localException.printStackTrace();
         } finally {
-            if ((this.onlyProxy) &&
-                    (!proxyConnection)) {
+            if (this.onlyProxy && !proxyConnection) {
                 Logger logger = getLogger();
                 PendingConnection connection = e.getConnection();
-                logger.warning("Disconnecting " + connection.getAddress() + " because no proxy info was received and only-allow-proxy-connections is enabled.");
+                if(this.debugMode) {
+                    logger.warning("Disconnecting " + connection.getAddress() + " because no proxy info was received and only-allow-proxy-connections is enabled.");
+                }
                 if (channel != null) {
                     channel.flush().close();
                 } else {
