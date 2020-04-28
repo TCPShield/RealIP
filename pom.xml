@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tcpshield.realip</groupId>
-    <artifactId>RealIP</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <artifactId>TCPShield</artifactId>
+    <version>1.7-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     </properties>
@@ -55,7 +55,7 @@
     </dependencies>
 
     <build>
-        <finalName>RealIP</finalName>
+        <finalName>TCPShield</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>

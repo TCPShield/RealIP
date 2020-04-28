@@ -24,14 +24,13 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PacketHandler
-        extends PacketAdapter {
+public class HandshakePacketHandler extends PacketAdapter {
     private String properField = null;
     private final Logger logger;
     private final boolean onlyProxy;
     private final boolean debugMode;
 
-    public PacketHandler(Logger logger, boolean onlyProxy, boolean debugMode) {
+    public HandshakePacketHandler(Logger logger, boolean onlyProxy, boolean debugMode) {
         super(TCPShieldBukkit.getInstance(), new PacketType[]{PacketType.Handshake.Client.SET_PROTOCOL});
         this.logger = logger;
         this.onlyProxy = onlyProxy;
@@ -89,8 +88,7 @@ public class PacketHandler
                 }
             }
         } catch (Exception ex) {
-            Player player;
-            ex.printStackTrace();
+            Player player; ;
         } finally {
             if ((this.onlyProxy) && (!proxyConnection)) {
                 Player player = event.getPlayer();
