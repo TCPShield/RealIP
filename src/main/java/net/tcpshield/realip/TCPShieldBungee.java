@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.CopyOption;
@@ -20,6 +21,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -114,6 +116,23 @@ public class TCPShieldBungee
     private File getConfigFile() {
         File dataFolder = getDataFolder();
         return new File(dataFolder, "config.yml");
+    }
+
+    @EventHandler(priority = -64)
+    public void onProxyPingEvent(ProxyPingEvent event) {
+        if(event.getConnection().isLegacy()) {
+            try {
+                Field wrapperField = event.getConnection().getClass().getDeclaredField("ch");
+                wrapperField.setAccessible(true);
+                Object wrapper = wrapperField.get(event.getConnection());
+                wrapperField.setAccessible(false);
+                Method m = wrapper.getClass().getMethod("close");
+                m.invoke(wrapper);
+
+            } catch(Exception e) {
+                event.getConnection().disconnect(new BaseComponent[0]);
+            }
+        }
     }
 
     @EventHandler(priority = -64)
