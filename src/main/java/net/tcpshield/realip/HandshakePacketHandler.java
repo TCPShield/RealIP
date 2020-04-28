@@ -88,7 +88,9 @@ public class HandshakePacketHandler extends PacketAdapter {
                 }
             }
         } catch (Exception ex) {
-            Player player; ;
+            if(this.debugMode) {
+                ex.printStackTrace();
+            }
         } finally {
             if ((this.onlyProxy) && (!proxyConnection)) {
                 Player player = event.getPlayer();
