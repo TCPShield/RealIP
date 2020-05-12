@@ -1,0 +1,88 @@
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.26'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+repositories {
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        url = 'https://repo.dmulloy2.net/nexus/repository/public/'
+    }
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.11-R0.1-SNAPSHOT'
+    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'
+    compileOnly group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT'
+}
+
+version = '2.0'
+group = 'net.tcpshield.tcpshield'
+archivesBaseName = 'TCPShield'
+
+sourceSets {
+    main {
+        java {
+            srcDirs('src/main/java')
+        }
+        resources {
+            srcDirs('src/main/resources')
+        }
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+task updateVersion {
+    DumperOptions options = new DumperOptions()
+    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
+    options.setSplitLines(false)
+    options.setPrettyFlow(true)
+
+    def yaml = new Yaml(options)
+
+    def bukkitYamlFile = new File('src/main/resources/plugin.yml')
+    def bungeeYamlFile = new File('src/main/resources/bungee.yml')
+
+    def files = [bukkitYamlFile, bungeeYamlFile]
+    files.each { file ->
+
+        file.newInputStream().withCloseable { inputStream ->
+            def cfg = yaml.load(inputStream)
+            cfg.put("version", version)
+
+            new FileWriter(file).withCloseable { writer ->
+                yaml.dump(cfg, writer)
+            }
+        }
+    }
+}
+
+build.dependsOn updateVersion
