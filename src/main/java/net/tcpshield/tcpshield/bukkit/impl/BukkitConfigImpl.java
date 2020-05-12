@@ -1,15 +1,15 @@
 package net.tcpshield.tcpshield.bukkit.impl;
 
-import net.tcpshield.tcpshield.abstraction.ConfigAbstraction;
+import net.tcpshield.tcpshield.abstraction.IConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitConfigAbstraction implements ConfigAbstraction {
+public class BukkitConfigImpl implements IConfig {
 
     private final boolean onlyProxy;
     private final boolean debug;
 
-    public BukkitConfigAbstraction(JavaPlugin javaPlugin) {
+    public BukkitConfigImpl(JavaPlugin javaPlugin) {
         javaPlugin.saveDefaultConfig();
 
         FileConfiguration config = javaPlugin.getConfig();

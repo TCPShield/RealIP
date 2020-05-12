@@ -4,7 +4,7 @@ import com.comphenix.protocol.injector.server.SocketInjector;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
 import io.netty.channel.AbstractChannel;
 import net.tcpshield.tcpshield.ReflectionUtils;
-import net.tcpshield.tcpshield.abstraction.PlayerAbstraction;
+import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 import org.bukkit.entity.Player;
 
@@ -12,13 +12,13 @@ import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class BukkitPlayerAbstraction implements PlayerAbstraction {
+public class BukkitPlayerImpl implements IPlayer {
 
     private static Field socketAddressField;
     private final Player player;
     private String ip;
 
-    public BukkitPlayerAbstraction(Player player) {
+    public BukkitPlayerImpl(Player player) {
         this.player = player;
         this.ip = player.getAddress().getAddress().getHostAddress();
     }

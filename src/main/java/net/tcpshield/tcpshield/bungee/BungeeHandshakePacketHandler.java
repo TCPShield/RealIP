@@ -7,18 +7,18 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
-import net.tcpshield.tcpshield.abstraction.PacketAbstraction;
-import net.tcpshield.tcpshield.abstraction.PlayerAbstraction;
-import net.tcpshield.tcpshield.bungee.impl.BungeeConfigAbstraction;
-import net.tcpshield.tcpshield.bungee.impl.BungeePacketAbstraction;
-import net.tcpshield.tcpshield.bungee.impl.BungeePlayerAbstraction;
+import net.tcpshield.tcpshield.abstraction.IPacket;
+import net.tcpshield.tcpshield.abstraction.IPlayer;
+import net.tcpshield.tcpshield.bungee.impl.BungeeIConfig;
+import net.tcpshield.tcpshield.bungee.impl.BungeePacketImpl;
+import net.tcpshield.tcpshield.bungee.impl.BungeePlayerImpl;
 
 public class BungeeHandshakePacketHandler implements Listener {
 
     private final HandshakePacketHandler handshakePacketHandler;
 
     public BungeeHandshakePacketHandler(Plugin plugin) {
-        this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BungeeConfigAbstraction(plugin));
+        this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BungeeIConfig(plugin));
     }
 
     @EventHandler(priority = -64)
@@ -31,9 +31,9 @@ public class BungeeHandshakePacketHandler implements Listener {
 
     @EventHandler(priority = -64)
     public void onPlayerHandshake(PlayerHandshakeEvent e) {
-        PacketAbstraction packetAbstraction = new BungeePacketAbstraction(e.getHandshake(), e.getConnection());
-        PlayerAbstraction playerAbstraction = new BungeePlayerAbstraction(e.getConnection());
+        IPacket packet = new BungeePacketImpl(e.getHandshake(), e.getConnection());
+        IPlayer player = new BungeePlayerImpl(e.getConnection());
 
-        handshakePacketHandler.onHandshake(packetAbstraction, playerAbstraction);
+        handshakePacketHandler.onHandshake(packet, player);
     }
 }

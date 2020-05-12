@@ -1,6 +1,6 @@
 package net.tcpshield.tcpshield.abstraction;
 
-public interface ConfigAbstraction {
+public interface IConfig {
 
     boolean isOnlyProxy();
 

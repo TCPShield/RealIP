@@ -4,7 +4,7 @@ import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 
 import java.net.InetSocketAddress;
 
-public interface PlayerAbstraction {
+public interface IPlayer {
 
     String getUUID();
 

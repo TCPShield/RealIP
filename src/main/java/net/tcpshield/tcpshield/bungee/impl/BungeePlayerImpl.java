@@ -3,18 +3,18 @@ package net.tcpshield.tcpshield.bungee.impl;
 import io.netty.channel.AbstractChannel;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.tcpshield.tcpshield.ReflectionUtils;
-import net.tcpshield.tcpshield.abstraction.PlayerAbstraction;
+import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
 
-public class BungeePlayerAbstraction implements PlayerAbstraction {
+public class BungeePlayerImpl implements IPlayer {
 
     private final PendingConnection pendingConnection;
     private String ip;
 
-    public BungeePlayerAbstraction(PendingConnection pendingConnection) {
+    public BungeePlayerImpl(PendingConnection pendingConnection) {
         this.pendingConnection = pendingConnection;
         this.ip = pendingConnection.getAddress().getAddress().getHostAddress();
     }

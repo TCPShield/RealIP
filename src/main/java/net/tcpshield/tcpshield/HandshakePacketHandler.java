@@ -1,8 +1,8 @@
 package net.tcpshield.tcpshield;
 
-import net.tcpshield.tcpshield.abstraction.ConfigAbstraction;
-import net.tcpshield.tcpshield.abstraction.PacketAbstraction;
-import net.tcpshield.tcpshield.abstraction.PlayerAbstraction;
+import net.tcpshield.tcpshield.abstraction.IConfig;
+import net.tcpshield.tcpshield.abstraction.IPacket;
+import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.*;
 
 import java.net.InetSocketAddress;
@@ -12,20 +12,20 @@ public class HandshakePacketHandler {
 
     private final Logger logger;
     private final SignatureVerifier signatureVerifier;
-    private final ConfigAbstraction configAbstraction;
+    private final IConfig config;
 
-    public HandshakePacketHandler(Logger logger, ConfigAbstraction configAbstraction) {
+    public HandshakePacketHandler(Logger logger, IConfig config) {
         try {
             this.logger = logger;
             this.signatureVerifier = new SignatureVerifier();
-            this.configAbstraction = configAbstraction;
+            this.config = config;
         } catch (Exception e) {
             throw new TCPShieldInitializationException(e);
         }
     }
 
-    public void onHandshake(PacketAbstraction packetAbstraction, PlayerAbstraction playerAbstraction) {
-        String rawPayload = packetAbstraction.getRawPayload();
+    public void onHandshake(IPacket packet, IPlayer player) {
+        String rawPayload = packet.getRawPayload();
         try {
             String extraData = null;
 
@@ -67,53 +67,53 @@ public class HandshakePacketHandler {
                 throw new SigningVerificationFailureException();
 
             InetSocketAddress newIP = new InetSocketAddress(host, port);
-            playerAbstraction.setIP(newIP);
+            player.setIP(newIP);
 
             if (extraData != null) hostname = hostname + extraData;
 
-            packetAbstraction.modifyOriginalPacket(hostname);
+            packet.modifyOriginalPacket(hostname);
         } catch (InvalidTimestampException e) {
-            handleInvalidTimestamp(playerAbstraction, e.getTimestamp(), e.getCurrentTime());
+            handleInvalidTimestamp(player, e.getTimestamp(), e.getCurrentTime());
         } catch (SigningVerificationFailureException e) {
-            handleSigningVerificationFailure(playerAbstraction, rawPayload);
+            handleSigningVerificationFailure(player, rawPayload);
         } catch (ConnectionNotProxiedException e) {
-            handleNotProxiedConnection(playerAbstraction, rawPayload);
+            handleNotProxiedConnection(player, rawPayload);
         } catch (IPModificationFailureException e) {
-            this.logger.warning(String.format("%s[%s/%s]'s IP failed to be modified. Raw payload = \"%s\"", playerAbstraction.getName(), playerAbstraction.getUUID(), playerAbstraction.getIP(), rawPayload));
+            this.logger.warning(String.format("%s[%s/%s]'s IP failed to be modified. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleInvalidTimestamp(PlayerAbstraction playerAbstraction, long timestamp, long currentTime) {
-        if (configAbstraction.isDebug()) {
+    private void handleInvalidTimestamp(IPlayer player, long timestamp, long currentTime) {
+        if (config.isDebug()) {
             this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but timestamp was not valid. " +
-                    "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time.", playerAbstraction.getName(), playerAbstraction.getUUID(), playerAbstraction.getIP(), timestamp, currentTime));
+                    "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time.", player.getName(), player.getUUID(), player.getIP(), timestamp, currentTime));
         }
 
-        if (configAbstraction.isOnlyProxy()) {
-            playerAbstraction.disconnect();
-        }
-    }
-
-    private void handleSigningVerificationFailure(PlayerAbstraction playerAbstraction, String rawPayload) {
-        if (configAbstraction.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but signing check failed. Raw payload = \"%s\"", playerAbstraction.getName(), playerAbstraction.getUUID(), playerAbstraction.getIP(), rawPayload));
-        }
-
-        if (configAbstraction.isOnlyProxy()) {
-            playerAbstraction.disconnect();
+        if (config.isOnlyProxy()) {
+            player.disconnect();
         }
     }
 
-    private void handleNotProxiedConnection(PlayerAbstraction playerAbstraction, String rawPayload) {
-        if (!configAbstraction.isOnlyProxy()) return;
-
-        if (configAbstraction.isDebug()) {
-            this.logger.info(String.format("%s[%s/%s] was disconnected because no proxy info was received and only-allow-proxy-connections is enabled. Raw payload = \"%s\"", playerAbstraction.getName(), playerAbstraction.getUUID(), playerAbstraction.getIP(), rawPayload));
+    private void handleSigningVerificationFailure(IPlayer player, String rawPayload) {
+        if (config.isDebug()) {
+            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but signing check failed. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
         }
 
-        playerAbstraction.disconnect();
+        if (config.isOnlyProxy()) {
+            player.disconnect();
+        }
+    }
+
+    private void handleNotProxiedConnection(IPlayer player, String rawPayload) {
+        if (!config.isOnlyProxy()) return;
+
+        if (config.isDebug()) {
+            this.logger.info(String.format("%s[%s/%s] was disconnected because no proxy info was received and only-allow-proxy-connections is enabled. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+        }
+
+        player.disconnect();
     }
 }

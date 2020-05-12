@@ -1,6 +1,6 @@
 package net.tcpshield.tcpshield.abstraction;
 
-public interface PacketAbstraction {
+public interface IPacket {
 
     String getRawPayload();
 

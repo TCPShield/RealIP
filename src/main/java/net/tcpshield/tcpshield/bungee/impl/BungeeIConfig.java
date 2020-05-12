@@ -4,20 +4,22 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.tcpshield.tcpshield.abstraction.ConfigAbstraction;
+import net.tcpshield.tcpshield.abstraction.IConfig;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class BungeeConfigAbstraction implements ConfigAbstraction {
+public class BungeeIConfig implements IConfig {
 
     private final Plugin plugin;
     private final boolean onlyProxy;
     private final boolean debug;
 
-    public BungeeConfigAbstraction(Plugin plugin) {
+    public BungeeIConfig(Plugin plugin) {
+        saveDefaultConfig();
+
         this.plugin = plugin;
 
         Configuration config = loadConfig();
