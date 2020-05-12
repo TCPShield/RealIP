@@ -1,18 +1,14 @@
 package net.tcpshield.realip;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.PacketType.Handshake.Client;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.server.SocketInjector;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
-import com.comphenix.protocol.reflect.StructureModifier;
 import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -42,6 +38,12 @@ public class HandshakePacketHandler extends PacketAdapter {
         String raw = null;
         try {
             raw = (String) event.getPacket().getStrings().read(0);
+            String extraData = "";
+            String[] hostnameSplits = raw.split("\0", 2);
+            if(hostnameSplits.length > 1) {
+                extraData = hostnameSplits[1];
+            }
+            raw = hostnameSplits[0];
 
             String[] payload = raw.split("///", 3);
             if (payload.length >= 3) {
@@ -57,10 +59,6 @@ public class HandshakePacketHandler extends PacketAdapter {
                     int port = Integer.parseInt(hostnameParts[1]);
 
                     String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
-
-                    if (signature.contains("%%%")) {
-                        signature = signature.split("%%%", 2)[0];
-                    }
 
                     if (!Signing.verify(reconstructedPayload.getBytes(StandardCharsets.UTF_8), signature)) {
                         throw new Exception("Couldn't verify signature.");
@@ -84,22 +82,22 @@ public class HandshakePacketHandler extends PacketAdapter {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    hostname = hostname + extraData;
                     event.getPacket().getStrings().write(0, hostname);
                 }
             }
         } catch (Exception ex) {
-            if(this.debugMode) {
                 ex.printStackTrace();
-            }
         } finally {
             if ((this.onlyProxy) && (!proxyConnection)) {
                 Player player = event.getPlayer();
 
-                if(this.debugMode) {
+                if (this.debugMode) {
                     this.logger.warning("Disconnecting " + player.getAddress() + " because no proxy info was received and only-allow-proxy-connections is enabled.");
                 }
 
-                if(raw != null) {
+                if (raw != null) {
                     this.logger.warning(raw);
                 }
                 player.kickPlayer("");
@@ -107,20 +105,8 @@ public class HandshakePacketHandler extends PacketAdapter {
         }
     }
 
-    private Channel getChannel(Player player) {
-        try {
-            Class<? extends Player> playerClass = player.getClass();
-            Object playerHandle = playerClass.getMethod("getHandle", new Class[0]).invoke(player, new Object[0]);
-            Object playerConnection = getNmsClass("EntityPlayer").getField("playerConnection").get(playerHandle);
-            Object networkManager = getNmsClass("PlayerConnection").getField("networkManager").get(playerConnection);
-            return (Channel) getNmsClass("NetworkManager").getField("channel").get(networkManager);
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't get player channel", e);
-        }
-    }
 
-    private Class getNmsClass(String name)
-            throws ClassNotFoundException {
+    private Class getNmsClass(String name) throws ClassNotFoundException {
         return Class.forName(getNmsPackage() + "." + name);
     }
 

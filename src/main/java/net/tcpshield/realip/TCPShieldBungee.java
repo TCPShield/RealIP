@@ -30,9 +30,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 
-public class TCPShieldBungee
-        extends Plugin
-        implements Listener {
+public class TCPShieldBungee extends Plugin implements Listener {
     private boolean onlyProxy;
     private boolean debugMode;
 
@@ -184,8 +182,6 @@ public class TCPShieldBungee
                             }
                             throw new Exception("Invalid signature timestamp, please check system's local clock if error persists.");
                         }
-
-                        hostname = hostname.replace("%%%", "\0");
 
                         PendingConnection connection = e.getConnection();
 
