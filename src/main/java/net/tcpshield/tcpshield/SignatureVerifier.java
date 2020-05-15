@@ -21,15 +21,21 @@ public class SignatureVerifier {
         publicKey = keyFactory.generatePublic(keySpec);
     }
 
-    public boolean verify(String str, String signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public boolean verify(String str, String signature) {
         return verify(str.getBytes(StandardCharsets.UTF_8), signature);
     }
 
-    private boolean verify(byte[] data, String signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        byte[] decodedSignature = Base64.getDecoder().decode(signature);
-        Signature sig = Signature.getInstance("SHA512withECDSA");
-        sig.initVerify(publicKey);
-        sig.update(data);
-        return sig.verify(decodedSignature);
+    private boolean verify(byte[] data, String signature) {
+        try {
+            byte[] decodedSignature = Base64.getDecoder().decode(signature);
+
+            Signature sig = Signature.getInstance("SHA512withECDSA");
+            sig.initVerify(publicKey);
+            sig.update(data);
+
+            return sig.verify(decodedSignature);
+        } catch (IllegalArgumentException | SignatureException | NoSuchAlgorithmException | InvalidKeyException e) { // catching for illegal base64 encoding or invalid encoding for signatures
+            return false;
+        }
     }
 }

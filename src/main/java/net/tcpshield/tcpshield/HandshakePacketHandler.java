@@ -1,5 +1,6 @@
 package net.tcpshield.tcpshield;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.tcpshield.tcpshield.abstraction.IConfig;
 import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
@@ -13,19 +14,28 @@ public class HandshakePacketHandler {
     private final Logger logger;
     private final SignatureVerifier signatureVerifier;
     private final IConfig config;
+    private final boolean skipTimestampCheck;
 
     public HandshakePacketHandler(Logger logger, IConfig config) {
+        this(logger, config, false);
+    }
+
+    @VisibleForTesting
+    HandshakePacketHandler(Logger logger, IConfig config, boolean skipTimestampCheck) {
         try {
             this.logger = logger;
             this.signatureVerifier = new SignatureVerifier();
             this.config = config;
+            this.skipTimestampCheck = skipTimestampCheck;
         } catch (Exception e) {
             throw new TCPShieldInitializationException(e);
         }
     }
 
+
     public void onHandshake(IPacket packet, IPlayer player) {
         String rawPayload = packet.getRawPayload();
+
         try {
             String extraData = null;
 
@@ -54,7 +64,7 @@ public class HandshakePacketHandler {
             String signature = payload[3];
 
             long currentTime = System.currentTimeMillis() / 1000;
-            if (!(timestamp >= (currentTime - 2) && timestamp <= (currentTime + 2)))
+            if (!skipTimestampCheck && !(timestamp >= (currentTime - 2) && timestamp <= (currentTime + 2)))
                 throw new InvalidTimestampException(timestamp, currentTime);
 
             String[] hostnameParts = ipData.split(":");

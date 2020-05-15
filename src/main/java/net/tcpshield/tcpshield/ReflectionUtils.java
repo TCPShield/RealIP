@@ -18,6 +18,7 @@ public class ReflectionUtils {
         field.setAccessible(true);
         if (Modifier.isFinal(field.getModifiers())) {
             Field modifiersField = getDeclaredField(Field.class, "modifiers");
+            modifiersField.setAccessible(true);
             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         }
 
@@ -44,7 +45,7 @@ public class ReflectionUtils {
     }
 
     public static Field searchFieldByClass(Class<?> clazz, Class<?> searchFor) {
-        for (Field f : clazz.getFields()) {
+        for (Field f : clazz.getDeclaredFields()) {
             if (f.getType() == searchFor) {
                 return f;
             }

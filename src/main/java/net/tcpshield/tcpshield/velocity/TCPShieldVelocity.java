@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 @Plugin(id = "tcpshield",
         name = "TCPShield",
-        version = "1.0-SNAPSHOT",
         description = "TCPShield IP parsing capabilities for Velocity"
 )
 public class TCPShieldVelocity {
