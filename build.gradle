@@ -25,11 +25,20 @@ repositories {
     maven {
         url = 'https://oss.sonatype.org/content/repositories/snapshots'
     }
+    maven {
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    }
 }
 
 dependencies {
+    // Bukkit
     compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.11-R0.1-SNAPSHOT'
     compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'
+
+    // Paper
+    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.15.2-R0.1-SNAPSHOT'
+
+    // BungeeCord
     compileOnly group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT'
 }
 
