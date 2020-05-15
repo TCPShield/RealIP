@@ -18,7 +18,6 @@ public class PaperPacketImpl implements IPacket {
 
     @Override
     public void modifyOriginalPacket(String hostname) {
-        System.out.println("set hostname to " + hostname);
         handshakeEvent.setCancelled(false);
         handshakeEvent.setServerHostname(hostname);
     }

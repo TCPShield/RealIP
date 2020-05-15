@@ -34,7 +34,6 @@ public class PaperPlayerImpl implements IPlayer {
 
     @Override
     public void setIP(InetSocketAddress ip) {
-        System.out.println("set ip: " + ip.getAddress().getHostAddress());
         handshakeEvent.setSocketAddressHostname(ip.getAddress().getHostAddress());
     }
 

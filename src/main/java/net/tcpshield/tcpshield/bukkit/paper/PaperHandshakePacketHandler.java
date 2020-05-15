@@ -23,13 +23,10 @@ public class PaperHandshakePacketHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onHandshake(PlayerHandshakeEvent e) {
-        System.out.println("handshake");
-
         IPacket packet = new PaperPacketImpl(e);
         IPlayer player = new PaperPlayerImpl(e);
 
         handshakePacketHandler.onHandshake(packet, player);
-        System.out.println("failed = " + e.isFailed());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
