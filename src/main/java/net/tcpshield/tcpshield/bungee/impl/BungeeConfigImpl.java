@@ -11,13 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class BungeeIConfig implements IConfig {
+public class BungeeConfigImpl implements IConfig {
 
     private final Plugin plugin;
     private final boolean onlyProxy;
     private final boolean debug;
 
-    public BungeeIConfig(Plugin plugin) {
+    public BungeeConfigImpl(Plugin plugin) {
         this.plugin = plugin;
 
         saveDefaultConfig();
