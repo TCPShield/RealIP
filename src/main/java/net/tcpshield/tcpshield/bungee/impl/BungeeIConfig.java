@@ -18,9 +18,9 @@ public class BungeeIConfig implements IConfig {
     private final boolean debug;
 
     public BungeeIConfig(Plugin plugin) {
-        saveDefaultConfig();
-
         this.plugin = plugin;
+
+        saveDefaultConfig();
 
         Configuration config = loadConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
@@ -44,7 +44,7 @@ public class BungeeIConfig implements IConfig {
         File file = getConfigFile();
         if (file.exists()) return;
 
-        try (InputStream in = plugin.getResourceAsStream("config.yml")) {
+        try (InputStream in = plugin.getResourceAsStream("/config.yml")) {
             Files.copy(in, file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
