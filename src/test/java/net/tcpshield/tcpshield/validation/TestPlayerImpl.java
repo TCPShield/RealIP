@@ -1,4 +1,4 @@
-package net.tcpshield.tcpshield.impl;
+package net.tcpshield.tcpshield.validation;
 
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 

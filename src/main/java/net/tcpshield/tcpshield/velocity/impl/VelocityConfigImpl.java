@@ -1,20 +1,17 @@
 package net.tcpshield.tcpshield.velocity.impl;
 
 import com.moandjiezana.toml.Toml;
-import net.tcpshield.tcpshield.abstraction.IConfig;
+import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class VelocityConfigImpl implements IConfig {
+public class VelocityConfigImpl extends TCPShieldConfig {
 
     private final File dataFolder;
     private final File file;
-    private final boolean onlyProxy;
-    private final boolean checkTimestamp;
-    private final boolean debug;
 
     public VelocityConfigImpl(File dataFolder) {
         this.dataFolder = dataFolder;
@@ -23,23 +20,8 @@ public class VelocityConfigImpl implements IConfig {
         saveDefaultConfig();
         Toml toml = loadConfig();
         this.onlyProxy = toml.getBoolean("only-allow-proxy-connections");
-        this.checkTimestamp = toml.getBoolean("timestamp-validation");
+        this.timestampValidationMode = toml.getString("timestamp-validation");
         this.debug = toml.getBoolean("debug-mode");
-    }
-
-    @Override
-    public boolean isOnlyProxy() {
-        return onlyProxy;
-    }
-
-    @Override
-    public boolean checkTimestamp() {
-        return checkTimestamp;
-    }
-
-    @Override
-    public boolean isDebug() {
-        return debug;
     }
 
     private void saveDefaultConfig() {

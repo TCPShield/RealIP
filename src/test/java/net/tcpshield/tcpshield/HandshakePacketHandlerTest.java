@@ -1,9 +1,9 @@
 package net.tcpshield.tcpshield;
 
-import net.tcpshield.tcpshield.abstraction.IConfig;
-import net.tcpshield.tcpshield.impl.TestConfigImpl;
-import net.tcpshield.tcpshield.impl.TestPacketImpl;
-import net.tcpshield.tcpshield.impl.TestPlayerImpl;
+import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
+import net.tcpshield.tcpshield.validation.TestConfigImpl;
+import net.tcpshield.tcpshield.validation.TestPacketImpl;
+import net.tcpshield.tcpshield.validation.TestPlayerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +14,9 @@ import static org.junit.Assert.assertFalse;
 
 public class HandshakePacketHandlerTest {
 
-    private final IConfig standardTestConfig = new TestConfigImpl(true);
-    private final IConfig skippingTimestampCheckTestConfig = new TestConfigImpl(false);
-    private final HandshakePacketHandler standardHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), standardTestConfig);
+    private final TCPShieldConfig defaultTestConfig = new TestConfigImpl("system");
+    private final TCPShieldConfig skippingTimestampCheckTestConfig = new TestConfigImpl("off");
+    private final HandshakePacketHandler standardHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), defaultTestConfig);
     private final HandshakePacketHandler skippingTimestampCheckHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), skippingTimestampCheckTestConfig);
     private TestPlayerImpl player;
 

@@ -4,19 +4,16 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.tcpshield.tcpshield.abstraction.IConfig;
+import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class BungeeConfigImpl implements IConfig {
+public class BungeeConfigImpl extends TCPShieldConfig {
 
     private final Plugin plugin;
-    private final boolean onlyProxy;
-    private final boolean checkTimestamp;
-    private final boolean debug;
 
     public BungeeConfigImpl(Plugin plugin) {
         this.plugin = plugin;
@@ -25,23 +22,8 @@ public class BungeeConfigImpl implements IConfig {
 
         Configuration config = loadConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
-        this.checkTimestamp = config.getBoolean("timestamp-validation");
+        this.timestampValidationMode = config.getString("timestamp-validation");
         this.debug = config.getBoolean("debug-mode");
-    }
-
-    @Override
-    public boolean isOnlyProxy() {
-        return onlyProxy;
-    }
-
-    @Override
-    public boolean checkTimestamp() {
-        return checkTimestamp;
-    }
-
-    @Override
-    public boolean isDebug() {
-        return debug;
     }
 
     private void saveDefaultConfig() {

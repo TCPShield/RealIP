@@ -1,9 +1,10 @@
 package net.tcpshield.tcpshield;
 
-import net.tcpshield.tcpshield.abstraction.IConfig;
 import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
+import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import net.tcpshield.tcpshield.exception.*;
+import net.tcpshield.tcpshield.validation.TimestampValidation;
 
 import java.net.InetSocketAddress;
 import java.util.logging.Logger;
@@ -12,12 +13,14 @@ public class HandshakePacketHandler {
 
     private final Logger logger;
     private final SignatureVerifier signatureVerifier;
-    private final IConfig config;
+    private final TimestampValidation timestampValidation;
+    private final TCPShieldConfig config;
 
-    public HandshakePacketHandler(Logger logger, IConfig config) {
+    public HandshakePacketHandler(Logger logger, TCPShieldConfig config) {
         try {
             this.logger = logger;
             this.signatureVerifier = new SignatureVerifier();
+            this.timestampValidation = new TimestampValidation(config);
             this.config = config;
         } catch (Exception e) {
             throw new TCPShieldInitializationException(e);
@@ -54,9 +57,8 @@ public class HandshakePacketHandler {
             }
             String signature = payload[3];
 
-            long currentTime = System.currentTimeMillis() / 1000;
-            if (config.checkTimestamp() && !(timestamp >= (currentTime - 2) && timestamp <= (currentTime + 2)))
-                throw new InvalidTimestampException(timestamp, currentTime);
+            if (!timestampValidation.checkTimestamp(timestamp))
+                throw new InvalidTimestampException(timestamp, timestampValidation.getTime());
 
             String[] hostnameParts = ipData.split(":");
             String host = hostnameParts[0];
