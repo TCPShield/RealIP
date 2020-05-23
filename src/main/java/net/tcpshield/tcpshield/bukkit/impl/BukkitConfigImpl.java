@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BukkitConfigImpl implements IConfig {
 
     private final boolean onlyProxy;
+    private final boolean checkTimestamp;
     private final boolean debug;
 
     public BukkitConfigImpl(JavaPlugin javaPlugin) {
@@ -14,12 +15,18 @@ public class BukkitConfigImpl implements IConfig {
 
         FileConfiguration config = javaPlugin.getConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
+        this.checkTimestamp = config.getBoolean("timestamp-validation");
         this.debug = config.getBoolean("debug-mode");
     }
 
     @Override
     public boolean isOnlyProxy() {
         return onlyProxy;
+    }
+
+    @Override
+    public boolean checkTimestamp() {
+        return checkTimestamp;
     }
 
     @Override

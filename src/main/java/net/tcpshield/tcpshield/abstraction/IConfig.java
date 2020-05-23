@@ -4,6 +4,8 @@ public interface IConfig {
 
     boolean isOnlyProxy();
 
+    boolean checkTimestamp();
+
     boolean isDebug();
 
 }

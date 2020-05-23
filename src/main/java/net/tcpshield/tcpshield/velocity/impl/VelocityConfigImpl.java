@@ -13,6 +13,7 @@ public class VelocityConfigImpl implements IConfig {
     private final File dataFolder;
     private final File file;
     private final boolean onlyProxy;
+    private final boolean checkTimestamp;
     private final boolean debug;
 
     public VelocityConfigImpl(File dataFolder) {
@@ -22,12 +23,18 @@ public class VelocityConfigImpl implements IConfig {
         saveDefaultConfig();
         Toml toml = loadConfig();
         this.onlyProxy = toml.getBoolean("only-allow-proxy-connections");
+        this.checkTimestamp = toml.getBoolean("timestamp-validation");
         this.debug = toml.getBoolean("debug-mode");
     }
 
     @Override
     public boolean isOnlyProxy() {
         return onlyProxy;
+    }
+
+    @Override
+    public boolean checkTimestamp() {
+        return checkTimestamp;
     }
 
     @Override

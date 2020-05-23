@@ -15,6 +15,7 @@ public class BungeeConfigImpl implements IConfig {
 
     private final Plugin plugin;
     private final boolean onlyProxy;
+    private final boolean checkTimestamp;
     private final boolean debug;
 
     public BungeeConfigImpl(Plugin plugin) {
@@ -24,12 +25,18 @@ public class BungeeConfigImpl implements IConfig {
 
         Configuration config = loadConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
+        this.checkTimestamp = config.getBoolean("timestamp-validation");
         this.debug = config.getBoolean("debug-mode");
     }
 
     @Override
     public boolean isOnlyProxy() {
         return onlyProxy;
+    }
+
+    @Override
+    public boolean checkTimestamp() {
+        return checkTimestamp;
     }
 
     @Override

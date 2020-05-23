@@ -14,9 +14,10 @@ import static org.junit.Assert.assertFalse;
 
 public class HandshakePacketHandlerTest {
 
-    private final IConfig testConfig = new TestConfigImpl();
-    private final HandshakePacketHandler standardHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), testConfig, false);
-    private final HandshakePacketHandler skippingTimestampCheckHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), testConfig, true);
+    private final IConfig standardTestConfig = new TestConfigImpl(true);
+    private final IConfig skippingTimestampCheckTestConfig = new TestConfigImpl(false);
+    private final HandshakePacketHandler standardHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), standardTestConfig);
+    private final HandshakePacketHandler skippingTimestampCheckHandshakePacketHandler = new HandshakePacketHandler(Logger.getLogger("TCPShield"), skippingTimestampCheckTestConfig);
     private TestPlayerImpl player;
 
     @BeforeEach
