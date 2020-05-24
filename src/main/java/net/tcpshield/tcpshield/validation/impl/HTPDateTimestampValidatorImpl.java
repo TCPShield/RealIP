@@ -41,9 +41,9 @@ public class HTPDateTimestampValidatorImpl implements ITimestampValidator {
     }
 
     private void syncTimestamp() throws IOException {
-        try (Socket socket = new Socket("tcpshield.com", 80)) {
+        try (Socket socket = new Socket("google.com", 80)) {
             // no-cache forces the server to return time
-            String payload = "HEAD http://tcpshield.com/ HTTP/1.1\r\nHost: tcpshield.com\r\nUser-Agent: tcpshield/1.0\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nConnection: close\r\n\r\n";
+            String payload = "HEAD http://google.com/ HTTP/1.1\r\nHost: google.com\r\nUser-Agent: tcpshield/1.0\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nConnection: close\r\n\r\n";
             socket.getOutputStream().write(payload.getBytes());
 
             long readTime = System.currentTimeMillis(); // assuming server -> client time is negligible
