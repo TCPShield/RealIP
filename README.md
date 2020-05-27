@@ -1,12 +1,13 @@
-# TCPShield
+# RealIP
 Bungee/Spigot plugin which parses client IP addresses passed from the TCPShield network.
-This fork is used by UnicaCity in order to provide greater flexibility in regard to TCPShield and to conform to our quality requirements.
 
 ### Compiling
-To compile this project, install gradle and run the following command:
+To compile this project, install maven and run the following command:
 ```
-gradle build
+mvn clean install
 ```
 
-## Upstream and other parties
-Upstream and other parties are invited to adopt the code base and/or make changes to it, if they desire to do so.
+### Support
+Please contact [@RyanDeLap](https://t.me/RyanDeLap) on Telegram for all support related to this product.
+
+Before contact, ensure you have tested with no Bungee Plugins installed. Plugins like BungeePluginManager will break this plugin!
