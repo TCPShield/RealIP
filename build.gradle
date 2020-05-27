@@ -148,5 +148,4 @@ void updateJson() {
     }
 }
 
-1
 build.dependsOn updateVersion
