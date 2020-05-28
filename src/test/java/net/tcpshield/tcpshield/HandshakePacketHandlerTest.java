@@ -1,9 +1,9 @@
 package net.tcpshield.tcpshield;
 
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
-import net.tcpshield.tcpshield.validation.TestConfigImpl;
-import net.tcpshield.tcpshield.validation.TestPacketImpl;
-import net.tcpshield.tcpshield.validation.TestPlayerImpl;
+import net.tcpshield.tcpshield.impl.TestConfigImpl;
+import net.tcpshield.tcpshield.impl.TestPacketImpl;
+import net.tcpshield.tcpshield.impl.TestPlayerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
