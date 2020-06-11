@@ -24,7 +24,7 @@ public class BungeePacketImpl implements IPacket {
 
     @Override
     public void modifyOriginalPacket(String hostname) throws Exception {
-        InetSocketAddress virtualHost = new InetSocketAddress(hostname, handshake.getPort());
+        InetSocketAddress virtualHost = InetSocketAddress.createUnresolved(hostname, handshake.getPort());
         try {
             ReflectionUtils.setFinalField(pendingConnection, "virtualHost", virtualHost);
         } catch (Exception ex) {
