@@ -33,7 +33,7 @@ public class BungeeConfigImpl extends TCPShieldConfig {
         File file = getConfigFile();
         if (file.exists()) return;
 
-        try (InputStream in = plugin.getResourceAsStream("/config.yml")) {
+        try (InputStream in = plugin.getResourceAsStream("config.yml")) {
             Files.copy(in, file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
