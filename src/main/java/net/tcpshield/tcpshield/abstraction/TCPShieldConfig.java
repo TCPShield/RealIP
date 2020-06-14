@@ -1,21 +1,11 @@
 package net.tcpshield.tcpshield.abstraction;
 
+import lombok.Getter;
+
 public abstract class TCPShieldConfig {
 
-    protected boolean onlyProxy;
-    protected String timestampValidationMode;
-    protected boolean debug;
-
-    public boolean isOnlyProxy() {
-        return this.onlyProxy;
-    }
-
-    public String getTimestampValidationMode() {
-        return this.timestampValidationMode;
-    }
-
-    public boolean isDebug() {
-        return this.debug;
-    }
+    @Getter protected boolean onlyProxy;
+    @Getter protected String timestampValidationMode;
+    @Getter protected boolean debug;
 
 }
