@@ -4,6 +4,10 @@ import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import net.tcpshield.tcpshield.exception.*;
+import net.tcpshield.tcpshield.exception.handlers.IPModificationFailureHandler;
+import net.tcpshield.tcpshield.exception.handlers.ConnectionNotProxiedHandler;
+import net.tcpshield.tcpshield.exception.handlers.InvalidTimestampHandler;
+import net.tcpshield.tcpshield.exception.handlers.SigningVerificationFailureHandler;
 import net.tcpshield.tcpshield.validation.TimestampValidation;
 
 import java.net.InetSocketAddress;
@@ -16,12 +20,22 @@ public class HandshakePacketHandler {
     private final TimestampValidation timestampValidation;
     private final TCPShieldConfig config;
 
+    private final InvalidTimestampHandler invalidTimestampHandler;
+    private final ConnectionNotProxiedHandler connectionNotProxiedHandler;
+    private final SigningVerificationFailureHandler signingFailureHandler;
+    private final IPModificationFailureHandler ipModificationFailureHandler;
+
     public HandshakePacketHandler(Logger logger, TCPShieldConfig config) {
         try {
             this.logger = logger;
             this.signatureVerifier = new SignatureVerifier();
             this.timestampValidation = new TimestampValidation(config);
             this.config = config;
+
+            this.invalidTimestampHandler = new InvalidTimestampHandler(config, logger);
+            this.connectionNotProxiedHandler = new ConnectionNotProxiedHandler(config, logger);
+            this.signingFailureHandler = new SigningVerificationFailureHandler(config, logger);
+            this.ipModificationFailureHandler = new IPModificationFailureHandler(config, logger);
         } catch (Exception e) {
             throw new TCPShieldInitializationException(e);
         }
@@ -44,8 +58,9 @@ public class HandshakePacketHandler {
             }
 
             String[] payload = cleanedPayload.split("///", 4);
-            if (payload.length != 4)
+            if (payload.length != 4) {
                 throw new MalformedPayloadException("payload.length != 4. Raw payload = \"" + rawPayload + "\"");
+            }
 
             String hostname = payload[0];
             String ipData = payload[1];
@@ -57,8 +72,9 @@ public class HandshakePacketHandler {
             }
             String signature = payload[3];
 
-            if (!timestampValidation.checkTimestamp(timestamp))
+            if (!timestampValidation.checkTimestamp(timestamp)) {
                 throw new InvalidTimestampException(timestamp, timestampValidation.getTime());
+            }
 
             String[] hostnameParts = ipData.split(":");
             String host = hostnameParts[0];
@@ -66,8 +82,9 @@ public class HandshakePacketHandler {
 
             String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
 
-            if (!signatureVerifier.verify(reconstructedPayload, signature))
+            if (!signatureVerifier.verify(reconstructedPayload, signature)) {
                 throw new SigningVerificationFailureException();
+            }
 
             InetSocketAddress newIP = new InetSocketAddress(host, port);
             player.setIP(newIP);
@@ -76,48 +93,17 @@ public class HandshakePacketHandler {
 
             packet.modifyOriginalPacket(hostname);
         } catch (InvalidTimestampException e) {
-            handleInvalidTimestamp(player, e.getTimestamp(), e.getCurrentTime());
+            invalidTimestampHandler.handle(player, e.getTimestamp(), e.getCurrentTime());
         } catch (SigningVerificationFailureException e) {
-            handleSigningVerificationFailure(player, rawPayload);
+            signingFailureHandler.handle(player, rawPayload);
         } catch (ConnectionNotProxiedException e) {
-            handleNotProxiedConnection(player, rawPayload);
+            connectionNotProxiedHandler.handle(player, rawPayload);
         } catch (IPModificationFailureException e) {
-            this.logger.warning(String.format("%s[%s/%s]'s IP failed to be modified. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            ipModificationFailureHandler.handle(player, rawPayload);
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void handleInvalidTimestamp(IPlayer player, long timestamp, long currentTime) {
-        if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but timestamp was not valid. " +
-                "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time.", player.getName(), player.getUUID(), player.getIP(), timestamp, currentTime));
-        }
-
-        if (config.isOnlyProxy()) {
-            player.disconnect();
-        }
-    }
-
-    private void handleSigningVerificationFailure(IPlayer player, String rawPayload) {
-        if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but signing check failed. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
-        }
-
-        if (config.isOnlyProxy()) {
-            player.disconnect();
-        }
-    }
-
-    private void handleNotProxiedConnection(IPlayer player, String rawPayload) {
-        if (!config.isOnlyProxy()) return;
-
-        if (config.isDebug()) {
-            this.logger.info(String.format("%s[%s/%s] was disconnected because no proxy info was received and only-allow-proxy-connections is enabled. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
-        }
-
-        player.disconnect();
     }
 
 }
