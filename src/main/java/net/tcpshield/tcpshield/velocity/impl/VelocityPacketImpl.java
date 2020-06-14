@@ -43,4 +43,5 @@ public class VelocityPacketImpl implements IPacket {
         Object handshake = HANDSHAKE_FIELD.get(inboundConnection);
         HOSTNAME_FIELD.set(handshake, hostname);
     }
+
 }

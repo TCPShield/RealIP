@@ -40,4 +40,5 @@ public class VelocityHandshakePacketHandler {
 
         handshakePacketHandler.onHandshake(packet, player);
     }
+
 }

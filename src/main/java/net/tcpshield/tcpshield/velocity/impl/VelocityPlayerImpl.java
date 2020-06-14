@@ -71,4 +71,5 @@ public class VelocityPlayerImpl implements IPlayer {
             throw new RuntimeException(e); // pass exception on
         }
     }
+
 }

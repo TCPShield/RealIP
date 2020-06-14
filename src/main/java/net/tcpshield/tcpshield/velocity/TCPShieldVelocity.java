@@ -10,9 +10,10 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-@Plugin(id = "tcpshield",
-        name = "TCPShield",
-        description = "TCPShield IP parsing capabilities for Velocity"
+@Plugin(
+    id = "tcpshield",
+    name = "TCPShield",
+    description = "TCPShield IP parsing capabilities for Velocity"
 )
 public class TCPShieldVelocity {
 
@@ -31,4 +32,5 @@ public class TCPShieldVelocity {
     public void onProxyInitialization(ProxyInitializeEvent e) {
         server.getEventManager().register(this, new VelocityHandshakePacketHandler(logger, dataFolder.toFile()));
     }
+
 }

@@ -42,4 +42,5 @@ public class VelocityConfigImpl extends TCPShieldConfig {
     private Toml loadConfig() {
         return new Toml().read(getConfigFile());
     }
+
 }
