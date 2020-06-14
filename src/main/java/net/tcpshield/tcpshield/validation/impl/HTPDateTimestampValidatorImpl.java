@@ -17,7 +17,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 /**
- * inspired by https://github.com/iridium77/htpdate/blob/master/htpdate.c
+ * Inspired by https://github.com/iridium77/htpdate/blob/master/htpdate.c
  */
 public class HTPDateTimestampValidatorImpl implements ITimestampValidator {
 
@@ -49,8 +49,8 @@ public class HTPDateTimestampValidatorImpl implements ITimestampValidator {
             long readTime = System.currentTimeMillis(); // assuming server -> client time is negligible
 
             List<String> response = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.toList());
+                .lines()
+                .collect(Collectors.toList());
 
             Date serverDate = extractDate(response);
 
@@ -78,4 +78,5 @@ public class HTPDateTimestampValidatorImpl implements ITimestampValidator {
     public long getTime() {
         return (System.currentTimeMillis() + timestampOffset) / 1000;
     }
+
 }
