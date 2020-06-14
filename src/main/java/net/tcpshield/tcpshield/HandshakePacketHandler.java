@@ -92,7 +92,7 @@ public class HandshakePacketHandler {
     private void handleInvalidTimestamp(IPlayer player, long timestamp, long currentTime) {
         if (config.isDebug()) {
             this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but timestamp was not valid. " +
-                    "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time.", player.getName(), player.getUUID(), player.getIP(), timestamp, currentTime));
+                "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time.", player.getName(), player.getUUID(), player.getIP(), timestamp, currentTime));
         }
 
         if (config.isOnlyProxy()) {
@@ -119,4 +119,5 @@ public class HandshakePacketHandler {
 
         player.disconnect();
     }
+
 }
