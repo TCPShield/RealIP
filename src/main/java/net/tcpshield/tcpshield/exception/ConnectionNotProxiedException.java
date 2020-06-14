@@ -13,4 +13,5 @@ public class ConnectionNotProxiedException extends SecurityException {
     public ConnectionNotProxiedException(String s) {
         super(s);
     }
+
 }

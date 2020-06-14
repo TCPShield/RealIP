@@ -1,9 +1,9 @@
 package net.tcpshield.tcpshield.exception;
 
-public class MalformedPayloadException extends ConnectionNotProxiedException {
+import lombok.NoArgsConstructor;
 
-    public MalformedPayloadException() {
-    }
+@NoArgsConstructor
+public class MalformedPayloadException extends ConnectionNotProxiedException {
 
     public MalformedPayloadException(Throwable cause) {
         super(cause);
@@ -12,4 +12,5 @@ public class MalformedPayloadException extends ConnectionNotProxiedException {
     public MalformedPayloadException(String s) {
         super(s);
     }
+
 }

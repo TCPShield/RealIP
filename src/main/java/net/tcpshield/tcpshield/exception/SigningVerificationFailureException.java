@@ -5,4 +5,5 @@ public class SigningVerificationFailureException extends MalformedPayloadExcepti
     public SigningVerificationFailureException() {
         super();
     }
+
 }
