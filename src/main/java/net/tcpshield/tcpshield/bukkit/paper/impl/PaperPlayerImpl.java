@@ -1,18 +1,16 @@
 package net.tcpshield.tcpshield.bukkit.paper.impl;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
+import lombok.AllArgsConstructor;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
 
+@AllArgsConstructor
 public class PaperPlayerImpl implements IPlayer {
 
     private final PlayerHandshakeEvent handshakeEvent;
-
-    public PaperPlayerImpl(PlayerHandshakeEvent handshakeEvent) {
-        this.handshakeEvent = handshakeEvent;
-    }
 
     @Override
     public String getUUID() {
@@ -42,4 +40,5 @@ public class PaperPlayerImpl implements IPlayer {
         handshakeEvent.setFailMessage("Connection failed. Please try again or contract an administrator.");
         handshakeEvent.setFailed(true);
     }
+
 }

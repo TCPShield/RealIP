@@ -1,15 +1,13 @@
 package net.tcpshield.tcpshield.bukkit.paper.impl;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
+import lombok.AllArgsConstructor;
 import net.tcpshield.tcpshield.abstraction.IPacket;
 
+@AllArgsConstructor
 public class PaperPacketImpl implements IPacket {
 
     private final PlayerHandshakeEvent handshakeEvent;
-
-    public PaperPacketImpl(PlayerHandshakeEvent handshakeEvent) {
-        this.handshakeEvent = handshakeEvent;
-    }
 
     @Override
     public String getRawPayload() {
@@ -21,4 +19,5 @@ public class PaperPacketImpl implements IPacket {
         handshakeEvent.setCancelled(false);
         handshakeEvent.setServerHostname(hostname);
     }
+
 }

@@ -63,4 +63,5 @@ public class ProtocolLibPlayerImpl implements IPlayer {
     public void disconnect() {
         player.kickPlayer("");
     }
+
 }

@@ -1,15 +1,14 @@
 package net.tcpshield.tcpshield.bukkit.protocollib;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
+@AllArgsConstructor
 public class TCPShieldProtocolLib {
 
-    private final JavaPlugin plugin;
-
-    public TCPShieldProtocolLib(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Plugin plugin;
 
     public void load() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -18,6 +17,7 @@ public class TCPShieldProtocolLib {
         }
 
         ProtocolLibHandshakePacketHandler packetHandler = new ProtocolLibHandshakePacketHandler(plugin);
-        com.comphenix.protocol.ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
+        ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
     }
+
 }

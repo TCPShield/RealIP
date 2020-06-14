@@ -10,13 +10,13 @@ import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.bukkit.impl.BukkitConfigImpl;
 import net.tcpshield.tcpshield.bukkit.protocollib.impl.ProtocolLibPacketImpl;
 import net.tcpshield.tcpshield.bukkit.protocollib.impl.ProtocolLibPlayerImpl;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class ProtocolLibHandshakePacketHandler extends PacketAdapter {
 
     private final HandshakePacketHandler handshakePacketHandler;
 
-    public ProtocolLibHandshakePacketHandler(JavaPlugin plugin) {
+    public ProtocolLibHandshakePacketHandler(Plugin plugin) {
         super(plugin, ListenerPriority.HIGHEST, PacketType.Handshake.Client.SET_PROTOCOL);
         this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
     }
@@ -28,4 +28,5 @@ public class ProtocolLibHandshakePacketHandler extends PacketAdapter {
 
         handshakePacketHandler.onHandshake(packet, player);
     }
+
 }

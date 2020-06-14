@@ -2,17 +2,18 @@ package net.tcpshield.tcpshield.bukkit.impl;
 
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class BukkitConfigImpl extends TCPShieldConfig {
 
-    public BukkitConfigImpl(JavaPlugin javaPlugin) {
-        javaPlugin.saveDefaultConfig();
+    public BukkitConfigImpl(Plugin plugin) {
+        plugin.saveDefaultConfig();
 
-        FileConfiguration config = javaPlugin.getConfig();
+        FileConfiguration config = plugin.getConfig();
 
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
         this.timestampValidationMode = config.getString("timestamp-validation");
         this.debug = config.getBoolean("debug-mode");
     }
+
 }

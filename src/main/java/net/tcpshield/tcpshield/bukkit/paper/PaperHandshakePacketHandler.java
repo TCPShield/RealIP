@@ -11,13 +11,13 @@ import net.tcpshield.tcpshield.bukkit.paper.impl.PaperPlayerImpl;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class PaperHandshakePacketHandler implements Listener {
 
     private final HandshakePacketHandler handshakePacketHandler;
 
-    public PaperHandshakePacketHandler(JavaPlugin plugin) {
+    public PaperHandshakePacketHandler(Plugin plugin) {
         this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
     }
 
@@ -33,4 +33,5 @@ public class PaperHandshakePacketHandler implements Listener {
     public void onServerPing(PaperServerListPingEvent e) {
         if (e.getClient().isLegacy()) e.setCancelled(true);
     }
+
 }
