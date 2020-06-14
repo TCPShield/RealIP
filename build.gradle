@@ -52,6 +52,12 @@ dependencies {
     // Velocity
     compileOnly group: 'com.velocitypowered', name: 'velocity-api', version: '1.0.0-SNAPSHOT'
 
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
     // Testing
     testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.7.0-M1'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version:'5.7.0-M1'
