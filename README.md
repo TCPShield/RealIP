@@ -1,13 +1,25 @@
-# RealIP
-Bungee/Spigot plugin which parses client IP addresses passed from the TCPShield network.
+# TCPShield
+TCPShield is the plugin for the same named DDoS mitigation service [TCPShield](https://tcpshield.com).
+
+This plugin is responsible for validating clients join via the TCPShield network.
+It also parses passed IP addresses so the server is aware of the real player IP address.  
+
+### Compatibility
+
+TCPShield is compatible with Paper, Spigot / CraftBukkit, BungeeCord and Velocity.
+
+When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed. This is not necessary when Paper is being used.
+
+### Setup
+Setting up the plugin is easy as cake. Please follow [these](https://docs.tcpshield.com/onboarding-1/tcpshield-plugin) guidelines. 
 
 ### Compiling
-To compile this project, install maven and run the following command:
+In order to compile TCPShield, [install Gradle](https://docs.gradle.org/current/userguide/installation.html) and run the following command in the project folder:
 ```
-mvn clean install
+gradle build
 ```
+
+The dependencies should install themselves automatically. After the build has finished, the compiled jar file can be found under `/build/libs`.
 
 ### Support
-Please contact [@RyanDeLap](https://t.me/RyanDeLap) on Telegram for all support related to this product.
-
-Before contact, ensure you have tested with no Bungee Plugins installed. Plugins like BungeePluginManager will break this plugin!
+See [Contact](https://docs.tcpshield.com/about-us)

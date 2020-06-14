@@ -1,5 +1,6 @@
 name: TCPShield
-version: 1.8
-main: net.tcpshield.realip.TCPShieldBukkit
-depend: ['ProtocolLib']
-author: 'https://tcpshield.com'
+version: '2.0'
+main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
+softdepend:
+- ProtocolLib
+author: https://tcpshield.com
