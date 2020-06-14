@@ -36,4 +36,5 @@ public class BungeeHandshakePacketHandler implements Listener {
 
         handshakePacketHandler.onHandshake(packet, player);
     }
+
 }

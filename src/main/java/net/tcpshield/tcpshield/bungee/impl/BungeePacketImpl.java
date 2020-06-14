@@ -33,4 +33,5 @@ public class BungeePacketImpl implements IPacket {
 
         ReflectionUtils.setField(handshake, "host", hostname);
     }
+
 }

@@ -57,4 +57,5 @@ public class BungeePlayerImpl implements IPlayer {
     public void disconnect() {
         pendingConnection.disconnect();
     }
+
 }

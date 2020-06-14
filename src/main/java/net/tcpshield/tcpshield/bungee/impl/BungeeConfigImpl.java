@@ -54,4 +54,5 @@ public class BungeeConfigImpl extends TCPShieldConfig {
             throw new RuntimeException("Couldn't load config", e);
         }
     }
+
 }
