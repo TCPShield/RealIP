@@ -4,8 +4,8 @@ import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import net.tcpshield.tcpshield.exception.*;
-import net.tcpshield.tcpshield.exception.handlers.IPModificationFailureHandler;
 import net.tcpshield.tcpshield.exception.handlers.ConnectionNotProxiedHandler;
+import net.tcpshield.tcpshield.exception.handlers.IPModificationFailureHandler;
 import net.tcpshield.tcpshield.exception.handlers.InvalidTimestampHandler;
 import net.tcpshield.tcpshield.exception.handlers.SigningVerificationFailureHandler;
 import net.tcpshield.tcpshield.validation.TimestampValidation;
@@ -45,31 +45,21 @@ public class HandshakePacketHandler {
         String rawPayload = packet.getRawPayload();
 
         try {
-            String extraData = null;
+            int nullIndex = rawPayload.indexOf('\0');
+            boolean isFmlTagged = nullIndex != -1;
 
             // fix for e.g. incoming FML tagged packets
-            String cleanedPayload;
-            int nullIndex = rawPayload.indexOf('\0');
-            if (nullIndex != -1) { // FML tagged
-                cleanedPayload = rawPayload.substring(0, nullIndex);
-                extraData = rawPayload.substring(nullIndex);
-            } else { // standard
-                cleanedPayload = rawPayload;
-            }
+            String extraData = (isFmlTagged) ? rawPayload.substring(nullIndex) : null;
+            String cleanedPayload = (isFmlTagged) ? rawPayload.substring(0, nullIndex) : rawPayload;
 
             String[] payload = cleanedPayload.split("///", 4);
             if (payload.length != 4) {
-                throw new MalformedPayloadException("payload.length != 4. Raw payload = \"" + rawPayload + "\"");
+                throw new MalformedPayloadException("payload.length != 4. Raw payload = '" + rawPayload + "'");
             }
 
             String hostname = payload[0];
             String ipData = payload[1];
-            int timestamp;
-            try {
-                timestamp = Integer.parseInt(payload[2]);
-            } catch (NumberFormatException e) {
-                throw new MalformedPayloadException(e);
-            }
+            int timestamp = parseInt(payload[2]);
             String signature = payload[3];
 
             if (!timestampValidation.checkTimestamp(timestamp)) {
@@ -103,6 +93,21 @@ public class HandshakePacketHandler {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method manages string to integer operation throwing an MalformedPayloadException in case something goes wrong.
+     *
+     * @param data String to parse to Integer.
+     * @return Integer value of the provided data.
+     * @throws MalformedPayloadException When provided data can be parsed to integer.
+     */
+    private int parseInt(String data) {
+        try {
+            return Integer.parseInt(data);
+        } catch (NumberFormatException e) {
+            throw new MalformedPayloadException(e);
         }
     }
 
