@@ -23,3 +23,10 @@ The dependencies should install themselves automatically. After the build has fi
 
 ### Support
 See [Contact](https://docs.tcpshield.com/about-us)
+
+### Contributors
+
+These wonderful contributors have helped TCPShield make this plugin better! 
+
+* [Fuzzlemann](https://github.com/Fuzzlemann)
+* [RyanDeLap](https://github.com/RyanDeLap)
