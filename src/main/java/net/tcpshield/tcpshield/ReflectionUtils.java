@@ -58,7 +58,18 @@ public class ReflectionUtils {
         Field cachedField = CACHED_FIELDS.get(clazz, fieldName);
         if (cachedField != null) return cachedField;
 
-        Field field = clazz.getDeclaredField(fieldName);
+        Field field;
+        try {
+            field = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            Class<?> superclass = clazz.getSuperclass();
+            if (superclass != null) {
+                return getDeclaredField(superclass, fieldName);
+            } else {
+                throw e;
+            }
+        }
+
         CACHED_FIELDS.put(clazz, fieldName, field);
         return field;
     }

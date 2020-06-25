@@ -3,6 +3,7 @@ package net.tcpshield.tcpshield.velocity;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.ConnectionHandshakeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
 import net.tcpshield.tcpshield.abstraction.IPacket;
@@ -36,6 +37,12 @@ public class VelocityHandshakePacketHandler {
 
     private void handleEvent(InboundConnection connection) {
         IPlayer player = new VelocityPlayerImpl(connection);
+        ProtocolVersion protocolVersion = connection.getProtocolVersion();
+        if (protocolVersion.isLegacy() || protocolVersion.isUnknown()) {
+            player.disconnect();
+            return;
+        }
+
         IPacket packet = new VelocityPacketImpl(connection);
 
         handshakePacketHandler.onHandshake(packet, player);
