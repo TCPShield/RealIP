@@ -13,12 +13,14 @@ import java.net.InetSocketAddress;
 public class VelocityPlayerImpl implements IPlayer {
 
     private static final Field MINECRAFT_CONNECTION_FIELD;
+    private static final Field LEGACY_MINECRAFT_CONNECTION_FIELD;
     private static final Field REMOTE_ADDRESS_FIELD;
     private static final Method CLOSE_CHANNEL_METHOD;
 
     static {
         try {
             MINECRAFT_CONNECTION_FIELD = ReflectionUtils.getPrivateField(Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection"), "connection");
+            LEGACY_MINECRAFT_CONNECTION_FIELD = ReflectionUtils.getPrivateField(Class.forName("com.velocitypowered.proxy.connection.client.HandshakeSessionHandler$LegacyInboundConnection"), "connection");
 
             Class<?> minecraftConnection = Class.forName("com.velocitypowered.proxy.connection.MinecraftConnection");
             REMOTE_ADDRESS_FIELD = ReflectionUtils.getPrivateField(minecraftConnection, "remoteAddress");
@@ -29,10 +31,12 @@ public class VelocityPlayerImpl implements IPlayer {
     }
 
     private final InboundConnection inboundConnection;
+    private final boolean legacy;
     private String ip;
 
     public VelocityPlayerImpl(InboundConnection inboundConnection) {
         this.inboundConnection = inboundConnection;
+        this.legacy = inboundConnection.getProtocolVersion().isUnknown() || inboundConnection.getProtocolVersion().isLegacy();
         this.ip = inboundConnection.getRemoteAddress().getAddress().getHostAddress();
     }
 
@@ -41,6 +45,7 @@ public class VelocityPlayerImpl implements IPlayer {
         return "unknown"; // not supported
     }
 
+    @Override
     public String getName() {
         return "unknown"; // not supported
     }
@@ -48,6 +53,10 @@ public class VelocityPlayerImpl implements IPlayer {
     @Override
     public String getIP() {
         return ip;
+    }
+
+    public boolean isLegacy() {
+        return legacy;
     }
 
     @Override
@@ -65,7 +74,8 @@ public class VelocityPlayerImpl implements IPlayer {
     @Override
     public void disconnect() {
         try {
-            Object minecraftConnection = MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+            Object minecraftConnection = legacy ? LEGACY_MINECRAFT_CONNECTION_FIELD.get(inboundConnection) : MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+
             CLOSE_CHANNEL_METHOD.invoke(minecraftConnection);
         } catch (Exception e) {
             throw new RuntimeException(e); // pass exception on
