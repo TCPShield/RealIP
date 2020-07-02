@@ -11,11 +11,15 @@ public class VelocityPacketImpl implements IPacket {
 
     private static final Field HANDSHAKE_FIELD;
     private static final Field HOSTNAME_FIELD;
+    private static final Field CLEANED_ADDRESS_FIELD;
 
     static {
         try {
-            HANDSHAKE_FIELD = ReflectionUtils.getPrivateField(Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection"), "handshake");
+            Class<?> inboundConnection = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
+
+            HANDSHAKE_FIELD = ReflectionUtils.getPrivateField(inboundConnection, "handshake");
             HOSTNAME_FIELD = ReflectionUtils.getPrivateField(Class.forName("com.velocitypowered.proxy.protocol.packet.Handshake"), "serverAddress");
+            CLEANED_ADDRESS_FIELD = ReflectionUtils.getPrivateField(inboundConnection, "cleanedAddress");
         } catch (NoSuchFieldException | ClassNotFoundException e) {
             throw new TCPShieldInitializationException(e);
         }
@@ -40,6 +44,8 @@ public class VelocityPacketImpl implements IPacket {
 
     @Override
     public void modifyOriginalPacket(String hostname) throws Exception {
+        ReflectionUtils.setFinalField(inboundConnection, CLEANED_ADDRESS_FIELD, hostname);
+
         Object handshake = HANDSHAKE_FIELD.get(inboundConnection);
         HOSTNAME_FIELD.set(handshake, hostname);
     }
