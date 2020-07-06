@@ -44,9 +44,29 @@ public class VelocityPacketImpl implements IPacket {
 
     @Override
     public void modifyOriginalPacket(String hostname) throws Exception {
-        ReflectionUtils.setFinalField(inboundConnection, CLEANED_ADDRESS_FIELD, hostname);
+        ReflectionUtils.setFinalField(inboundConnection, CLEANED_ADDRESS_FIELD, cleanAddress(hostname));
 
         Object handshake = HANDSHAKE_FIELD.get(inboundConnection);
         HOSTNAME_FIELD.set(handshake, hostname);
+    }
+
+    /**
+     * Adapted from https://github.com/VelocityPowered/Velocity/blob/17e6944daea8130e03903ccdfbf63f111c573849/proxy/src/main/java/com/velocitypowered/proxy/connection/client/HandshakeSessionHandler.java
+     */
+    private String cleanAddress(String hostname) {
+        // Clean out any anything after any zero bytes (this includes BungeeCord forwarding and the
+        // legacy Forge handshake indicator).
+        String cleaned = hostname;
+        int zeroIdx = cleaned.indexOf('\0');
+        if (zeroIdx > -1) {
+            cleaned = hostname.substring(0, zeroIdx);
+        }
+
+        // If we connect through an SRV record, there will be a period at the end (DNS usually elides
+        // this ending octet).
+        if (!cleaned.isEmpty() && cleaned.charAt(cleaned.length() - 1) == '.') {
+            cleaned = cleaned.substring(0, cleaned.length() - 1);
+        }
+        return cleaned;
     }
 }
