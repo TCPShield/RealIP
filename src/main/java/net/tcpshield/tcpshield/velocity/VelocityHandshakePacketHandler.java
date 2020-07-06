@@ -6,7 +6,6 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
 import net.tcpshield.tcpshield.abstraction.IPacket;
-import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.velocity.impl.VelocityConfigImpl;
 import net.tcpshield.tcpshield.velocity.impl.VelocityPacketImpl;
 import net.tcpshield.tcpshield.velocity.impl.VelocityPlayerImpl;
@@ -35,7 +34,12 @@ public class VelocityHandshakePacketHandler {
     }
 
     private void handleEvent(InboundConnection connection) {
-        IPlayer player = new VelocityPlayerImpl(connection);
+        VelocityPlayerImpl player = new VelocityPlayerImpl(connection);
+        if (player.isLegacy()) {
+            player.disconnect();
+            return;
+        }
+
         IPacket packet = new VelocityPacketImpl(connection);
 
         handshakePacketHandler.onHandshake(packet, player);
