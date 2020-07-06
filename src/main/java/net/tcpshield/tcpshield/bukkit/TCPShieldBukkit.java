@@ -16,6 +16,8 @@ public class TCPShieldBukkit extends JavaPlugin {
     }
 
     private boolean isPaper() {
+        if (true) return false; // disabled for now
+
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
             return true;
