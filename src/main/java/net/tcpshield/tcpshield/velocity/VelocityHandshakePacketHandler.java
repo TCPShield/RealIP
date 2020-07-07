@@ -22,26 +22,25 @@ public class VelocityHandshakePacketHandler {
     }
 
     @Subscribe
-    public void onHandshake(ConnectionHandshakeEvent e) {
-        InboundConnection connection = e.getConnection();
-        handleEvent(connection);
+    public void onHandshake(ConnectionHandshakeEvent event) {
+        InboundConnection connection = event.getConnection();
+        this.handleEvent(connection);
     }
 
     @Subscribe
-    public void onProxyPing(ProxyPingEvent e) {
-        InboundConnection connection = e.getConnection();
-        handleEvent(connection);
+    public void onProxyPing(ProxyPingEvent event) {
+        InboundConnection connection = event.getConnection();
+        this.handleEvent(connection);
     }
 
     private void handleEvent(InboundConnection connection) {
         VelocityPlayerImpl player = new VelocityPlayerImpl(connection);
+
         if (player.isLegacy()) {
             player.disconnect();
             return;
         }
 
-        IPacket packet = new VelocityPacketImpl(connection);
-
-        handshakePacketHandler.onHandshake(packet, player);
+        this.handshakePacketHandler.onHandshake(new VelocityPacketImpl(connection), player);
     }
 }
