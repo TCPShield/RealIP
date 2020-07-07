@@ -1,11 +1,13 @@
 package net.tcpshield.tcpshield.velocity;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.ConnectionHandshakeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
 import net.tcpshield.tcpshield.abstraction.IPacket;
+import net.tcpshield.tcpshield.velocity.event.InboundConnectionCheckEvent;
 import net.tcpshield.tcpshield.velocity.impl.VelocityConfigImpl;
 import net.tcpshield.tcpshield.velocity.impl.VelocityPacketImpl;
 import net.tcpshield.tcpshield.velocity.impl.VelocityPlayerImpl;
@@ -21,26 +23,28 @@ public class VelocityHandshakePacketHandler {
         this.handshakePacketHandler = new HandshakePacketHandler(logger, new VelocityConfigImpl(dataFolder));
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     public void onHandshake(ConnectionHandshakeEvent event) {
-        InboundConnection connection = event.getConnection();
-        this.handleEvent(connection);
+        this.runEvent(event.getConnection());
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     public void onProxyPing(ProxyPingEvent event) {
-        InboundConnection connection = event.getConnection();
-        this.handleEvent(connection);
+        this.runEvent(event.getConnection());
     }
 
-    private void handleEvent(InboundConnection connection) {
+    private void runEvent(InboundConnection connection) {
+        TCPShieldVelocity.getInstance().getServer().getEventManager()
+                .fireAndForget(new InboundConnectionCheckEvent(connection, this.handleEvent(connection)));
+    }
+
+    private boolean handleEvent(InboundConnection connection) {
         VelocityPlayerImpl player = new VelocityPlayerImpl(connection);
 
-        if (player.isLegacy()) {
-            player.disconnect();
-            return;
-        }
+        if (!player.isLegacy())
+            return this.handshakePacketHandler.onHandshake(new VelocityPacketImpl(connection), player);
 
-        this.handshakePacketHandler.onHandshake(new VelocityPacketImpl(connection), player);
+        player.disconnect();
+        return false;
     }
 }
