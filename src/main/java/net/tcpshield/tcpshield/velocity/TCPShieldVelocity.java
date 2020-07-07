@@ -16,6 +16,12 @@ import java.util.logging.Logger;
 )
 public class TCPShieldVelocity {
 
+    private static TCPShieldVelocity instance;
+
+    public static TCPShieldVelocity getInstance() {
+        return instance;
+    }
+
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataFolder;
@@ -25,10 +31,16 @@ public class TCPShieldVelocity {
         this.server = server;
         this.logger = logger;
         this.dataFolder = dataFolder;
+
+        instance = this;
     }
 
     @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent e) {
-        server.getEventManager().register(this, new VelocityHandshakePacketHandler(logger, dataFolder.toFile()));
+    public void onProxyInitialization(ProxyInitializeEvent event) {
+        this.server.getEventManager().register(this, new VelocityHandshakePacketHandler(logger, dataFolder.toFile()));
+    }
+
+    public ProxyServer getServer() {
+        return this.server;
     }
 }
