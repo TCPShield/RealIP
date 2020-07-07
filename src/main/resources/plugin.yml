@@ -1,6 +1,0 @@
-name: TCPShield
-version: '2.1'
-main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
-softdepend:
-- ProtocolLib
-author: https://tcpshield.com

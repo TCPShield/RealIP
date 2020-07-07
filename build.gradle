@@ -1,37 +1,11 @@
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
-
-import java.nio.charset.StandardCharsets
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.26'
-        classpath group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-    }
-}
-
-plugins {
-    id 'java'
-    id 'idea'
-}
+apply plugin: 'java'
 
 repositories {
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        url = 'https://repo.dmulloy2.net/nexus/repository/public/'
-    }
     maven {
         url = 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     maven {
-        url = 'https://papermc.io/repo/repository/maven-public/'
+        url = 'https://repo.dmulloy2.net/nexus/repository/public/'
     }
     maven {
         url = 'https://repo.velocitypowered.com/snapshots/'
@@ -39,113 +13,15 @@ repositories {
 }
 
 dependencies {
-    // Bukkit
-    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.11-R0.1-SNAPSHOT'
-    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'
-
-    // Paper
-    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.15.2-R0.1-SNAPSHOT'
-
-    // BungeeCord
-    compileOnly group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT'
-
-    // Velocity
+     // Velocity
     compileOnly group: 'com.velocitypowered', name: 'velocity-api', version: '1.0.0-SNAPSHOT'
-
-    // Testing
-    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.7.0-M1'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version:'5.7.0-M1'
 }
 
-test {
-    useJUnitPlatform()
-}
 
-configurations {
-    testImplementation.extendsFrom compileOnly
-}
-
-version = '2.1'
-group = 'net.tcpshield.tcpshield'
-archivesBaseName = 'TCPShield'
-
-sourceSets {
-    main {
-        java {
-            srcDirs('src/main/java')
-        }
-        resources {
-            srcDirs('src/main/resources')
-        }
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    test {
-        java {
-            srcDirs('src/test/java')
-        }
-        resources {
-            srcDirs('src/test/resources')
-        }
-    }
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
 }
 
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
-}
-
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-    options.encoding = 'UTF-8'
-}
-
-task updateVersion {
-    updateYaml()
-    updateJson()
-}
-
-void updateYaml() {
-    DumperOptions options = new DumperOptions()
-    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-    options.setSplitLines(false)
-    options.setPrettyFlow(true)
-
-    def yaml = new Yaml(options)
-
-    def bukkitYamlFile = new File('src/main/resources/plugin.yml')
-    def bungeeYamlFile = new File('src/main/resources/bungee.yml')
-
-    def files = [bukkitYamlFile, bungeeYamlFile]
-    files.each { file ->
-        file.newInputStream().withCloseable { inputStream ->
-            def cfg = yaml.load(inputStream)
-            cfg.put("version", version)
-
-            new FileWriter(file).withCloseable { writer ->
-                yaml.dump(cfg, writer)
-            }
-        }
-    }
-}
-
-void updateJson() {
-    def velocityJson = new File('src/main/resources/velocity-plugin.json')
-
-    def files = [velocityJson]
-    files.each { file ->
-        file.newInputStream().withCloseable { inputStream ->
-            new InputStreamReader(inputStream, StandardCharsets.UTF_8).withCloseable { inputStreamReader ->
-                JsonObject object = JsonParser.parseReader(inputStreamReader).getAsJsonObject()
-                object.addProperty("version", version.toString())
-
-                new FileWriter(file).withCloseable { writer ->
-                    writer.write(object.toString())
-                }
-            }
-        }
-
-    }
-}
-
-build.dependsOn updateVersion
