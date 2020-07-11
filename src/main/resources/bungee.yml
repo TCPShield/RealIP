@@ -1,4 +1,4 @@
 name: TCPShield
-version: '2.1'
+version: '2.2'
 main: net.tcpshield.tcpshield.bungee.TCPShieldBungee
 author: https://tcpshield.com
