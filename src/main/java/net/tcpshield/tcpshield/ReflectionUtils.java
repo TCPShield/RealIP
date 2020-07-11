@@ -2,23 +2,46 @@ package net.tcpshield.tcpshield;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import net.tcpshield.tcpshield.exception.TCPShieldInitializationException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 public class ReflectionUtils {
 
     private static final Table<Class<?>, String, Field> CACHED_FIELDS = HashBasedTable.create();
+    private static final Field modifiersField;
+
+    static {
+        Field tempModifiersField;
+        try {
+            tempModifiersField = getDeclaredField(Field.class, "modifiers");
+        } catch (NoSuchFieldException e) { // workaround for when searching for the modifiers field on Java 12 or higher
+            try {
+                Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+                getDeclaredFields0.setAccessible(true);
+
+                Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
+                tempModifiersField = Arrays.stream(fields).filter(field -> field.getName().equals("modifiers")).findFirst().orElseThrow(() -> new TCPShieldInitializationException("Could not find the modifiers field"));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
+                throw new TCPShieldInitializationException(e2);
+            }
+        }
+
+        modifiersField = tempModifiersField;
+        modifiersField.setAccessible(true);
+    }
 
     public static void setFinalField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
         setFinalField(object, getPrivateField(object.getClass(), fieldName), value);
     }
 
-    public static void setFinalField(Object object, Field field, Object value) throws IllegalAccessException, NoSuchFieldException {
+    public static void setFinalField(Object object, Field field, Object value) throws IllegalAccessException {
         field.setAccessible(true);
         if (Modifier.isFinal(field.getModifiers())) {
-            Field modifiersField = getDeclaredField(Field.class, "modifiers");
-            modifiersField.setAccessible(true);
             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         }
 
