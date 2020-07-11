@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class ReflectionUtils {
 
     private static final Table<Class<?>, String, Field> CACHED_FIELDS = HashBasedTable.create();
-    private static final Field modifiersField;
+    private static final Field MODIFIERS_FIELD;
 
     static {
         Field tempModifiersField;
@@ -31,8 +31,8 @@ public class ReflectionUtils {
             }
         }
 
-        modifiersField = tempModifiersField;
-        modifiersField.setAccessible(true);
+        MODIFIERS_FIELD = tempModifiersField;
+        MODIFIERS_FIELD.setAccessible(true);
     }
 
     public static void setFinalField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -42,7 +42,7 @@ public class ReflectionUtils {
     public static void setFinalField(Object object, Field field, Object value) throws IllegalAccessException {
         field.setAccessible(true);
         if (Modifier.isFinal(field.getModifiers())) {
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            MODIFIERS_FIELD.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         }
 
         setField(object, field, value);
