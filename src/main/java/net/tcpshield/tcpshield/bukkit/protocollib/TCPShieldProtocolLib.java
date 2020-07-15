@@ -1,6 +1,5 @@
 package net.tcpshield.tcpshield.bukkit.protocollib;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TCPShieldProtocolLib {
@@ -12,11 +11,6 @@ public class TCPShieldProtocolLib {
     }
 
     public void load() {
-        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
-            plugin.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-            return;
-        }
-
         ProtocolLibHandshakePacketHandler packetHandler = new ProtocolLibHandshakePacketHandler(plugin);
         com.comphenix.protocol.ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
     }

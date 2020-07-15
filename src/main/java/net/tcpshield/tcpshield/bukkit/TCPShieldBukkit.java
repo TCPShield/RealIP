@@ -2,6 +2,7 @@ package net.tcpshield.tcpshield.bukkit;
 
 import net.tcpshield.tcpshield.bukkit.paper.TCPShieldPaper;
 import net.tcpshield.tcpshield.bukkit.protocollib.TCPShieldProtocolLib;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TCPShieldBukkit extends JavaPlugin {
@@ -11,6 +12,12 @@ public class TCPShieldBukkit extends JavaPlugin {
         if (isPaper()) {
             new TCPShieldPaper(this).load();
         } else {
+            if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
+                //this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
+                this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Please install ProtocolLib in order to use our plugin.");
+                return;
+            }
+
             new TCPShieldProtocolLib(this).load();
         }
     }
