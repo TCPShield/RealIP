@@ -1,5 +1,6 @@
 package net.tcpshield.tcpshield.velocity;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.ConnectionHandshakeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
@@ -21,13 +22,13 @@ public class VelocityHandshakePacketHandler {
         this.handshakePacketHandler = new HandshakePacketHandler(logger, new VelocityConfigImpl(dataFolder));
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     public void onHandshake(ConnectionHandshakeEvent e) {
         InboundConnection connection = e.getConnection();
         handleEvent(connection);
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     public void onProxyPing(ProxyPingEvent e) {
         InboundConnection connection = e.getConnection();
         handleEvent(connection);
