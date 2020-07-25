@@ -6,6 +6,7 @@ import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
 import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
@@ -21,7 +22,7 @@ public class BungeeHandshakePacketHandler implements Listener {
         this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BungeeConfigImpl(plugin));
     }
 
-    @EventHandler(priority = -64)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onProxyPingEvent(ProxyPingEvent e) {
         PendingConnection connection = e.getConnection();
         if (!connection.isLegacy()) return;
@@ -29,7 +30,7 @@ public class BungeeHandshakePacketHandler implements Listener {
         connection.disconnect();
     }
 
-    @EventHandler(priority = -64)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerHandshake(PlayerHandshakeEvent e) {
         IPacket packet = new BungeePacketImpl(e.getHandshake(), e.getConnection());
         IPlayer player = new BungeePlayerImpl(e.getConnection());
