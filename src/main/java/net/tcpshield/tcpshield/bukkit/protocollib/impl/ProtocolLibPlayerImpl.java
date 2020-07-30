@@ -2,10 +2,10 @@ package net.tcpshield.tcpshield.bukkit.protocollib.impl;
 
 import com.comphenix.protocol.injector.server.SocketInjector;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
-import io.netty.channel.AbstractChannel;
 import net.tcpshield.tcpshield.ReflectionUtils;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.IPModificationFailureException;
+import net.tcpshield.tcpshield.exception.TCPShieldInitializationException;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -15,8 +15,21 @@ import java.net.SocketAddress;
 public class ProtocolLibPlayerImpl implements IPlayer {
 
     private static Field socketAddressField;
+    private static Class<?> abstractChannelClass;
     private final Player player;
     private String ip;
+
+    static {
+        try {
+            abstractChannelClass = Class.forName("io.netty.channel.AbstractChannel");
+        } catch (ClassNotFoundException e) {
+            try {
+                abstractChannelClass = Class.forName("net.minecraft.util.io.netty.channel.AbstractChannel");
+            } catch (ClassNotFoundException e2) {
+                throw new TCPShieldInitializationException(e2);
+            }
+        }
+    }
 
     public ProtocolLibPlayerImpl(Player player) {
         this.player = player;
@@ -53,7 +66,7 @@ public class ProtocolLibPlayerImpl implements IPlayer {
             ReflectionUtils.setFinalField(networkManager, socketAddressField, ip);
 
             Object channel = ReflectionUtils.getObjectInPrivateField(injector, "originalChannel");
-            ReflectionUtils.setFinalField(channel, ReflectionUtils.getDeclaredField(AbstractChannel.class, "remoteAddress"), ip);
+            ReflectionUtils.setFinalField(channel, ReflectionUtils.getDeclaredField(abstractChannelClass, "remoteAddress"), ip);
         } catch (Exception e) {
             throw new IPModificationFailureException(e);
         }
