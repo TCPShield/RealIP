@@ -15,6 +15,7 @@ import java.net.SocketAddress;
 public class ProtocolLibPlayerImpl implements IPlayer {
 
     private static Field socketAddressField;
+    private static Field remoteAddressField;
     private static Class<?> abstractChannelClass;
     private final Player player;
     private String ip;
@@ -59,11 +60,8 @@ public class ProtocolLibPlayerImpl implements IPlayer {
             SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
             Object injector = ReflectionUtils.getObjectInPrivateField(ignored, "injector");
             Object networkManager = ReflectionUtils.getObjectInPrivateField(injector, "networkManager");
-            if (socketAddressField == null) {
-                socketAddressField = ReflectionUtils.searchFieldByClass(networkManager.getClass(), SocketAddress.class);
-            }
 
-            ReflectionUtils.setFinalField(networkManager, socketAddressField, ip);
+            ReflectionUtils.setFinalField(networkManager, ReflectionUtils.searchFieldByClass(networkManager.getClass(), SocketAddress.class), ip);
 
             Object channel = ReflectionUtils.getObjectInPrivateField(injector, "originalChannel");
             ReflectionUtils.setFinalField(channel, ReflectionUtils.getDeclaredField(abstractChannelClass, "remoteAddress"), ip);

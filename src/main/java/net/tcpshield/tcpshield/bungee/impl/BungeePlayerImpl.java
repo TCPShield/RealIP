@@ -7,6 +7,7 @@ import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.UUID;
 
 public class BungeePlayerImpl implements IPlayer {
@@ -45,7 +46,7 @@ public class BungeePlayerImpl implements IPlayer {
             Object channelWrapper = ReflectionUtils.getObjectInPrivateField(pendingConnection, "ch");
             Object channel = ReflectionUtils.getObjectInPrivateField(channelWrapper, "ch");
 
-            ReflectionUtils.setFinalField(channelWrapper, "remoteAddress", ip);
+            ReflectionUtils.setFinalField(channelWrapper, ReflectionUtils.searchFieldByClass(channelWrapper.getClass(), SocketAddress.class), ip);
             ReflectionUtils.setFinalField(channel, ReflectionUtils.getPrivateField(AbstractChannel.class, "remoteAddress"), ip);
             ReflectionUtils.setFinalField(channel, ReflectionUtils.getPrivateField(AbstractChannel.class, "localAddress"), ip);
         } catch (Exception e) {
