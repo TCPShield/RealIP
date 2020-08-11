@@ -6,6 +6,7 @@ import net.tcpshield.tcpshield.ReflectionUtils;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.UUID;
@@ -46,7 +47,13 @@ public class BungeePlayerImpl implements IPlayer {
             Object channelWrapper = ReflectionUtils.getObjectInPrivateField(pendingConnection, "ch");
             Object channel = ReflectionUtils.getObjectInPrivateField(channelWrapper, "ch");
 
-            ReflectionUtils.setFinalField(channelWrapper, ReflectionUtils.searchFieldByClass(channelWrapper.getClass(), SocketAddress.class), ip);
+            try {
+                Field socketAddressField = ReflectionUtils.searchFieldByClass(channelWrapper.getClass(), SocketAddress.class);
+                ReflectionUtils.setFinalField(channelWrapper, socketAddressField, ip);
+            } catch (IllegalArgumentException ignored) {
+                // Some BungeeCord versions, notably those on 1.7 (e.g. zBungeeCord) don't have an SocketAddress field in the ChannelWrapper class
+            }
+
             ReflectionUtils.setFinalField(channel, ReflectionUtils.getPrivateField(AbstractChannel.class, "remoteAddress"), ip);
             ReflectionUtils.setFinalField(channel, ReflectionUtils.getPrivateField(AbstractChannel.class, "localAddress"), ip);
         } catch (Exception e) {
