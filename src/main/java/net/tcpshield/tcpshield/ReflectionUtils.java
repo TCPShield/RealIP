@@ -73,16 +73,16 @@ public class ReflectionUtils {
         if (cachedField != null) return cachedField;
 
         Class<?> currentClass = clazz;
-        while (currentClass.getSuperclass() != null) {
-            for (Field field : clazz.getDeclaredFields()) {
+        do { 
+            for (Field field : currentClass.getDeclaredFields()) {
                 if (field.getType() != searchFor) continue;
 
-                CACHED_FIELDS_BY_CLASS.put(searchFor, searchFor, field);
+                CACHED_FIELDS_BY_CLASS.put(clazz, searchFor, field);
                 return field;
             }
 
-            currentClass = clazz.getSuperclass();
-        }
+            currentClass = currentClass.getSuperclass();
+        } while (currentClass != null);
 
         throw new IllegalArgumentException("no " + searchFor.getName() + " field for clazz = " + clazz.getName() + " found");
     }
