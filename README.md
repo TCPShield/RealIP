@@ -11,7 +11,7 @@ TCPShield is compatible with Spigot / CraftBukkit, BungeeCord and Velocity.
 When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed.
 
 ### Setup
-Setting up the plugin is easy as cake. Please follow [these](https://docs.tcpshield.com/onboarding-1/tcpshield-plugin) guidelines. 
+Setting up the plugin is easy as cake. Please follow [these](https://docs.tcpshield.com/onboarding/tcpshield-plugin) guidelines. 
 
 ### Compiling
 In order to compile TCPShield, [install Gradle](https://docs.gradle.org/current/userguide/installation.html) and run the following command in the project folder:
