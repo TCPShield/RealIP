@@ -77,7 +77,7 @@ public class ReflectionUtils {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getType() != searchFor) continue;
 
-                CACHED_FIELDS_BY_CLASS.put(searchFor, searchFor, field);
+                CACHED_FIELDS_BY_CLASS.put(clazz, searchFor, field);
                 return field;
             }
 
