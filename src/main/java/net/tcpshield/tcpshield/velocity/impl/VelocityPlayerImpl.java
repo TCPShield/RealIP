@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 
 public class VelocityPlayerImpl implements IPlayer {
 
-    private static final Class<?> initialInboundConnectionClass;
+    private static final Class<?> INITIAL_INBOUND_CONNECTION_CLASS;
     private static final Field MINECRAFT_CONNECTION_FIELD;
     private static final Field LEGACY_MINECRAFT_CONNECTION_FIELD;
     private static final Field REMOTE_ADDRESS_FIELD;
@@ -20,8 +20,8 @@ public class VelocityPlayerImpl implements IPlayer {
 
     static {
         try {
-            initialInboundConnectionClass = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
-            MINECRAFT_CONNECTION_FIELD = ReflectionUtils.getPrivateField(initialInboundConnectionClass, "connection");
+            INITIAL_INBOUND_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
+            MINECRAFT_CONNECTION_FIELD = ReflectionUtils.getPrivateField(INITIAL_INBOUND_CONNECTION_CLASS, "connection");
             LEGACY_MINECRAFT_CONNECTION_FIELD = ReflectionUtils.getPrivateField(Class.forName("com.velocitypowered.proxy.connection.client.HandshakeSessionHandler$LegacyInboundConnection"), "connection");
 
             Class<?> minecraftConnection = Class.forName("com.velocitypowered.proxy.connection.MinecraftConnection");
@@ -38,7 +38,7 @@ public class VelocityPlayerImpl implements IPlayer {
 
     public VelocityPlayerImpl(InboundConnection inboundConnection) {
         this.inboundConnection = inboundConnection;
-        this.legacy = inboundConnection.getClass() != initialInboundConnectionClass;
+        this.legacy = inboundConnection.getClass() != INITIAL_INBOUND_CONNECTION_CLASS;
         this.ip = inboundConnection.getRemoteAddress().getAddress().getHostAddress();
     }
 
