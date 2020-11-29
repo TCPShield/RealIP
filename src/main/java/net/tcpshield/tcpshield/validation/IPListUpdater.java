@@ -32,7 +32,7 @@ public class IPListUpdater {
                 logger.info("[TCPShield] Fetched updated IP Whitelist from https://tcpshield.com/v4/");
             }
 
-            try (FileWriter writer = new FileWriter(tcpShieldIPList)) {
+            try (FileWriter writer = new FileWriter(tcpShieldIPList, false)) {
                 writer.write(ipList);
             }
 
