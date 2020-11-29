@@ -4,6 +4,8 @@ import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class BukkitConfigImpl extends TCPShieldConfig {
 
     public BukkitConfigImpl(JavaPlugin javaPlugin) {
@@ -12,7 +14,7 @@ public class BukkitConfigImpl extends TCPShieldConfig {
         FileConfiguration config = javaPlugin.getConfig();
 
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
-        this.timestampValidationMode = config.getString("timestamp-validation");
+        this.ipWhitelistFolder = new File(javaPlugin.getDataFolder(), "ip-whitelist");
         this.debug = config.getBoolean("debug-mode");
     }
 }

@@ -8,6 +8,8 @@ import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.bukkit.impl.BukkitConfigImpl;
 import net.tcpshield.tcpshield.bukkit.paper.impl.PaperPacketImpl;
 import net.tcpshield.tcpshield.bukkit.paper.impl.PaperPlayerImpl;
+import net.tcpshield.tcpshield.bukkit.paper.impl.PaperServerListPacketImpl;
+import net.tcpshield.tcpshield.bukkit.paper.impl.PaperServerListPingPlayerImpl;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -32,5 +34,10 @@ public class PaperHandshakePacketHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerPing(PaperServerListPingEvent e) {
         if (e.getClient().isLegacy()) e.setCancelled(true);
+
+        IPacket packet = new PaperServerListPacketImpl(e);
+        IPlayer player = new PaperServerListPingPlayerImpl(e);
+
+        handshakePacketHandler.onHandshake(packet, player);
     }
 }
