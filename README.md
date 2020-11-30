@@ -8,7 +8,7 @@ It also parses passed IP addresses so the server is aware of the real player IP 
 
 TCPShield is compatible with Spigot / CraftBukkit, BungeeCord and Velocity.
 
-When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed. ProtocolLib isn't required when using Paper as it is supported natively.
+When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed.
 
 ### Setup
 Setting up the plugin is easy as pie. Please follow [these](https://docs.tcpshield.com/onboarding/tcpshield-plugin) guidelines. 
