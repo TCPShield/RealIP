@@ -49,8 +49,8 @@ public class HandshakePacketHandler {
             }
 
             String[] payload = cleanedPayload.split("///", 4);
-            if (payload.length != 4)
-                throw new MalformedPayloadException("payload.length != 4. Raw payload = \"" + rawPayload + "\"");
+            if (payload.length < 2)
+                throw new MalformedPayloadException("payload.length < 2. Raw payload = \"" + rawPayload + "\"");
 
             String hostname = payload[0];
             String ipData = payload[1];
