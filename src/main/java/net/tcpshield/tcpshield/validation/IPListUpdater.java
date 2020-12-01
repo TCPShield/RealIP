@@ -51,7 +51,7 @@ public class IPListUpdater {
 
             try (InputStream inputStream = connection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-                return bufferedReader.lines().collect(Collectors.joining("\n"));
+                return bufferedReader.lines().filter(str -> !str.isEmpty()).collect(Collectors.joining("\n"));
             }
         } finally {
             if (connection != null)
