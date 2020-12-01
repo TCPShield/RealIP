@@ -4,23 +4,22 @@ import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import net.tcpshield.tcpshield.exception.*;
-import net.tcpshield.tcpshield.validation.TimestampValidation;
+import net.tcpshield.tcpshield.validation.IPValidation;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 
 public class HandshakePacketHandler {
 
     private final Logger logger;
-    private final SignatureVerifier signatureVerifier;
-    private final TimestampValidation timestampValidation;
+    private final IPValidation ipValidation;
     private final TCPShieldConfig config;
 
     public HandshakePacketHandler(Logger logger, TCPShieldConfig config) {
         try {
             this.logger = logger;
-            this.signatureVerifier = new SignatureVerifier();
-            this.timestampValidation = new TimestampValidation(config);
+            this.ipValidation = new IPValidation(config, logger);
             this.config = config;
         } catch (Exception e) {
             throw new TCPShieldInitializationException(e);
@@ -31,6 +30,12 @@ public class HandshakePacketHandler {
         String rawPayload = packet.getRawPayload();
 
         try {
+            InetAddress inetAddress = InetAddress.getByName(player.getIP());
+            if (!ipValidation.validateIP(inetAddress)) throw new InvalidIPException();
+
+            if (rawPayload == null)
+                return; // raw payload is passed when it's not available -> e.g. Paper server list ping events
+
             String extraData = null;
 
             // fix for e.g. incoming FML tagged packets
@@ -44,30 +49,15 @@ public class HandshakePacketHandler {
             }
 
             String[] payload = cleanedPayload.split("///", 4);
-            if (payload.length != 4)
-                throw new MalformedPayloadException("payload.length != 4. Raw payload = \"" + rawPayload + "\"");
+            if (payload.length < 2)
+                throw new MalformedPayloadException("payload.length < 2. Raw payload = \"" + rawPayload + "\"");
 
             String hostname = payload[0];
             String ipData = payload[1];
-            int timestamp;
-            try {
-                timestamp = Integer.parseInt(payload[2]);
-            } catch (NumberFormatException e) {
-                throw new MalformedPayloadException(e);
-            }
-            String signature = payload[3];
-
-            if (!timestampValidation.checkTimestamp(timestamp))
-                throw new InvalidTimestampException(timestamp, timestampValidation.getTime());
 
             String[] hostnameParts = ipData.split(":");
             String host = hostnameParts[0];
             int port = Integer.parseInt(hostnameParts[1]);
-
-            String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
-
-            if (!signatureVerifier.verify(reconstructedPayload, signature))
-                throw new SigningVerificationFailureException();
 
             InetSocketAddress newIP = new InetSocketAddress(host, port);
             player.setIP(newIP);
@@ -75,10 +65,8 @@ public class HandshakePacketHandler {
             if (extraData != null) hostname = hostname + extraData;
 
             packet.modifyOriginalPacket(hostname);
-        } catch (InvalidTimestampException e) {
-            handleInvalidTimestamp(player, e.getTimestamp(), e.getCurrentTime());
-        } catch (SigningVerificationFailureException e) {
-            handleSigningVerificationFailure(player, rawPayload);
+        } catch (InvalidIPException e) {
+            handleInvalidIPException(player, rawPayload);
         } catch (ConnectionNotProxiedException e) {
             handleNotProxiedConnection(player, rawPayload);
         } catch (IPModificationFailureException e) {
@@ -89,20 +77,9 @@ public class HandshakePacketHandler {
         }
     }
 
-    private void handleInvalidTimestamp(IPlayer player, long timestamp, long currentTime) {
+    private void handleInvalidIPException(IPlayer player, String rawPayload) {
         if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but timestamp was not valid. " +
-                    "Provided timestamp: %d vs. system timestamp: %d. Please check your machine time. Timestamp validation mode: %s", player.getName(), player.getUUID(), player.getIP(), timestamp, currentTime, config.getTimestampValidationMode()));
-        }
-
-        if (config.isOnlyProxy()) {
-            player.disconnect();
-        }
-    }
-
-    private void handleSigningVerificationFailure(IPlayer player, String rawPayload) {
-        if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] provided valid handshake information, but signing check failed. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            this.logger.warning(String.format("%s[%s/%s] failed the ip check. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
         }
 
         if (config.isOnlyProxy()) {

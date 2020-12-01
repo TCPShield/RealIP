@@ -13,8 +13,7 @@ public class TCPShieldBukkit extends JavaPlugin {
             new TCPShieldPaper(this).load();
         } else {
             if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
-                //this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-                this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Please install ProtocolLib in order to use our plugin.");
+                this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
                 return;
             }
 
@@ -23,7 +22,7 @@ public class TCPShieldBukkit extends JavaPlugin {
     }
 
     private boolean isPaper() {
-        if (true) return false; // disabled for now
+        if (1 == 1) return false;
 
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");

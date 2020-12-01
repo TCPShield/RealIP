@@ -2,15 +2,22 @@ package net.tcpshield.tcpshield.impl;
 
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public class TestPlayerImpl implements IPlayer {
 
-    private InetSocketAddress ip;
+    private InetAddress ip;
     private boolean connected;
 
-    public TestPlayerImpl() {
+    public TestPlayerImpl(String ip) {
         this.connected = true;
+        try {
+            this.ip = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -27,12 +34,12 @@ public class TestPlayerImpl implements IPlayer {
     public String getIP() {
         if (ip == null) return "ip";
 
-        return ip.getAddress().getHostAddress();
+        return ip.getHostAddress();
     }
 
     @Override
     public void setIP(InetSocketAddress ip) {
-        this.ip = ip;
+        this.ip = ip.getAddress();
     }
 
     @Override
