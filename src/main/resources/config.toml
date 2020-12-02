@@ -1,8 +1,5 @@
 # Please keep this as true in while using TCPShield!
 only-allow-proxy-connections = true
 
-# available modes: system (uses the system time), htpdate (uses a synchronized date) & off (deactivates timestamp validation)
-timestamp-validation = 'htpdate'
-
 # Turn on to diagnose connection issues
 debug-mode = false
