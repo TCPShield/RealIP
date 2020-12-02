@@ -22,7 +22,7 @@ public class BungeeConfigImpl extends TCPShieldConfig {
 
         Configuration config = loadConfig();
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
-        this.timestampValidationMode = config.getString("timestamp-validation");
+        this.ipWhitelistFolder = new File(plugin.getDataFolder(), "ip-whitelist");
         this.debug = config.getBoolean("debug-mode");
     }
 

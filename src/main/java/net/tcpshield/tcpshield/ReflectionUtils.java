@@ -73,9 +73,9 @@ public class ReflectionUtils {
         if (cachedField != null) return cachedField;
 
         Class<?> currentClass = clazz;
-        do { 
+        do {
             for (Field field : currentClass.getDeclaredFields()) {
-                if (field.getType() != searchFor) continue;
+                if (!searchFor.isAssignableFrom(field.getType())) continue;
 
                 CACHED_FIELDS_BY_CLASS.put(clazz, searchFor, field);
                 return field;
