@@ -1,4 +1,4 @@
 package net.tcpshield.tcpshield.exception;
 
-public class InvalidIPException extends ConnectionNotProxiedException {
+public class InvalidIPException extends SecurityException {
 }
