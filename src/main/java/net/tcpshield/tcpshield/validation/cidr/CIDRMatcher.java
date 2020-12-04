@@ -16,7 +16,7 @@ public class CIDRMatcher {
         String[] split = ipAddress.split("/");
 
         String parsedIPAddress;
-        if (split.length != 0) {
+        if (split.length >= 2) {
             parsedIPAddress = split[0];
 
             this.maskBits = Integer.parseInt(split[1]);
