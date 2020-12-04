@@ -3,7 +3,9 @@ package net.tcpshield.tcpshield;
 import net.tcpshield.tcpshield.abstraction.IPacket;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
-import net.tcpshield.tcpshield.exception.*;
+import net.tcpshield.tcpshield.exception.IPModificationFailureException;
+import net.tcpshield.tcpshield.exception.InvalidIPException;
+import net.tcpshield.tcpshield.exception.TCPShieldInitializationException;
 import net.tcpshield.tcpshield.validation.IPValidation;
 
 import java.net.InetAddress;
@@ -49,8 +51,7 @@ public class HandshakePacketHandler {
             }
 
             String[] payload = cleanedPayload.split("///", 4);
-            if (payload.length < 2)
-                throw new MalformedPayloadException("payload.length < 2. Raw payload = \"" + rawPayload + "\"");
+            if (payload.length < 2) return; // is nonetheless allowed as it passed the IP check
 
             String hostname = payload[0];
             String ipData = payload[1];
@@ -67,8 +68,6 @@ public class HandshakePacketHandler {
             packet.modifyOriginalPacket(hostname);
         } catch (InvalidIPException e) {
             handleInvalidIPException(player, rawPayload);
-        } catch (ConnectionNotProxiedException e) {
-            handleNotProxiedConnection(player, rawPayload);
         } catch (IPModificationFailureException e) {
             this.logger.warning(String.format("%s[%s/%s]'s IP failed to be modified. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
             e.printStackTrace();
@@ -79,21 +78,11 @@ public class HandshakePacketHandler {
 
     private void handleInvalidIPException(IPlayer player, String rawPayload) {
         if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] failed the ip check. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            this.logger.warning(String.format("%s[%s/%s] was disconnected because the client failed the ip check aand only-allowed-proxy-connections. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
         }
 
         if (config.isOnlyProxy()) {
             player.disconnect();
         }
-    }
-
-    private void handleNotProxiedConnection(IPlayer player, String rawPayload) {
-        if (!config.isOnlyProxy()) return;
-
-        if (config.isDebug()) {
-            this.logger.info(String.format("%s[%s/%s] was disconnected because no proxy info was received and only-allow-proxy-connections is enabled. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
-        }
-
-        player.disconnect();
     }
 }
