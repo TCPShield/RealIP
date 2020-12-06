@@ -44,15 +44,6 @@ public class HandshakePacketHandlerTest {
     }
 
     @Test
-    public void testUnsuccessfulHandshakeMalformedPayload() {
-        TestPacketImpl packet = new TestPacketImpl(TestConstants.INVALID_PAYLOAD_MALFORMED_PAYLOAD, TestConstants.STANDARD_HOSTNAME);
-
-        standardHandshakePacketHandler.onHandshake(packet, player);
-
-        assertFalse(player.isConnected());
-    }
-
-    @Test
     public void testUnsuccessfulHandshakeInvalidIP() {
         TestPacketImpl packet = new TestPacketImpl(TestConstants.VALID_PAYLOAD, TestConstants.STANDARD_HOSTNAME);
 
