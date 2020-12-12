@@ -28,5 +28,5 @@ See [Contact](https://docs.tcpshield.com/about-us)
 
 These wonderful contributors have helped TCPShield make this plugin better! 
 
-* [Fuzzlemann](https://github.com/Fuzzlemann)
+* [Paul Zhang](https://github.com/paulzhng)
 * [RyanDeLap](https://github.com/RyanDeLap)
