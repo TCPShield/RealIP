@@ -3,6 +3,7 @@ package net.tcpshield.tcpshield.bungee;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
+import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -24,6 +25,8 @@ public class BungeeHandshakePacketHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onProxyPingEvent(ProxyPingEvent e) {
+        if (e.getResponse() == null || e instanceof Cancellable && ((Cancellable) e).isCancelled()) return;
+        
         PendingConnection connection = e.getConnection();
         if (!connection.isLegacy()) return;
 
