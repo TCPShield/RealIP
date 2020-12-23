@@ -51,6 +51,10 @@ public class IPListUpdater {
 
             try (InputStream inputStream = connection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+                int responseCode = connection.getResponseCode();
+                if (responseCode != 200)
+                    throw new TCPShieldIPListUpdaterException("https://tcpshield.com/v4 did not return status code 200: " + responseCode);
+
                 return bufferedReader.lines().filter(str -> !str.isEmpty()).collect(Collectors.joining("\n"));
             }
         } finally {
