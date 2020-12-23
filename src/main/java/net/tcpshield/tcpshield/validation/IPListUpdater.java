@@ -66,9 +66,9 @@ public class IPListUpdater {
                             }
                         })
                         .collect(Collectors.joining("\n"));
+
                 if (data.isEmpty())
                     throw new TCPShieldIPListUpdaterException("Response from https://tcpshield.com/v4/ empty");
-
 
                 return data;
             }
