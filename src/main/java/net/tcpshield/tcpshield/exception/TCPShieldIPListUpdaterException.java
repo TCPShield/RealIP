@@ -6,6 +6,10 @@ public class TCPShieldIPListUpdaterException extends RuntimeException {
         super(cause);
     }
 
+    public TCPShieldIPListUpdaterException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public TCPShieldIPListUpdaterException(String message) {
         super(message);
     }

@@ -2,6 +2,7 @@ package net.tcpshield.tcpshield.validation;
 
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
 import net.tcpshield.tcpshield.exception.TCPShieldIPListUpdaterException;
+import net.tcpshield.tcpshield.validation.cidr.CIDRMatcher;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -53,9 +54,23 @@ public class IPListUpdater {
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
                 int responseCode = connection.getResponseCode();
                 if (responseCode != 200)
-                    throw new TCPShieldIPListUpdaterException("https://tcpshield.com/v4 did not return status code 200: " + responseCode);
+                    throw new TCPShieldIPListUpdaterException("https://tcpshield.com/v4/ did not return status code 200: " + responseCode);
 
-                return bufferedReader.lines().filter(str -> !str.isEmpty()).collect(Collectors.joining("\n"));
+                String data = bufferedReader.lines()
+                        .filter(str -> !str.isEmpty())
+                        .peek(cidr -> {  // checks for validity of each CIDR entry
+                            try {
+                                new CIDRMatcher(cidr);
+                            } catch (Exception e) {
+                                throw new TCPShieldIPListUpdaterException("https://tcpshield.com/v4/ returned a faulty CIDR entry: " + cidr, e);
+                            }
+                        })
+                        .collect(Collectors.joining("\n"));
+                if (data.isEmpty())
+                    throw new TCPShieldIPListUpdaterException("Response from https://tcpshield.com/v4/ empty");
+
+
+                return data;
             }
         } finally {
             if (connection != null)
