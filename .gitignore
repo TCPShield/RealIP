@@ -1,4 +1,13 @@
+# Testing
+ip-whitelist/
+
+# IntelliJ
 .idea/
-*/target/
-*/*/target/
+build/
 *.iml
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
