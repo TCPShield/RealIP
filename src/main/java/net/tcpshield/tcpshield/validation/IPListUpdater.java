@@ -30,7 +30,7 @@ public class IPListUpdater {
             File tcpShieldIPList = new File(ipWhitelistFolder, "tcpshield-ips.list");
 
             if (tcpShieldIPList.createNewFile()) {
-                logger.info("[TCPShield] Fetched updated IP Whitelist from https://tcpshield.com/v4/");
+                logger.info("Fetched updated IP Whitelist from https://tcpshield.com/v4/");
             }
 
             try (FileWriter writer = new FileWriter(tcpShieldIPList, false)) {
