@@ -8,14 +8,11 @@ import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 import net.tcpshield.tcpshield.exception.TCPShieldInitializationException;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public class ProtocolLibPlayerImpl implements IPlayer {
 
-    private static Field socketAddressField;
-    private static Field remoteAddressField;
     private static Class<?> abstractChannelClass;
     private final Player player;
     private String ip;
