@@ -23,7 +23,7 @@ public class PaperHandshakePacketHandler implements Listener {
         this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onHandshake(PlayerHandshakeEvent e) {
         IPacket packet = new PaperPacketImpl(e);
         IPlayer player = new PaperPlayerImpl(e);
@@ -31,7 +31,7 @@ public class PaperHandshakePacketHandler implements Listener {
         handshakePacketHandler.onHandshake(packet, player);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onServerPing(PaperServerListPingEvent e) {
         if (e.getClient().isLegacy()) e.setCancelled(true);
 
