@@ -17,7 +17,7 @@ public class ProtocolLibHandshakePacketHandler extends PacketAdapter {
     private final HandshakePacketHandler handshakePacketHandler;
 
     public ProtocolLibHandshakePacketHandler(JavaPlugin plugin) {
-        super(plugin, ListenerPriority.HIGHEST, PacketType.Handshake.Client.SET_PROTOCOL);
+        super(plugin, ListenerPriority.LOWEST, PacketType.Handshake.Client.SET_PROTOCOL);
         this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
     }
 
