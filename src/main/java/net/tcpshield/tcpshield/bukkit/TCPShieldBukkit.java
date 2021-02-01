@@ -1,36 +1,19 @@
 package net.tcpshield.tcpshield.bukkit;
 
-import net.tcpshield.tcpshield.bukkit.paper.TCPShieldPaper;
-import net.tcpshield.tcpshield.bukkit.protocollib.TCPShieldProtocolLib;
-import org.bukkit.Bukkit;
+import com.comphenix.protocol.ProtocolLibrary;
+import net.tcpshield.tcpshield.HandshakePacketHandler;
+import net.tcpshield.tcpshield.bukkit.impl.BukkitConfigImpl;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TCPShieldBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println("enable");
-
-        if (isPaper()) {
-            new TCPShieldPaper(this).load();
-        } else {
-            if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
-                this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-                return;
-            }
-
-            new TCPShieldProtocolLib(this).load();
-        }
-    }
-
-    private boolean isPaper() {
-        if (1 == 1) return false;
-
-        try {
-            Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        HandshakePacketHandler handshakePacketHandler = new HandshakePacketHandler(this.getLogger(), new BukkitConfigImpl(this));
+        GeyserUtils.initGeyserOrDefault(handshakePacketHandler, () -> {
+            BukkitHandshakePacketHandler packetHandler = new BukkitHandshakePacketHandler(this, handshakePacketHandler);
+            ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
+        });
     }
 }

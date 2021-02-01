@@ -1,7 +1,7 @@
 name: TCPShield
 version: '2.4'
 main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
-softdepend:
-- ProtocolLib
+depend:
+  - ProtocolLib
 author: https://tcpshield.com
 api-version: 1.16

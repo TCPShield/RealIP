@@ -1,4 +1,4 @@
-package net.tcpshield.tcpshield.bukkit.protocollib.impl;
+package net.tcpshield.tcpshield.bukkit.impl;
 
 import com.comphenix.protocol.injector.server.SocketInjector;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class ProtocolLibPlayerImpl implements IPlayer {
+public class BukkitPlayerImpl implements IPlayer {
 
     private static Class<?> abstractChannelClass;
     private final Player player;
@@ -29,7 +29,7 @@ public class ProtocolLibPlayerImpl implements IPlayer {
         }
     }
 
-    public ProtocolLibPlayerImpl(Player player) {
+    public BukkitPlayerImpl(Player player) {
         this.player = player;
         this.ip = player.getAddress().getAddress().getHostAddress();
     }
