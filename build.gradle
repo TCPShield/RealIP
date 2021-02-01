@@ -39,6 +39,9 @@ repositories {
     maven {
         url = 'https://repo.velocitypowered.com/snapshots/'
     }
+    flatDir {
+        dirs '/libs'
+    }
 }
 
 dependencies {
@@ -58,6 +61,8 @@ dependencies {
     // Testing
     testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.7.0-M1'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version:'5.7.0-M1'
+
+    compileOnly 'org.geyser:floodgate-spigot:2.0'
 }
 
 test {

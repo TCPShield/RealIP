@@ -15,6 +15,7 @@ public class BukkitConfigImpl extends TCPShieldConfig {
 
         this.onlyProxy = config.getBoolean("only-allow-proxy-connections");
         this.ipWhitelistFolder = new File(javaPlugin.getDataFolder(), "ip-whitelist");
+        this.geyser = config.getBoolean("enable-geyser-compatibility");
         this.debug = config.getBoolean("debug-mode");
     }
 }

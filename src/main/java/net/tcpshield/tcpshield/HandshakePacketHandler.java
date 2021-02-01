@@ -82,7 +82,16 @@ public class HandshakePacketHandler {
         }
 
         if (config.isOnlyProxy()) {
+            System.out.println("disconnecting - impl: " + player.getClass());
             player.disconnect();
         }
+    }
+
+    public TCPShieldConfig getConfig() {
+        return config;
+    }
+
+    public IPValidation getIpValidation() {
+        return ipValidation;
     }
 }

@@ -1,5 +1,9 @@
 package net.tcpshield.tcpshield.bukkit.protocollib;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import net.tcpshield.tcpshield.HandshakePacketHandler;
+import net.tcpshield.tcpshield.bukkit.impl.BukkitConfigImpl;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TCPShieldProtocolLib {
@@ -11,7 +15,10 @@ public class TCPShieldProtocolLib {
     }
 
     public void load() {
-        ProtocolLibHandshakePacketHandler packetHandler = new ProtocolLibHandshakePacketHandler(plugin);
-        com.comphenix.protocol.ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
+        HandshakePacketHandler handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
+        GeyserUtils.initGeyserOrDefault(handshakePacketHandler, () -> {
+            ProtocolLibHandshakePacketHandler packetHandler = new ProtocolLibHandshakePacketHandler(plugin, handshakePacketHandler);
+            ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
+        });
     }
 }

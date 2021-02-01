@@ -7,6 +7,7 @@ public abstract class TCPShieldConfig {
     protected boolean onlyProxy;
     protected File ipWhitelistFolder;
     protected boolean debug;
+    protected boolean geyser;
 
     public boolean isOnlyProxy() {
         return this.onlyProxy;
@@ -18,6 +19,10 @@ public abstract class TCPShieldConfig {
 
     public boolean isDebug() {
         return this.debug;
+    }
+
+    public boolean isGeyser() {
+        return this.geyser;
     }
 
 }
