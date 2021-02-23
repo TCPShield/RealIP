@@ -14,27 +14,7 @@ public class ReflectionUtils {
 
     private static final Table<Class<?>, String, Field> CACHED_FIELDS_BY_NAME = HashBasedTable.create();
     private static final Table<Class<?>, Class<?>, Field> CACHED_FIELDS_BY_CLASS = HashBasedTable.create();
-    private static final Field MODIFIERS_FIELD;
-
-    static {
-        Field tempModifiersField;
-        try {
-            tempModifiersField = getDeclaredField(Field.class, "modifiers");
-        } catch (NoSuchFieldException e) { // workaround for when searching for the modifiers field on Java 12 or higher
-            try {
-                Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
-                getDeclaredFields0.setAccessible(true);
-
-                Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
-                tempModifiersField = Arrays.stream(fields).filter(field -> field.getName().equals("modifiers")).findFirst().orElseThrow(() -> new TCPShieldInitializationException("Could not find the modifiers field"));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
-                throw new TCPShieldInitializationException(e2);
-            }
-        }
-
-        MODIFIERS_FIELD = tempModifiersField;
-        MODIFIERS_FIELD.setAccessible(true);
-    }
+    private static Field modifiers_field;
 
     public static void setFinalField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
         setFinalField(object, getPrivateField(object.getClass(), fieldName), value);
@@ -43,7 +23,25 @@ public class ReflectionUtils {
     public static void setFinalField(Object object, Field field, Object value) throws IllegalAccessException {
         field.setAccessible(true);
         if (Modifier.isFinal(field.getModifiers())) {
-            MODIFIERS_FIELD.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            if (modifiers_field == null) {
+                try {
+                    modifiers_field = getDeclaredField(Field.class, "modifiers");
+                } catch (NoSuchFieldException e) { // workaround for when searching for the modifiers field on Java 12 or higher
+                    try {
+                        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+                        getDeclaredFields0.setAccessible(true);
+
+                        Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
+                        modifiers_field = Arrays.stream(fields).filter(modifier -> modifier.getName().equals("modifiers")).findFirst().orElseThrow(() -> new TCPShieldInitializationException("Could not find the modifiers field"));
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
+                        throw new TCPShieldInitializationException(e2);
+                    }
+                }
+
+                modifiers_field.setAccessible(true);
+            }
+
+             modifiers_field.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         }
 
         setField(object, field, value);
