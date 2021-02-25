@@ -74,7 +74,7 @@ configurations {
     testImplementation.extendsFrom compileOnly
 }
 
-version = '2.4'
+version = '2.5'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
