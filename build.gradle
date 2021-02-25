@@ -1,3 +1,4 @@
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.yaml.snakeyaml.DumperOptions
@@ -59,8 +60,8 @@ dependencies {
     compileOnly group: 'com.velocitypowered', name: 'velocity-api', version: '1.0.0-SNAPSHOT'
 
     // Testing
-    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.7.0-M1'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version:'5.7.0-M1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0-M1'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0-M1'
 
     compileOnly 'org.geyser:floodgate-spigot:2.0'
 }
@@ -138,6 +139,7 @@ void updateYaml() {
 }
 
 void updateJson() {
+    def gson = new GsonBuilder().setPrettyPrinting().create();
     def velocityJson = new File('src/main/resources/velocity-plugin.json')
 
     def files = [velocityJson]
@@ -148,7 +150,7 @@ void updateJson() {
                 object.addProperty("version", version.toString())
 
                 new FileWriter(file).withCloseable { writer ->
-                    writer.write(object.toString())
+                    writer.write(gson.toJson(object))
                 }
             }
         }

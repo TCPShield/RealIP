@@ -17,13 +17,8 @@ public class GeyserHandshakePacketHandler {
 
     public void init() {
         InstanceHolder.getHandshakeHandlers().addHandshakeHandler(data -> {
-            System.out.println("handshake handler");
-            System.out.println("data = " + data);
-
             // In case the connection is a Bedrock connection, we don't bother
             if (data.getBedrockData() != null) return;
-            System.out.println("not bedrock");
-
 
             IPlayer player = new GeyserPlayerImpl(data);
             IPacket packet = new GeyserPacketImpl(data);

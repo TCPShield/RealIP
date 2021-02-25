@@ -8,11 +8,9 @@ public class GeyserUtils {
     public static void initGeyserOrDefault(HandshakePacketHandler handshakePacketHandler, Runnable registrar) {
         if (!useGeyser(handshakePacketHandler.getConfig())) {
             registrar.run();
-            System.out.println("default");
         } else {
             GeyserHandshakePacketHandler geyserHandler = new GeyserHandshakePacketHandler(handshakePacketHandler);
             geyserHandler.init();
-            System.out.println("geyser");
         }
     }
 

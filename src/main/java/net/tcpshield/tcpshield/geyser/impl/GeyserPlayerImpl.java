@@ -30,7 +30,6 @@ public class GeyserPlayerImpl implements IPlayer {
 
     @Override
     public void setIP(InetSocketAddress ip) {
-        System.out.println("\"setting ip to\" = " + ip);
         handshakeData.setBedrockIp(ip.getAddress().getHostAddress());
     }
 

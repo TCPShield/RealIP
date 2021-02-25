@@ -35,8 +35,8 @@ public class HandshakePacketHandler {
             InetAddress inetAddress = InetAddress.getByName(player.getIP());
             if (!ipValidation.validateIP(inetAddress)) throw new InvalidIPException();
 
-            if (rawPayload == null)
-                return; // raw payload is passed when it's not available -> e.g. Paper server list ping events
+            // raw payload is passed when it's not available -> e.g. Paper server list ping events
+            if (rawPayload == null) return;
 
             String extraData = null;
 
@@ -82,7 +82,6 @@ public class HandshakePacketHandler {
         }
 
         if (config.isOnlyProxy()) {
-            System.out.println("disconnecting - impl: " + player.getClass());
             player.disconnect();
         }
     }
@@ -91,7 +90,4 @@ public class HandshakePacketHandler {
         return config;
     }
 
-    public IPValidation getIpValidation() {
-        return ipValidation;
-    }
 }

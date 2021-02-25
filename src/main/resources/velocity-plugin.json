@@ -6,6 +6,11 @@
   "authors": [
     "TCPShield"
   ],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "floodgate",
+      "optional": true
+    }
+  ],
   "main": "net.tcpshield.tcpshield.velocity.TCPShieldVelocity"
 }
