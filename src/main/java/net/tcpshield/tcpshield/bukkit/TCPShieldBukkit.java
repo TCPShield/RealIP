@@ -9,8 +9,6 @@ public class TCPShieldBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println("enable");
-
         if (isPaper()) {
             new TCPShieldPaper(this).load();
         } else {
