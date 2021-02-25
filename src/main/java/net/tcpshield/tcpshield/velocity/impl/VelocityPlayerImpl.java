@@ -43,16 +43,6 @@ public class VelocityPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        return "unknown"; // not supported
-    }
-
-    @Override
-    public String getName() {
-        return "unknown"; // not supported
-    }
-
-    @Override
     public String getIP() {
         return ip;
     }

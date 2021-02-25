@@ -14,16 +14,6 @@ public class GeyserPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
     public String getIP() {
         return ((InetSocketAddress) handshakeData.getChannel().remoteAddress()).getAddress().getHostAddress();
     }

@@ -15,19 +15,6 @@ public class PaperPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        UUID uuid = handshakeEvent.getUniqueId();
-        if (uuid == null) return "unknown";
-
-        return uuid.toString();
-    }
-
-    @Override
-    public String getName() {
-        return "unknown";
-    }
-
-    @Override
     public String getIP() {
         return handshakeEvent.getSocketAddressHostname();
     }

@@ -14,16 +14,6 @@ public class PaperServerListPingPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        return "unknown";
-    }
-
-    @Override
-    public String getName() {
-        return "unknown";
-    }
-
-    @Override
     public String getIP() {
         return pingEvent.getAddress().getHostAddress();
     }

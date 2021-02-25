@@ -22,19 +22,6 @@ public class BungeePlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        UUID uuid = pendingConnection.getUniqueId();
-        if (uuid == null) return "Unknown";
-
-        return uuid.toString();
-    }
-
-    @Override
-    public String getName() {
-        return pendingConnection.getName();
-    }
-
-    @Override
     public String getIP() {
         return ip;
     }
