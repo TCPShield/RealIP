@@ -78,7 +78,7 @@ public class HandshakePacketHandler {
 
     private void handleInvalidIPException(IPlayer player, String rawPayload) {
         if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] was disconnected because the client failed the ip check aand only-allowed-proxy-connections. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            this.logger.warning(String.format("%s[%s/%s] was disconnected because the client failed the ip check and only-allowed-proxy-connections is enabled. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
         }
 
         if (config.isOnlyProxy()) {
