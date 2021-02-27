@@ -9,7 +9,6 @@ import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.UUID;
 
 public class BungeePlayerImpl implements IPlayer {
 

@@ -51,7 +51,7 @@ dependencies {
     compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'
 
     // Paper
-    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.15.2-R0.1-SNAPSHOT'
+    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.16.5-R0.1-20210227.144841-85'
 
     // BungeeCord
     compileOnly group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT'
