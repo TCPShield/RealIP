@@ -6,7 +6,7 @@ It also parses passed IP addresses so the server is aware of the real player IP 
 
 ### Compatibility
 
-TCPShield is compatible with Spigot / CraftBukkit, BungeeCord and Velocity.
+TCPShield is compatible with Spigot / CraftBukkit, BungeeCord, Velocity and Fabric.
 
 When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed.
 This does not apply when using Paper 1.16 build #503 or higher. 
@@ -30,4 +30,5 @@ See [Contact](https://docs.tcpshield.com/about-us)
 These wonderful contributors have helped TCPShield make this plugin better! 
 
 * [Paul Zhang](https://github.com/paulzhng)
+* [Draylar](https://github.com/Draylar)
 * [RyanDeLap](https://github.com/RyanDeLap)
