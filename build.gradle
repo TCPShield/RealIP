@@ -19,6 +19,7 @@ buildscript {
 plugins {
     id 'java'
     id 'idea'
+    id 'fabric-loom' version '0.6-SNAPSHOT'
 }
 
 repositories {
@@ -40,6 +41,9 @@ repositories {
     maven {
         url = 'https://repo.velocitypowered.com/snapshots/'
     }
+    maven {
+        url = 'https://maven.fabricmc.net/'
+    }
     flatDir {
         dirs '/libs'
     }
@@ -58,6 +62,12 @@ dependencies {
 
     // Velocity
     compileOnly group: 'com.velocitypowered', name: 'velocity-api', version: '1.0.0-SNAPSHOT'
+
+    // Fabric
+    minecraft "com.mojang:minecraft:1.16.5"
+    mappings "net.fabricmc:yarn:1.16.5+build.5:v2"
+    modImplementation group: 'net.fabricmc', name: 'fabric-loader', version: '0.11.2'
+    modImplementation group: 'net.fabricmc.fabric-api', name: 'fabric-api', version: '0.31.0+1.16'
 
     // Testing
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0-M1'
