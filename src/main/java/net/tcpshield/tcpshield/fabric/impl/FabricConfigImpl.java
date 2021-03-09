@@ -54,7 +54,7 @@ public class FabricConfigImpl extends TCPShieldConfig {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.yml")) {
             Files.copy(in, configLocation);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new TCPShieldInitializationException(e);
         }
     }
 
