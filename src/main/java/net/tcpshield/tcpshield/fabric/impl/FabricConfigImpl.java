@@ -24,7 +24,7 @@ public class FabricConfigImpl extends TCPShieldConfig {
 
         this.onlyProxy = config.onlyAllowProxyConnections;
         this.ipWhitelistFolder = new File(FabricLoader.getInstance().getGameDirectory(), "ip-whitelist");
-        this.geyser = config.enableGeyserCompatibility;
+        this.geyser = false;
         this.debug = config.debugMode;
     }
 
@@ -63,7 +63,6 @@ public class FabricConfigImpl extends TCPShieldConfig {
             List<String> strings = Files.readAllLines(configLocation);
 
             boolean onlyAllowProxyConnections = true;
-            boolean enableGeyserCompatibility = false;
             boolean debugMode = false;
 
             // Rudimentary config parsing
@@ -80,9 +79,6 @@ public class FabricConfigImpl extends TCPShieldConfig {
                         case "only-allow-proxy-connections":
                             onlyAllowProxyConnections = Boolean.parseBoolean(value);
                             break;
-                        case "enable-geyser-compatibility":
-                            enableGeyserCompatibility = Boolean.parseBoolean(value);
-                            break;
                         case "debug-mode":
                             debugMode = Boolean.parseBoolean(value);
                             break;
@@ -90,7 +86,7 @@ public class FabricConfigImpl extends TCPShieldConfig {
                 }
             }
 
-            return new ConfigData(onlyAllowProxyConnections, enableGeyserCompatibility, debugMode);
+            return new ConfigData(onlyAllowProxyConnections, debugMode);
         } catch (Exception e) {
             throw new TCPShieldInitializationException("Couldn't load config in config/tclshield.yml!");
         }
@@ -99,12 +95,10 @@ public class FabricConfigImpl extends TCPShieldConfig {
     private static class ConfigData {
 
         protected boolean onlyAllowProxyConnections;
-        protected boolean enableGeyserCompatibility;
         protected boolean debugMode;
 
-        public ConfigData(boolean onlyAllowProxyConnections, boolean enableGeyserCompatibility, boolean debugMode) {
+        public ConfigData(boolean onlyAllowProxyConnections, boolean debugMode) {
             this.onlyAllowProxyConnections = onlyAllowProxyConnections;
-            this.enableGeyserCompatibility = enableGeyserCompatibility;
             this.debugMode = debugMode;
         }
     }
