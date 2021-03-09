@@ -2,6 +2,7 @@ package net.tcpshield.tcpshield.fabric.impl;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.tcpshield.tcpshield.abstraction.TCPShieldConfig;
+import net.tcpshield.tcpshield.exception.TCPShieldInitializationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class FabricConfigImpl extends TCPShieldConfig {
         // Copy the config.yml data from our mod jar to the loader config folder.
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.yml")) {
             Files.copy(in, configLocation);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -90,8 +91,8 @@ public class FabricConfigImpl extends TCPShieldConfig {
             }
 
             return new ConfigData(onlyAllowProxyConnections, enableGeyserCompatibility, debugMode);
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't load config", e);
+        } catch (Exception e) {
+            throw new TCPShieldInitializationException("Couldn't load config in config/tclshield.yml!");
         }
     }
 
