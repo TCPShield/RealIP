@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 
 public class TCPShieldFabric implements ModInitializer {
 
-    public static final Logger LOGGER = Logger.getLogger("RealIP Fabric");
+    public static final Logger LOGGER = Logger.getLogger("TCPShield");
     public static final HandshakePacketHandler PACKET_HANDLER =  new HandshakePacketHandler(LOGGER, new FabricConfigImpl());
 
     @Override
     public void onInitialize() {
-        LOGGER.info("TCPShield - RealIP for Fabric has been loaded.");
+        LOGGER.info("TCPShield for Fabric has been loaded.");
     }
 }
