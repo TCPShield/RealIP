@@ -13,6 +13,6 @@ public class TCPShieldFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("TCPShield for Fabric has been loaded.");
+        LOGGER.info("TCPShield has been loaded.");
     }
 }
