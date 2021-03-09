@@ -35,7 +35,6 @@ public class FabricPlayerImpl implements IPlayer {
 
     @Override
     public void disconnect() {
-        connection.send(new LoginDisconnectS2CPacket(new LiteralText("Connection failed. Please try again or contact an administrator.")));
         connection.disconnect(new LiteralText("Connection failed. Please try again or contact an administrator."));
     }
 }
