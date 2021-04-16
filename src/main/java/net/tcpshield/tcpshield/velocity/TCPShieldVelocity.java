@@ -6,6 +6,9 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.tcpshield.tcpshield.HandshakePacketHandler;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
+import net.tcpshield.tcpshield.velocity.impl.VelocityConfigImpl;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
@@ -29,6 +32,8 @@ public class TCPShieldVelocity {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent e) {
-        server.getEventManager().register(this, new VelocityHandshakePacketHandler(logger, dataFolder.toFile()));
+        HandshakePacketHandler handshakePacketHandler = new HandshakePacketHandler(this.logger, new VelocityConfigImpl(dataFolder.toFile()));
+
+        GeyserUtils.initGeyserOrDefault(handshakePacketHandler, () -> server.getEventManager().register(this, new VelocityHandshakePacketHandler(handshakePacketHandler)));
     }
 }

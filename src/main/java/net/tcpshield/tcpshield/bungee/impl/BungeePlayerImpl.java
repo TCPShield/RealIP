@@ -9,7 +9,6 @@ import net.tcpshield.tcpshield.exception.IPModificationFailureException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.UUID;
 
 public class BungeePlayerImpl implements IPlayer {
 
@@ -19,19 +18,6 @@ public class BungeePlayerImpl implements IPlayer {
     public BungeePlayerImpl(PendingConnection pendingConnection) {
         this.pendingConnection = pendingConnection;
         this.ip = pendingConnection.getAddress().getAddress().getHostAddress();
-    }
-
-    @Override
-    public String getUUID() {
-        UUID uuid = pendingConnection.getUniqueId();
-        if (uuid == null) return "Unknown";
-
-        return uuid.toString();
-    }
-
-    @Override
-    public String getName() {
-        return pendingConnection.getName();
     }
 
     @Override

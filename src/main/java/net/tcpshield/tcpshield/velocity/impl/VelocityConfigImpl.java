@@ -21,6 +21,7 @@ public class VelocityConfigImpl extends TCPShieldConfig {
         Toml toml = loadConfig();
         this.onlyProxy = toml.getBoolean("only-allow-proxy-connections");
         this.ipWhitelistFolder = new File(dataFolder, "ip-whitelist");
+        this.geyser = toml.getBoolean("enable-geyser-compatibility");
         this.debug = toml.getBoolean("debug-mode");
     }
 

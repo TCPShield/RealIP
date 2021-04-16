@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.tcpshield.tcpshield.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ClientConnectionAccessor",
+    "HandshakeC2SPacketAccessor",
+    "ServerHandshakeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

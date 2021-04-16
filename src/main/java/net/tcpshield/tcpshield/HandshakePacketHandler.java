@@ -35,8 +35,8 @@ public class HandshakePacketHandler {
             InetAddress inetAddress = InetAddress.getByName(player.getIP());
             if (!ipValidation.validateIP(inetAddress)) throw new InvalidIPException();
 
-            if (rawPayload == null)
-                return; // raw payload is passed when it's not available -> e.g. Paper server list ping events
+            // raw payload is passed when it's not available -> e.g. Paper server list ping events
+            if (rawPayload == null) return;
 
             String extraData = null;
 
@@ -69,7 +69,7 @@ public class HandshakePacketHandler {
         } catch (InvalidIPException e) {
             handleInvalidIPException(player, rawPayload);
         } catch (IPModificationFailureException e) {
-            this.logger.warning(String.format("%s[%s/%s]'s IP failed to be modified. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            this.logger.warning(String.format("%s's IP failed to be modified. Raw payload = \"%s\"", player.getIP(), rawPayload));
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,11 +78,16 @@ public class HandshakePacketHandler {
 
     private void handleInvalidIPException(IPlayer player, String rawPayload) {
         if (config.isDebug()) {
-            this.logger.warning(String.format("%s[%s/%s] was disconnected because the client failed the ip check and only-allowed-proxy-connections is enabled. Raw payload = \"%s\"", player.getName(), player.getUUID(), player.getIP(), rawPayload));
+            this.logger.warning(String.format("%s was disconnected because the client failed the ip check and only-allowed-proxy-connections is enabled. Raw payload = \"%s\"", player.getIP(), rawPayload));
         }
 
         if (config.isOnlyProxy()) {
             player.disconnect();
         }
     }
+
+    public TCPShieldConfig getConfig() {
+        return config;
+    }
+
 }

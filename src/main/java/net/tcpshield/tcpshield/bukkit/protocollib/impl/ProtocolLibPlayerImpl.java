@@ -35,16 +35,6 @@ public class ProtocolLibPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        return "unknown"; // not supported with temporary players
-    }
-
-    @Override
-    public String getName() {
-        return "unknown"; // not supported with temporary players
-    }
-
-    @Override
     public String getIP() {
         return ip;
     }

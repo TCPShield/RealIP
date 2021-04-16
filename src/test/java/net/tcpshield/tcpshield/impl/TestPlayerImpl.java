@@ -21,16 +21,6 @@ public class TestPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        return "uuid";
-    }
-
-    @Override
-    public String getName() {
-        return "name";
-    }
-
-    @Override
     public String getIP() {
         if (ip == null) return "ip";
 

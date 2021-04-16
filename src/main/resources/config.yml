@@ -1,5 +1,8 @@
 # Please keep this as true in while using TCPShield!
 only-allow-proxy-connections: true
 
+# Only set this to true in case you're using TCPShield's Geyser proxy!
+enable-geyser-compatibility: false
+
 # Turn on to diagnose connection issues
 debug-mode: false

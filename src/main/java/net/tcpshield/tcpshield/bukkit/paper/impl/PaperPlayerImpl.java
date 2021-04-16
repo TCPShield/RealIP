@@ -1,10 +1,10 @@
 package net.tcpshield.tcpshield.bukkit.paper.impl;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
+import net.kyori.adventure.text.Component;
 import net.tcpshield.tcpshield.abstraction.IPlayer;
 
 import java.net.InetSocketAddress;
-import java.util.UUID;
 
 public class PaperPlayerImpl implements IPlayer {
 
@@ -15,21 +15,8 @@ public class PaperPlayerImpl implements IPlayer {
     }
 
     @Override
-    public String getUUID() {
-        UUID uuid = handshakeEvent.getUniqueId();
-        if (uuid == null) return "unknown";
-
-        return uuid.toString();
-    }
-
-    @Override
-    public String getName() {
-        return "unknown";
-    }
-
-    @Override
     public String getIP() {
-        return handshakeEvent.getSocketAddressHostname();
+        return handshakeEvent.getOriginalSocketAddressHostname();
     }
 
     @Override
@@ -40,7 +27,7 @@ public class PaperPlayerImpl implements IPlayer {
     @Override
     public void disconnect() {
         handshakeEvent.setCancelled(false);
-        handshakeEvent.setFailMessage("Connection failed. Please try again or contact an administrator.");
+        handshakeEvent.failMessage(Component.text("Connection failed. Please try again or contact an administrator."));
         handshakeEvent.setFailed(true);
     }
 }

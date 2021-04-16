@@ -1,11 +1,16 @@
 {
   "id": "tcpshield",
   "name": "TCPShield",
-  "version": "2.4",
+  "version": "2.5",
   "description": "TCPShield IP parsing capabilities for Velocity",
   "authors": [
     "TCPShield"
   ],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "floodgate",
+      "optional": true
+    }
+  ],
   "main": "net.tcpshield.tcpshield.velocity.TCPShieldVelocity"
 }

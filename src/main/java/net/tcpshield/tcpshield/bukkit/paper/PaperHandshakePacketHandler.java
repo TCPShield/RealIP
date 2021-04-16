@@ -19,8 +19,8 @@ public class PaperHandshakePacketHandler implements Listener {
 
     private final HandshakePacketHandler handshakePacketHandler;
 
-    public PaperHandshakePacketHandler(JavaPlugin plugin) {
-        this.handshakePacketHandler = new HandshakePacketHandler(plugin.getLogger(), new BukkitConfigImpl(plugin));
+    public PaperHandshakePacketHandler(HandshakePacketHandler handshakePacketHandler) {
+        this.handshakePacketHandler = handshakePacketHandler;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
