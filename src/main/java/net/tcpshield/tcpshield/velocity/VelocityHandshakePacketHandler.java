@@ -3,6 +3,7 @@ package net.tcpshield.tcpshield.velocity;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.ConnectionHandshakeEvent;
+import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.HandshakePacketHandler;
@@ -20,6 +21,12 @@ public class VelocityHandshakePacketHandler {
 
     public VelocityHandshakePacketHandler(Logger logger, File dataFolder) {
         this.handshakePacketHandler = new HandshakePacketHandler(logger, new VelocityConfigImpl(dataFolder));
+    }
+
+    @Subscribe(order = PostOrder.FIRST)
+    public void onPreLogin(PreLoginEvent e) {
+        InboundConnection connection = e.getConnection();
+        handleEvent(connection);
     }
 
     @Subscribe(order = PostOrder.FIRST)
