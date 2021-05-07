@@ -1,34 +1,63 @@
 package net.tcpshield.tcpshield.bukkit;
 
-import net.tcpshield.tcpshield.bukkit.paper.TCPShieldPaper;
-import net.tcpshield.tcpshield.bukkit.protocollib.TCPShieldProtocolLib;
-import org.bukkit.Bukkit;
+import net.tcpshield.tcpshield.TCPShieldPacketHandler;
+import net.tcpshield.tcpshield.TCPShieldPlugin;
+import net.tcpshield.tcpshield.bukkit.paper.BukkitPaper;
+import net.tcpshield.tcpshield.bukkit.protocollib.BukkitProtocolLib;
+import net.tcpshield.tcpshield.bukkit.provider.BukkitImplProvider;
+import net.tcpshield.tcpshield.provider.ConfigProvider;
+import net.tcpshield.tcpshield.util.Debugger;
+import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class TCPShieldBukkit extends JavaPlugin {
+/**
+ * The entry point for Bukkit servers
+ */
+public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 
-    @Override
-    public void onEnable() {
-        if (isPaper()) {
-            new TCPShieldPaper(this).load();
-        } else {
-            if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
-                this.getLogger().warning("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-                return;
-            }
+	private ConfigProvider configProvider;
+	private TCPShieldPacketHandler packetHandler;
+	private Debugger debugger;
 
-            new TCPShieldProtocolLib(this).load();
-        }
-    }
+	private BukkitImplProvider bukkitImpl;
 
-    private boolean isPaper() {
-        if (1 == 1) return false;
 
-        try {
-            Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
+	@Override
+	public void onEnable() {
+		try {
+			configProvider = new BukkitConfig(this);
+			debugger = Debugger.createDebugger(this);
+			packetHandler = new TCPShieldPacketHandler(this);
+
+			if (BukkitImplProvider.hasPaperEvent())
+				bukkitImpl = new BukkitPaper(this);
+			else
+				bukkitImpl = new BukkitProtocolLib(this);
+
+			bukkitImpl.load();
+		} catch (Exception e) {
+			throw new InitializationException(e);
+		}
+	}
+
+
+	/*
+	 * The provider's base methods
+	 */
+
+	@Override
+	public TCPShieldPacketHandler getPacketHandler() {
+		return packetHandler;
+	}
+
+	@Override
+	public Debugger getDebugger() {
+		return debugger;
+	}
+
+	@Override
+	public ConfigProvider getConfigProvider() {
+		return configProvider;
+	}
+
 }
