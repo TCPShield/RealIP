@@ -7,11 +7,14 @@ import net.tcpshield.tcpshield.util.exception.parse.SignatureValidationException
 import net.tcpshield.tcpshield.util.exception.parse.TimestampValidationException;
 import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 import net.tcpshield.tcpshield.util.validation.SignatureValidator;
+import net.tcpshield.tcpshield.util.validation.cidr.CIDRValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.TimestampValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.impl.HTPDateTimestampValidator;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -24,6 +27,7 @@ public class TCPShieldPacketHandler {
 
 	private TimestampValidator timestampValidator;
 	private SignatureValidator signatureValidator;
+	private CIDRValidator cidrValidator;
 
 	/**
 	 * Creates an instance of the TCPShieldPacketHandler
@@ -66,6 +70,8 @@ public class TCPShieldPacketHandler {
 				break;
 			}
 		}
+
+		cidrValidator = new CIDRValidator(plugin);
 	}
 
 	/**
@@ -77,6 +83,12 @@ public class TCPShieldPacketHandler {
 	 */
 	public void handleHandshake(PacketProvider packet, PlayerProvider player) throws HandshakeException {
 		try {
+			InetAddress inetAddress = InetAddress.getByName(player.getIP());
+
+			if (cidrValidator.validate(inetAddress))
+				return; // Allow connection with no processing
+
+
 			String extraData = null;
 			String cleanedPayload;
 
@@ -148,11 +160,19 @@ public class TCPShieldPacketHandler {
 				player.disconnect();
 
 			throw new HandshakeException(e);
+		} catch (UnknownHostException e) {
+			if (plugin.getConfigProvider().isOnlyProxy())
+				player.disconnect();
+
+			throw new HandshakeException(e);
 		} catch (Exception e) {
 			if (plugin.getConfigProvider().isOnlyProxy())
 				player.disconnect();
 
-			throw e;
+			if (!(e instanceof HandshakeException))
+				throw new HandshakeException(e);
+			else
+				throw e;
 		}
 	}
 
