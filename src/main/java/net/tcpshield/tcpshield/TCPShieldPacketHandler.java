@@ -85,10 +85,6 @@ public class TCPShieldPacketHandler {
 		try {
 			InetAddress inetAddress = InetAddress.getByName(player.getIP());
 
-			if (cidrValidator.validate(inetAddress))
-				return; // Allow connection with no processing
-
-
 			String extraData = null;
 			String cleanedPayload;
 
@@ -100,11 +96,14 @@ public class TCPShieldPacketHandler {
 			} else // Standard payload
 				cleanedPayload = packet.getPayloadString();
 
-
 			String[] payload = cleanedPayload.split("///", 4);
-			if (payload.length != 4)
-				throw new InvalidPayloadException("payload.length != 4. Raw payload = \"" + packet.getPayloadString() + "\"");
 
+
+			if (payload.length != 4)
+				if (cidrValidator.validate(inetAddress))
+					return; // Allow connection with no processing
+				else
+					throw new InvalidPayloadException("payload.length != 4. Raw payload = \"" + packet.getPayloadString() + "\"");
 
 			String hostname = payload[0];
 			String ipData = payload[1];
