@@ -103,7 +103,7 @@ public class TCPShieldPacketHandler {
 				if (cidrValidator.validate(inetAddress))
 					return; // Allow connection with no processing
 				else
-					throw new InvalidPayloadException("payload.length != 4. Raw payload = \"" + packet.getPayloadString() + "\"");
+					throw new InvalidPayloadException();
 
 			String hostname = payload[0];
 			String ipData = payload[1];
