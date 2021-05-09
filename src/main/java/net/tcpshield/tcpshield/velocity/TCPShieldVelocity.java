@@ -45,7 +45,7 @@ public class TCPShieldVelocity implements TCPShieldPlugin {
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent e) {
 		try {
-			configProvider = new VelocityConfig(dataFolder.toFile());
+			configProvider = new VelocityConfig(dataFolder.toFile(), this);
 			debugger = Debugger.createDebugger(this);
 			packetHandler = new TCPShieldPacketHandler(this);
 
