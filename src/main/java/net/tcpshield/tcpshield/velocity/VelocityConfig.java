@@ -35,6 +35,14 @@ public class VelocityConfig extends ConfigProvider {
 
 
 	@Override
+	protected void checkNodes(String... nodes) {
+		for (String node : nodes) {
+			if (!loadedToml.contains(node))
+				throw new ConfigException("The node \"" + node + "\" does not exist in the config.");
+		}
+	}
+
+	@Override
 	protected void reset() throws ConfigResetException {
 		try {
 			loadedToml = null;  // To the garbage collector you go
@@ -57,6 +65,8 @@ public class VelocityConfig extends ConfigProvider {
 	protected void load() throws ConfigLoadException {
 		try {
 			loadedToml = new Toml().read(configFile);
+
+			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode");
 
 			this.onlyProxy = loadedToml.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedToml.getString("timestamp-validation");

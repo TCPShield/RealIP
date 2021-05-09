@@ -3,6 +3,7 @@ package net.tcpshield.tcpshield.provider;
 import net.tcpshield.tcpshield.util.exception.config.ConfigLoadException;
 import net.tcpshield.tcpshield.util.exception.config.ConfigReloadException;
 import net.tcpshield.tcpshield.util.exception.config.ConfigResetException;
+import net.tcpshield.tcpshield.util.exception.phase.ConfigException;
 
 import java.io.File;
 
@@ -74,5 +75,12 @@ public abstract class ConfigProvider {
 	 * @throws ConfigReloadException Thrown if reloading fails
 	 */
 	public abstract void reload() throws ConfigReloadException;
+
+	/**
+	 * Checks the provided nodes to see if they exist in the config
+	 * @param nodes The nodes to check
+	 * @throws ConfigException Thrown when a node isnt found
+	 */
+	protected abstract void checkNodes(String... nodes) throws ConfigException;
 
 }

@@ -39,6 +39,14 @@ public class BungeeConfig extends ConfigProvider {
 
 
 	@Override
+	protected void checkNodes(String... nodes) {
+		for (String node : nodes) {
+			if (!loadedConfiguration.contains(node))
+				throw new ConfigException("The node \"" + node + "\" does not exist in the config.");
+		}
+	}
+
+	@Override
 	protected void reset() throws ConfigResetException {
 		try {
 			loadedConfiguration = null; // To the garbage collector you go
@@ -62,6 +70,8 @@ public class BungeeConfig extends ConfigProvider {
 		try {
 			ConfigurationProvider configProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 			loadedConfiguration = configProvider.load(configFile);
+
+			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode");
 
 			this.onlyProxy = loadedConfiguration.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedConfiguration.getString("timestamp-validation");
