@@ -16,11 +16,6 @@ public class BukkitProtocolLib extends BukkitImplProvider {
 
 	@Override
 	public void load() {
-		if (getPlugin().getServer().getPluginManager().getPlugin("ProtocolLib") == null) {
-			getPlugin().getLogger().severe("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-			return;
-		}
-
 		ProtocolLibHandshakeHandler packetHandler = new ProtocolLibHandshakeHandler(this);
 		com.comphenix.protocol.ProtocolLibrary.getProtocolManager().addPacketListener(packetHandler);
 	}
