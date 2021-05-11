@@ -54,7 +54,7 @@ public class BukkitConfig extends ConfigProvider {
 				// Just ignore since it either does not exist, or we can overwrite
 			}
 
-			try (InputStream in = BukkitConfig.class.getResourceAsStream("config.yml")) {
+			try (InputStream in = plugin.getResource("config.yml")) { // Have to use Bukkit's resource streaming or the resource wont be found
 				Files.copy(in, configFile.toPath());
 			}
 		} catch (Exception e) {
