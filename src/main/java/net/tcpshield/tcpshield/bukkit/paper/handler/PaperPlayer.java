@@ -57,6 +57,7 @@ public class PaperPlayer implements PlayerProvider {
 
 	@Override
 	public void disconnect() {
+		handshakeEvent.setCancelled(false);
 		handshakeEvent.setFailMessage("Connection failed. Please try again or contract an administrator.");
 		handshakeEvent.setFailed(true);
 	}
