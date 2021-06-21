@@ -63,7 +63,7 @@ sourceSets {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = targetCompatibility = '11'
     options.encoding = 'UTF-8'
 }
 
