@@ -29,6 +29,8 @@ public class TCPShieldBungee extends Plugin implements TCPShieldPlugin, Listener
 
 			PluginManager pluginManager = this.getProxy().getPluginManager();
 			pluginManager.registerListener(this, new BungeeHandshakeHandler(this));
+
+			initialization();
 		} catch (Exception e) {
 			throw new InitializationException(e);
 		}

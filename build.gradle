@@ -63,7 +63,7 @@ sourceSets {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = targetCompatibility = '11' // Will switch to Java 16 in a future release
     options.encoding = 'UTF-8'
 }
 

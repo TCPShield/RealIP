@@ -5,10 +5,6 @@ import com.google.common.collect.Table;
 import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 /**
  * A util for reflection and manipulation
@@ -20,7 +16,7 @@ public class ReflectionUtil {
 	 */
 	private static final Table<Class<?>, String, Field> CACHED_FIELDS_BY_NAME = HashBasedTable.create();
 	private static final Table<Class<?>, Class<?>, Field> CACHED_FIELDS_BY_CLASS = HashBasedTable.create();
-	private static Field modifiersField;
+//	private static Field modifiersField;
 
 
 	/**
@@ -44,31 +40,33 @@ public class ReflectionUtil {
 	public static void setFinalField(Object object, Field field, Object value)  throws ReflectionException {
 		field.setAccessible(true);
 
-		if (Modifier.isFinal(field.getModifiers())) {
-			if (modifiersField == null) {
-				try {
-					modifiersField = getDeclaredField(Field.class, "modifiers");
-				} catch (ReflectionException e) { // workaround for when searching for the modifiers field on Java 12 or higher
-					try {
-						Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
-						getDeclaredFields0.setAccessible(true);
+		// Removed due to complications with Velocity (Thanks https://github.com/AoElite)
 
-						Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
-						modifiersField = Arrays.stream(fields).filter(modifier -> modifier.getName().equals("modifiers")).findFirst().orElseThrow(() -> new ReflectionException("Could not find the modifiers field"));
-					} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
-						throw new ReflectionException(e2);
-					}
-				}
-
-				modifiersField.setAccessible(true);
-			}
-
-			try {
-				modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-			} catch (IllegalAccessException e) {
-				throw new ReflectionException(e);
-			}
-		}
+//		if (Modifier.isFinal(field.getModifiers())) {
+//			if (modifiersField == null) {
+//				try {
+//					modifiersField = getDeclaredField(Field.class, "modifiers");
+//				} catch (ReflectionException e) { // workaround for when searching for the modifiers field on Java 12 or higher
+//					try {
+//						Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+//						getDeclaredFields0.setAccessible(true);
+//
+//						Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
+//						modifiersField = Arrays.stream(fields).filter(modifier -> modifier.getName().equals("modifiers")).findFirst().orElseThrow(() -> new ReflectionException("Could not find the modifiers field"));
+//					} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
+//						throw new ReflectionException(e2);
+//					}
+//				}
+//
+//				modifiersField.setAccessible(true);
+//			}
+//
+//			try {
+//				modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+//			} catch (IllegalAccessException e) {
+//				throw new ReflectionException(e);
+//			}
+//		}
 
 		setField(object, field, value);
 	}

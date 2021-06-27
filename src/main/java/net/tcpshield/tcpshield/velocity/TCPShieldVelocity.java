@@ -50,6 +50,8 @@ public class TCPShieldVelocity implements TCPShieldPlugin {
 			packetHandler = new TCPShieldPacketHandler(this);
 
 			server.getEventManager().register(this, new VelocityHandshakeHandler(this));
+
+			initialization();
 		} catch (Exception exception) {
 			throw new InitializationException(exception);
 		}
