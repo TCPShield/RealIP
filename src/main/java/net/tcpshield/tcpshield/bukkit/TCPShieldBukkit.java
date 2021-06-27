@@ -41,6 +41,8 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 			}
 
 			bukkitImpl.load();
+
+			initialization();
 		} catch (Exception e) {
 			throw new InitializationException(e);
 		}

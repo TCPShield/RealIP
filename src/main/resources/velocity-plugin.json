@@ -1,13 +1,13 @@
 {
-   "id":"tcpshield",
-   "name":"TCPShield",
-   "version":"2.5",
-   "description":"TCPShield IP parsing capabilities for Velocity",
-   "authors":[
-      "TCPShield"
-   ],
-   "dependencies":[
+  "id":"tcpshield",
+  "name":"TCPShield",
+  "version":"2.5",
+  "description":"TCPShield IP parsing capabilities for Velocity",
+  "authors":[
+    "TCPShield"
+  ],
+  "dependencies":[
 
-   ],
-   "main":"net.tcpshield.tcpshield.velocity.TCPShieldVelocity"
+  ],
+  "main":"net.tcpshield.tcpshield.velocity.TCPShieldVelocity"
 }
