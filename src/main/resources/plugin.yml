@@ -1,7 +1,8 @@
-name: TCPShield
+name: "TCPShield"
 version: '2.5'
-main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
+main: "net.tcpshield.tcpshield.bukkit.TCPShieldBukkit"
 softdepend:
-- ProtocolLib
-author: https://tcpshield.com
+  - ProtocolLib
+author: "https://tcpshield.com"
+description: "TCPShield IP parsing capabilities for Bukkit"
 api-version: 1.16
