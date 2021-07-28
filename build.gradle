@@ -28,7 +28,7 @@ plugins {
 // --
 // Variables
 // --
-version = '2.5'
+version = '2.5.2'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
@@ -112,6 +112,9 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0-M1'
 }
 
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
 
 // --
 // Build Tasks

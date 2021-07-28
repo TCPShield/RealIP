@@ -1,5 +1,5 @@
 name: TCPShield
-version: '2.5'
+version: 2.5.2
 main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
 softdepend:
 - ProtocolLib
