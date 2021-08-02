@@ -28,7 +28,7 @@ plugins {
 // --
 // Variables
 // --
-version = '2.5.2'
+version = '2.5.3'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
@@ -63,7 +63,8 @@ sourceSets {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = '11' // Will switch to Java 16 in a future release
+    sourceCompatibility = "8"
+    targetCompatibility = "8"
     options.encoding = 'UTF-8'
 }
 
