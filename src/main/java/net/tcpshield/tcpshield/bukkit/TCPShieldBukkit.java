@@ -5,6 +5,7 @@ import net.tcpshield.tcpshield.TCPShieldPlugin;
 import net.tcpshield.tcpshield.bukkit.paper.BukkitPaper;
 import net.tcpshield.tcpshield.bukkit.protocollib.BukkitProtocolLib;
 import net.tcpshield.tcpshield.bukkit.provider.BukkitImplProvider;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import net.tcpshield.tcpshield.provider.ConfigProvider;
 import net.tcpshield.tcpshield.util.Debugger;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
@@ -20,7 +21,6 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 	private Debugger debugger;
 
 	private BukkitImplProvider bukkitImpl;
-
 
 	@Override
 	public void onEnable() {
@@ -41,6 +41,8 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 			}
 
 			bukkitImpl.load();
+
+			GeyserUtils.initGeyser(this, configProvider);
 
 			initialization();
 		} catch (Exception e) {

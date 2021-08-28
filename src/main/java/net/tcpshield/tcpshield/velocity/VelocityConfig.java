@@ -33,7 +33,6 @@ public class VelocityConfig extends ConfigProvider {
 		}
 	}
 
-
 	@Override
 	protected void checkNodes(String... nodes) {
 		for (String node : nodes) {
@@ -71,6 +70,7 @@ public class VelocityConfig extends ConfigProvider {
 			this.onlyProxy = loadedToml.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedToml.getString("timestamp-validation");
 			this.doDebug = loadedToml.getBoolean("debug-mode");
+			this.geyser = loadedToml.getBoolean("enable-geyser-support");
 		} catch (Exception e) {
 			throw new ConfigLoadException(e);
 		}

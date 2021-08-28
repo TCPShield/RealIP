@@ -28,6 +28,7 @@ See [Contact](https://tcpshield.com/#contact)
 
 These wonderful contributors have helped TCPShield make this plugin better! 
 
+* [Dylan Keir](https://github.com/DylanKeir)
 * [Paul Zhang](https://github.com/paulzhng)
 * [RyanDeLap](https://github.com/RyanDeLap)
 * [PlumpOrange](https://github.com/xPlumpOrange/)

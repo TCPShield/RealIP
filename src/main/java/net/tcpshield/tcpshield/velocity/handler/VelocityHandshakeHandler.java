@@ -20,7 +20,6 @@ public class VelocityHandshakeHandler {
 		this.plugin = plugin;
 	}
 
-
 	@Subscribe(order = PostOrder.FIRST)
 	public void onPreLogin(PreLoginEvent e) {
 		InboundConnection connection = e.getConnection();

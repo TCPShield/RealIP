@@ -11,3 +11,6 @@ build/
 gradle/
 gradlew
 gradlew.bat
+
+libs/
+

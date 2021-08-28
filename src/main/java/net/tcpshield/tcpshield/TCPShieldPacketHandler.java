@@ -1,15 +1,18 @@
 package net.tcpshield.tcpshield;
 
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import net.tcpshield.tcpshield.provider.PacketProvider;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.exception.parse.InvalidPayloadException;
 import net.tcpshield.tcpshield.util.exception.parse.SignatureValidationException;
 import net.tcpshield.tcpshield.util.exception.parse.TimestampValidationException;
 import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
+import net.tcpshield.tcpshield.util.exception.phase.InvalidSecretException;
 import net.tcpshield.tcpshield.util.validation.SignatureValidator;
 import net.tcpshield.tcpshield.util.validation.cidr.CIDRValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.TimestampValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.impl.HTPDateTimestampValidator;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +20,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Packet handler for TCPShield's plugins
@@ -31,6 +36,7 @@ public class TCPShieldPacketHandler {
 
 	/**
 	 * Creates an instance of the TCPShieldPacketHandler
+	 *
 	 * @param plugin The TCPShield plugin
 	 */
 	public TCPShieldPacketHandler(TCPShieldPlugin plugin) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
@@ -39,12 +45,12 @@ public class TCPShieldPacketHandler {
 		initValidators();
 	}
 
-
 	/**
 	 * Initiates the validators
+	 *
 	 * @throws NoSuchAlgorithmException SignatureValidator exception
-	 * @throws IOException SignatureValidator exception
-	 * @throws InvalidKeySpecException SignatureValidator exception
+	 * @throws IOException              SignatureValidator exception
+	 * @throws InvalidKeySpecException  SignatureValidator exception
 	 */
 	private void initValidators() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		signatureValidator = new SignatureValidator();
@@ -78,6 +84,7 @@ public class TCPShieldPacketHandler {
 	 * Handles the packet and player manipulation
 	 * for the initial handshake from TCPShield
 	 * servers
+	 *
 	 * @param packet The handshake packet
 	 * @param player The involved player
 	 */
@@ -86,33 +93,24 @@ public class TCPShieldPacketHandler {
 			InetAddress inetAddress = InetAddress.getByName(player.getIP());
 
 			String extraData = null;
-			String cleanedPayload;
-
-
-			int nullIndex;
-			if ((nullIndex = packet.getPayloadString().indexOf('\0')) != -1) { // FML tagged payload
-				cleanedPayload = packet.getPayloadString().substring(0, nullIndex);
-				extraData = packet.getPayloadString().substring(nullIndex);
-			} else // Standard payload
-				cleanedPayload = packet.getPayloadString();
-
-			String[] payload = cleanedPayload.split("///", 4);
-
+			String[] payload = packet.getPayloadString().split("///");
 
 			if (payload.length != 4)
 				if (cidrValidator.validate(inetAddress))
 					return; // Allow connection with no processing
 				else
-					throw new InvalidPayloadException();
+					throw new InvalidPayloadException("length: " + payload.length + ", payload: " + Arrays.toString(payload) + ", raw payload: " + packet.getPayloadString());
+
+			int nullIndex;
+			if ((nullIndex = payload[3].indexOf('\0')) != -1) { // FML tagged payload
+				payload[3] = payload[3].substring(0, nullIndex);
+				extraData = payload[3].substring(nullIndex);
+			}
 
 			String hostname = payload[0];
 			String ipData = payload[1];
 			int timestamp = Integer.parseInt(payload[2]);
 			String signature = payload[3];
-
-			if (!timestampValidator.validate(timestamp))
-				throw new TimestampValidationException(timestampValidator, timestamp);
-
 
 			String[] ipParts = ipData.split(":");
 			String host = ipParts[0];
@@ -120,9 +118,18 @@ public class TCPShieldPacketHandler {
 
 			String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
 
-			if (!signatureValidator.validate(reconstructedPayload, signature))
-				throw new SignatureValidationException();
+			if (timestamp == 0 && GeyserUtils.GEYSER_SUPPORT_ENABLED) {
+				if (!signature.equals(GeyserUtils.SESSION_SECRET)) {
+					throw new InvalidSecretException("Invalid secret: " + signature);
+				}
+			} else {
+				if (!timestampValidator.validate(timestamp))
+					throw new TimestampValidationException(timestampValidator, timestamp);
 
+
+				if (!signatureValidator.validate(reconstructedPayload, signature))
+					throw new SignatureValidationException();
+			}
 
 			InetSocketAddress newIP = new InetSocketAddress(host, port);
 			player.setIP(newIP);
@@ -160,6 +167,14 @@ public class TCPShieldPacketHandler {
 
 			throw new HandshakeException(e);
 		} catch (UnknownHostException e) {
+			if (plugin.getConfigProvider().isOnlyProxy())
+				player.disconnect();
+
+			throw new HandshakeException(e);
+		} catch (InvalidSecretException e) {
+			plugin.getDebugger().warn(
+					"%s[%s/%s] provided an invalid session secret when authenticating a geyser connection.",
+					player.getName(), player.getUUID(), player.getIP());
 			if (plugin.getConfigProvider().isOnlyProxy())
 				player.disconnect();
 

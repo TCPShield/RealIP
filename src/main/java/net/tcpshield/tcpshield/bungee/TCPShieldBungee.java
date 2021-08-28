@@ -6,6 +6,7 @@ import net.md_5.bungee.api.plugin.PluginManager;
 import net.tcpshield.tcpshield.TCPShieldPacketHandler;
 import net.tcpshield.tcpshield.TCPShieldPlugin;
 import net.tcpshield.tcpshield.bungee.handler.BungeeHandshakeHandler;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import net.tcpshield.tcpshield.provider.ConfigProvider;
 import net.tcpshield.tcpshield.util.Debugger;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
@@ -19,7 +20,6 @@ public class TCPShieldBungee extends Plugin implements TCPShieldPlugin, Listener
 	private TCPShieldPacketHandler packetHandler;
 	private Debugger debugger;
 
-
 	@Override
 	public void onEnable() {
 		try {
@@ -30,12 +30,13 @@ public class TCPShieldBungee extends Plugin implements TCPShieldPlugin, Listener
 			PluginManager pluginManager = this.getProxy().getPluginManager();
 			pluginManager.registerListener(this, new BungeeHandshakeHandler(this));
 
+			GeyserUtils.initGeyser(this, configProvider);
+
 			initialization();
 		} catch (Exception e) {
 			throw new InitializationException(e);
 		}
 	}
-
 
 	/*
 	 * The provider's base methods

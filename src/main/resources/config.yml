@@ -6,3 +6,6 @@ timestamp-validation: 'htpdate'
 
 # Turn on to diagnose connection issues
 debug-mode: false
+
+# Toggle to enable support for Geyser/Floodgate v2
+enable-geyser-support: false

@@ -8,6 +8,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.tcpshield.tcpshield.TCPShieldPacketHandler;
 import net.tcpshield.tcpshield.TCPShieldPlugin;
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import net.tcpshield.tcpshield.provider.ConfigProvider;
 import net.tcpshield.tcpshield.util.Debugger;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
@@ -41,7 +42,6 @@ public class TCPShieldVelocity implements TCPShieldPlugin {
 		this.dataFolder = dataFolder;
 	}
 
-
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent e) {
 		try {
@@ -51,12 +51,13 @@ public class TCPShieldVelocity implements TCPShieldPlugin {
 
 			server.getEventManager().register(this, new VelocityHandshakeHandler(this));
 
+			GeyserUtils.initGeyser(this, configProvider);
+
 			initialization();
 		} catch (Exception exception) {
 			throw new InitializationException(exception);
 		}
 	}
-
 
 	/*
 	 * The provider's base methods

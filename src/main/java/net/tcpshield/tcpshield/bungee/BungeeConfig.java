@@ -37,7 +37,6 @@ public class BungeeConfig extends ConfigProvider {
 		}
 	}
 
-
 	@Override
 	protected void checkNodes(String... nodes) {
 		for (String node : nodes) {
@@ -76,6 +75,7 @@ public class BungeeConfig extends ConfigProvider {
 			this.onlyProxy = loadedConfiguration.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedConfiguration.getString("timestamp-validation");
 			this.doDebug = loadedConfiguration.getBoolean("debug-mode");
+			this.geyser = loadedConfiguration.getBoolean("enable-geyser-support");
 		} catch (Exception e) {
 			throw new ConfigLoadException(e);
 		}
