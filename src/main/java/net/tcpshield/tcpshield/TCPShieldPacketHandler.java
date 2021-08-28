@@ -103,8 +103,9 @@ public class TCPShieldPacketHandler {
 
 			int nullIndex;
 			if ((nullIndex = payload[3].indexOf('\0')) != -1) { // FML tagged payload
-				payload[3] = payload[3].substring(0, nullIndex);
-				extraData = payload[3].substring(nullIndex);
+				String originalData = payload[3];
+				payload[3] = originalData.substring(0, nullIndex);
+				extraData = originalData.substring(nullIndex);
 			}
 
 			String hostname = payload[0];
