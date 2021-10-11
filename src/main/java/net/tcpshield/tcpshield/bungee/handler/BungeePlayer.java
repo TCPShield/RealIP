@@ -1,11 +1,9 @@
 package net.tcpshield.tcpshield.bungee.handler;
 
-import io.netty.channel.AbstractChannel;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationException;
-import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
@@ -28,6 +26,7 @@ public class BungeePlayer implements PlayerProvider {
 
 	/**
 	 * Trys to grab the UUID of the handshake
+	 *
 	 * @return If found, the corrosponding uuid, if not, unknown
 	 */
 	@Override
@@ -64,8 +63,12 @@ public class BungeePlayer implements PlayerProvider {
 				// Some BungeeCord versions, notably those on 1.7 (e.g. zBungeeCord) don't have an SocketAddress field in the ChannelWrapper class
 			}
 
-			ReflectionUtil.setFinalField(channel, ReflectionUtil.getPrivateField(AbstractChannel.class, "remoteAddress"), ip);
-			ReflectionUtil.setFinalField(channel, ReflectionUtil.getPrivateField(AbstractChannel.class, "localAddress"), ip);
+			ReflectionUtil.setFinalField(channel, ReflectionUtil.getPrivateField(channel.getClass(), "remoteAddress"), ip);
+			try {
+				ReflectionUtil.setFinalField(channel, ReflectionUtil.getPrivateField(channel.getClass(), "localAddress"), ip);
+			} catch (Throwable t) {
+				// ChannelWrapper doesn't have a localAddress
+			}
 		} catch (Exception e) {
 			throw new PlayerManipulationException(e);
 		}

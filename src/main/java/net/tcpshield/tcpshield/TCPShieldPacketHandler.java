@@ -12,7 +12,6 @@ import net.tcpshield.tcpshield.util.validation.SignatureValidator;
 import net.tcpshield.tcpshield.util.validation.cidr.CIDRValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.TimestampValidator;
 import net.tcpshield.tcpshield.util.validation.timestamp.impl.HTPDateTimestampValidator;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,7 +20,6 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * Packet handler for TCPShield's plugins
@@ -113,17 +111,30 @@ public class TCPShieldPacketHandler {
 			int timestamp = Integer.parseInt(payload[2]);
 			String signature = payload[3];
 
-			String[] ipParts = ipData.split(":");
-			String host = ipParts[0];
-			int port = Integer.parseInt(ipParts[1]);
-
-			String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+			String[] ipParts;
+			String host;
+			int port;
 
 			if (timestamp == 0 && GeyserUtils.GEYSER_SUPPORT_ENABLED) {
+				// Remap the altered layout
+				ipData = payload[0];
+				signature = payload[1];
+				hostname = payload[3];
+
+				// This is annoying having to have this in both blocks but w/e
+				ipParts = ipData.split(":");
+				host = ipParts[0];
+				port = Integer.parseInt(ipParts[1]);
+
 				if (!signature.equals(GeyserUtils.SESSION_SECRET)) {
 					throw new InvalidSecretException("Invalid secret: " + signature);
 				}
 			} else {
+				ipParts = ipData.split(":");
+				host = ipParts[0];
+				port = Integer.parseInt(ipParts[1]);
+				String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+
 				if (!timestampValidator.validate(timestamp))
 					throw new TimestampValidationException(timestampValidator, timestamp);
 

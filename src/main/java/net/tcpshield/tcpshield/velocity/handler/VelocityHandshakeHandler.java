@@ -48,6 +48,8 @@ public class VelocityHandshakeHandler {
 
 		VelocityPacket packet = new VelocityPacket(connection);
 
+		this.plugin.getDebugger().warn("Velocity: Raw player hostname: " + packet.getPayloadString());
+
 		try {
 			plugin.getPacketHandler().handleHandshake(packet, player);
 		} catch (HandshakeException exception) {
