@@ -5,4 +5,5 @@ softdepend:
 - ProtocolLib
 - floodgate
 author: https://tcpshield.com
+description: TCPShield IP parsing capabilities for Velocity
 api-version: 1.16
