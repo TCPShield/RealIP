@@ -20,26 +20,28 @@ public class VelocityHandshakeHandler {
 		this.plugin = plugin;
 	}
 
-	@Subscribe(order = PostOrder.FIRST)
-	public void onPreLogin(PreLoginEvent e) {
-		InboundConnection connection = e.getConnection();
-		handleEvent(connection);
-	}
+	// Turns out this event sometimes passes erroneous hostnames
+	// which have the null bytes terminated as FML data which causes
+	// issues with the verification process.
+//	@Subscribe(order = PostOrder.FIRST)
+//	public void onPreLogin(PreLoginEvent e) {
+//		InboundConnection connection = e.getConnection();
+//		handleEvent(connection, "onPreLogin");
+//	}
 
 	@Subscribe(order = PostOrder.FIRST)
 	public void onHandshake(ConnectionHandshakeEvent e) {
 		InboundConnection connection = e.getConnection();
-		handleEvent(connection);
+		handleEvent(connection, "onHandshake");
 	}
 
 	@Subscribe(order = PostOrder.FIRST)
 	public void onProxyPing(ProxyPingEvent e) {
 		InboundConnection connection = e.getConnection();
-		handleEvent(connection);
+		handleEvent(connection, "onProxyPing");
 	}
 
-
-	private void handleEvent(InboundConnection connection) {
+	private void handleEvent(InboundConnection connection, String debugSource) {
 		VelocityPlayer player = new VelocityPlayer(connection);
 		if (player.isLegacy()) {
 			player.disconnect();
@@ -48,7 +50,7 @@ public class VelocityHandshakeHandler {
 
 		VelocityPacket packet = new VelocityPacket(connection);
 
-		this.plugin.getDebugger().warn("Velocity: Raw player hostname: " + packet.getPayloadString());
+		this.plugin.getDebugger().warn("Velocity: " + debugSource + " Raw player hostname: " + packet.getPayloadString());
 
 		try {
 			plugin.getPacketHandler().handleHandshake(packet, player);
