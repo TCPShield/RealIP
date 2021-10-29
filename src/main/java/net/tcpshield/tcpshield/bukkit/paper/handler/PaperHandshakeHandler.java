@@ -26,7 +26,7 @@ public class PaperHandshakeHandler implements Listener {
 		PaperPlayer player = new PaperPlayer(e);
 
 		try {
-			bukkitProvider.getPlugin().getPacketHandler().handleHandshake(packet, player);
+			bukkitProvider.getPlugin().getPacketHandler().handleHandshake(packet, player, true);
 		} catch (HandshakeException exception) {
 			bukkitProvider.getPlugin().getDebugger().exception(exception);
 		}
