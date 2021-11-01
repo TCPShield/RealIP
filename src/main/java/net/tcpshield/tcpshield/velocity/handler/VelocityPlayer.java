@@ -22,6 +22,7 @@ public class VelocityPlayer implements PlayerProvider {
 	 */
 	private static final Class<?> INITIAL_INBOUND_CONNECTION_CLASS;
 	private static final Field MINECRAFT_CONNECTION_FIELD;
+	private static final Class<?> LEGACY_INBOUND_CONNECTION_CLASS;
 	private static final Field LEGACY_MINECRAFT_CONNECTION_FIELD;
 	private static final Field REMOTE_ADDRESS_FIELD;
 	private static final Method CLOSE_CHANNEL_METHOD;
@@ -30,7 +31,8 @@ public class VelocityPlayer implements PlayerProvider {
 		try {
 			INITIAL_INBOUND_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
 			MINECRAFT_CONNECTION_FIELD = ReflectionUtil.getPrivateField(INITIAL_INBOUND_CONNECTION_CLASS, "connection");
-			LEGACY_MINECRAFT_CONNECTION_FIELD = ReflectionUtil.getPrivateField(Class.forName("com.velocitypowered.proxy.connection.client.HandshakeSessionHandler$LegacyInboundConnection"), "connection");
+			LEGACY_INBOUND_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.HandshakeSessionHandler$LegacyInboundConnection");
+			LEGACY_MINECRAFT_CONNECTION_FIELD = ReflectionUtil.getPrivateField(LEGACY_INBOUND_CONNECTION_CLASS, "connection");
 
 			Class<?> minecraftConnection = Class.forName("com.velocitypowered.proxy.connection.MinecraftConnection");
 			REMOTE_ADDRESS_FIELD = ReflectionUtil.getPrivateField(minecraftConnection, "remoteAddress");
@@ -94,6 +96,9 @@ public class VelocityPlayer implements PlayerProvider {
 	@Override
 	public void disconnect() {
 		try {
+			if (!INITIAL_INBOUND_CONNECTION_CLASS.isAssignableFrom(inboundConnection.getClass()) && !LEGACY_INBOUND_CONNECTION_CLASS.isAssignableFrom(inboundConnection.getClass()))
+				return;
+
 			Object minecraftConnection = legacy ? LEGACY_MINECRAFT_CONNECTION_FIELD.get(inboundConnection) : MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
 
 			CLOSE_CHANNEL_METHOD.invoke(minecraftConnection);
