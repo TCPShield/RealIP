@@ -43,7 +43,7 @@ public class VelocityHandshakeHandler {
 
 	private void handleEvent(InboundConnection connection, String debugSource) {
 		VelocityPlayer player = new VelocityPlayer(connection);
-		if (player.isLegacy()) {
+		if (player.getConnectionType() == VelocityPlayer.ConnectionType.LEGACY) {
 			player.disconnect();
 			return;
 		}

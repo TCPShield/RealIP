@@ -5,7 +5,6 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-
 // --
 // Building
 // --
@@ -24,14 +23,12 @@ plugins {
     id 'idea'
 }
 
-
 // --
 // Variables
 // --
-version = '2.5.4'
+version = '2.5.5'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
-
 
 // --
 // Misc.
@@ -68,7 +65,6 @@ compileJava {
     options.encoding = 'UTF-8'
 }
 
-
 // --
 // Dependencies
 // --
@@ -97,7 +93,6 @@ repositories {
 }
 
 dependencies {
-
     // Bukkit
     compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.11-R0.1-SNAPSHOT'
     compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'

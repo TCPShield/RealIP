@@ -26,6 +26,10 @@ public class VelocityPlayer implements PlayerProvider {
 	private static final Field REMOTE_ADDRESS_FIELD;
 	private static final Method CLOSE_CHANNEL_METHOD;
 
+	// new velocity support
+	private static Class<?> LOGIN_INBOUND_CONNECTION_CLASS;
+	private static Field LOGIN_INBOUND_CONNECTION_DELEGATE_FIELD;
+
 	static {
 		try {
 			INITIAL_INBOUND_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
@@ -38,22 +42,39 @@ public class VelocityPlayer implements PlayerProvider {
 		} catch (Exception e) {
 			throw new InitializationException(new ReflectionException(e));
 		}
+
+		// LoginInboundConnection support
+		try {
+			LOGIN_INBOUND_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.LoginInboundConnection");
+			LOGIN_INBOUND_CONNECTION_DELEGATE_FIELD = ReflectionUtil.getPrivateField(LOGIN_INBOUND_CONNECTION_CLASS, "delegate");
+		} catch (Exception e) {
+			// ignore for old versions of velocity
+		}
 	}
 
 
 	private final InboundConnection inboundConnection;
-	private final boolean legacy;
+	//	private final boolean legacy;
+	private final ConnectionType connectionType;
 	private String ip;
 
 	public VelocityPlayer(InboundConnection inboundConnection) {
 		this.inboundConnection = inboundConnection;
-		this.legacy = inboundConnection.getClass() != INITIAL_INBOUND_CONNECTION_CLASS;
+//		this.legacy = inboundConnection.getClass() != INITIAL_INBOUND_CONNECTION_CLASS && inboundConnection.getClass() != LOGIN_INBOUND_CONNECTION_CLASS;
 		this.ip = inboundConnection.getRemoteAddress().getAddress().getHostAddress();
-	}
 
+		if (this.inboundConnection.getClass() == INITIAL_INBOUND_CONNECTION_CLASS) {
+			this.connectionType = ConnectionType.INITIAL_INBOUND;
+		} else if (this.inboundConnection.getClass() == LOGIN_INBOUND_CONNECTION_CLASS) {
+			this.connectionType = ConnectionType.LOGIN_INBOUND;
+		} else {
+			this.connectionType = ConnectionType.LEGACY;
+		}
+	}
 
 	/**
 	 * Unsupported with Velocity handshakes
+	 *
 	 * @return unknown
 	 */
 	@Override
@@ -63,6 +84,7 @@ public class VelocityPlayer implements PlayerProvider {
 
 	/**
 	 * Unsupported with Velocity handshakes
+	 *
 	 * @return unknown
 	 */
 	@Override
@@ -75,31 +97,59 @@ public class VelocityPlayer implements PlayerProvider {
 		return ip;
 	}
 
-	public boolean isLegacy() {
-		return legacy;
-	}
-
 	@Override
 	public void setIP(InetSocketAddress ip) throws PlayerManipulationException {
 		try {
 			this.ip = ip.getAddress().getHostAddress();
 
-			Object minecraftConnection = MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+			Object minecraftConnection = this.getMinecraftConnection();
 			REMOTE_ADDRESS_FIELD.set(minecraftConnection, ip);
 		} catch (Exception e) {
 			throw new PlayerManipulationException(e);
 		}
 	}
 
+//	public boolean isLegacy() {
+//		return legacy;
+//	}
+
 	@Override
 	public void disconnect() {
 		try {
-			Object minecraftConnection = legacy ? LEGACY_MINECRAFT_CONNECTION_FIELD.get(inboundConnection) : MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+			Object minecraftConnection = this.getMinecraftConnection();
 
 			CLOSE_CHANNEL_METHOD.invoke(minecraftConnection);
 		} catch (Exception e) {
 			throw new PlayerManipulationException(e);
 		}
+	}
+
+	private Object getMinecraftConnection() {
+		try {
+			switch (this.connectionType) {
+				case LEGACY:
+					return LEGACY_MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+				case INITIAL_INBOUND:
+					return MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+				case LOGIN_INBOUND: {
+					// starts as login_inbound, get delegate initial_inbound
+					Object initialInboundConnection = LOGIN_INBOUND_CONNECTION_DELEGATE_FIELD.get(this.inboundConnection);
+					return MINECRAFT_CONNECTION_FIELD.get(initialInboundConnection);
+				}
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public ConnectionType getConnectionType() {
+		return connectionType;
+	}
+
+	enum ConnectionType {
+		LOGIN_INBOUND, INITIAL_INBOUND, LEGACY;
 	}
 
 }
