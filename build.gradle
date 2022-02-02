@@ -26,7 +26,7 @@ plugins {
 // --
 // Variables
 // --
-version = '2.5.5'
+version = '2.5.6'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
@@ -109,7 +109,7 @@ dependencies {
     // Testing
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0-M1'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0-M1'
-    compileOnly 'org.geysermc.floodgate:api:2.0-SNAPSHOT'
+    compileOnly 'org.geysermc.floodgate:api:2.1.1-SNAPSHOT'
 }
 
 processResources {

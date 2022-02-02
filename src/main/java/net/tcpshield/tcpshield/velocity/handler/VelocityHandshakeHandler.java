@@ -23,11 +23,11 @@ public class VelocityHandshakeHandler {
 	// Turns out this event sometimes passes erroneous hostnames
 	// which have the null bytes terminated as FML data which causes
 	// issues with the verification process.
-//	@Subscribe(order = PostOrder.FIRST)
-//	public void onPreLogin(PreLoginEvent e) {
-//		InboundConnection connection = e.getConnection();
-//		handleEvent(connection, "onPreLogin");
-//	}
+	@Subscribe(order = PostOrder.FIRST)
+	public void onPreLogin(PreLoginEvent e) {
+		InboundConnection connection = e.getConnection();
+		handleEvent(connection, "onPreLogin");
+	}
 
 	@Subscribe(order = PostOrder.FIRST)
 	public void onHandshake(ConnectionHandshakeEvent e) {
