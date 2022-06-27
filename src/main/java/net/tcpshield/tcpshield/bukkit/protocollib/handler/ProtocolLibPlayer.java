@@ -1,7 +1,7 @@
 package net.tcpshield.tcpshield.bukkit.protocollib.handler;
 
-import com.comphenix.protocol.injector.server.SocketInjector;
-import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
+import com.comphenix.protocol.injector.temporary.MinimalInjector;
+import com.comphenix.protocol.injector.temporary.TemporaryPlayerFactory;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationException;
@@ -72,7 +72,7 @@ public class ProtocolLibPlayer implements PlayerProvider {
 		try {
 			this.ip = ip.getAddress().getHostAddress();
 
-			SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
+			MinimalInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
 			Object injector = ReflectionUtil.getObjectInPrivateField(ignored, "injector");
 			Object networkManager = ReflectionUtil.getObjectInPrivateField(injector, "networkManager");
 
