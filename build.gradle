@@ -140,8 +140,8 @@ void updateYamls() {
 
     def yaml = new Yaml(options)
 
-    def bukkitYamlFile = new File('src/main/resources/plugin.yml')
-    def bungeeYamlFile = new File('src/main/resources/bungee.yml')
+    def bukkitYamlFile = new File('F:\\Dev\\RealIP\\src\\main\\resources\\plugin.yml')
+    def bungeeYamlFile = new File('F:\\Dev\\RealIP\\src\\main\\resources\\bungee.yml')
 
     def files = [bukkitYamlFile, bungeeYamlFile]
     files.each { file ->
@@ -157,7 +157,7 @@ void updateYamls() {
 }
 
 void updateJsons() {
-    def velocityJson = new File('src/main/resources/velocity-plugin.json')
+    def velocityJson = new File('F:\\Dev\\RealIP\\src\\main\\resources\\velocity-plugin.json')
 
     def files = [velocityJson]
     files.each { file ->
