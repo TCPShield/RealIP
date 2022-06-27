@@ -73,12 +73,14 @@ public class ProtocolLibPlayer implements PlayerProvider {
 			this.ip = ip.getAddress().getHostAddress();
 
 			MinimalInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
+
+			System.out.println(ignored);
 			Object injector = ReflectionUtil.getObjectInPrivateField(ignored, "injector");
 			Object networkManager = ReflectionUtil.getObjectInPrivateField(injector, "networkManager");
 
 			ReflectionUtil.setFinalField(networkManager, ReflectionUtil.searchFieldByClass(networkManager.getClass(), SocketAddress.class), ip);
 
-			Object channel = ReflectionUtil.getObjectInPrivateField(injector, "originalChannel");
+			Object channel = ReflectionUtil.getObjectInPrivateField(injector, "wrappedChannel");
 			ReflectionUtil.setFinalField(channel, ReflectionUtil.getDeclaredField(abstractChannelClass, "remoteAddress"), ip);
 		} catch (Exception e) {
 			throw new PlayerManipulationException(e);
