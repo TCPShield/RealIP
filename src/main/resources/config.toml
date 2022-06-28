@@ -9,3 +9,6 @@ debug-mode = false
 
 # Toggle to enable support for Geyser/Floodgate v2
 enable-geyser-support = false
+
+# enable handling handshake on PreLoginEvent
+pre-login-event = true

@@ -13,7 +13,6 @@ public class BukkitProtocolLib extends BukkitImplProvider {
 		super(bukkitPlugin);
 	}
 
-
 	@Override
 	public void load() {
 		ProtocolLibHandshakeHandler packetHandler = new ProtocolLibHandshakeHandler(this);

@@ -65,12 +65,13 @@ public class VelocityConfig extends ConfigProvider {
 		try {
 			loadedToml = new Toml().read(configFile);
 
-			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode");
+			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode", "enable-geyser-support", "pre-login-event");
 
 			this.onlyProxy = loadedToml.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedToml.getString("timestamp-validation");
 			this.doDebug = loadedToml.getBoolean("debug-mode");
 			this.geyser = loadedToml.getBoolean("enable-geyser-support");
+			this.velocityHandlePreLoginEvent = loadedToml.getBoolean("pre-login-event");
 		} catch (Exception e) {
 			throw new ConfigLoadException(e);
 		}

@@ -15,7 +15,6 @@ public class PaperPacket implements PacketProvider {
 		this.handshakeEvent = handshakeEvent;
 	}
 
-
 	@Override
 	public String getPayloadString() {
 		return handshakeEvent.getOriginalHandshake();

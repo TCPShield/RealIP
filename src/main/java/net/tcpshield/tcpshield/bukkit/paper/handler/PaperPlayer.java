@@ -18,7 +18,6 @@ public class PaperPlayer implements PlayerProvider {
 		this.handshakeEvent = handshakeEvent;
 	}
 
-
 	/**
 	 * Trys to grab the UUID of the handshake
 	 * @return If found, the corrosponding uuid, if not, unknown

@@ -29,15 +29,16 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 			debugger = Debugger.createDebugger(this);
 			packetHandler = new TCPShieldPacketHandler(this);
 
-			if (BukkitImplProvider.hasPaperEvent())
-				bukkitImpl = new BukkitPaper(this);
-			else {
-				if (getServer().getPluginManager().getPlugin("ProtocolLib") == null) {
-					getLogger().severe("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
-					return;
-				}
-
+			// check force plib option -> paper -> plib -> error
+			if (this.configProvider.preferProtocolLib() && getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
 				bukkitImpl = new BukkitProtocolLib(this);
+			} else if (BukkitImplProvider.hasPaperEvent()) {
+				bukkitImpl = new BukkitPaper(this);
+			} else if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+				bukkitImpl = new BukkitProtocolLib(this);
+			} else {
+				getLogger().severe("TCPShield not loading because ProtocolLib is not installed. Either use Paper to enable native compatibility or install ProtocolLib.");
+				return;
 			}
 
 			bukkitImpl.load();
@@ -48,6 +49,7 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 		} catch (Exception e) {
 			throw new InitializationException(e);
 		}
+
 	}
 
 

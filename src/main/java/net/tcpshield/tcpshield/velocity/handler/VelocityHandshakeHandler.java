@@ -25,6 +25,10 @@ public class VelocityHandshakeHandler {
 	// issues with the verification process.
 	@Subscribe(order = PostOrder.FIRST)
 	public void onPreLogin(PreLoginEvent e) {
+		if (!this.plugin.getConfigProvider().handlePreLoginEvent()) {
+			return;
+		}
+
 		InboundConnection connection = e.getConnection();
 		handleEvent(connection, "onPreLogin");
 	}

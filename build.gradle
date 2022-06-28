@@ -26,7 +26,7 @@ plugins {
 // --
 // Variables
 // --
-version = '2.5.6'
+version = '2.6.0'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
@@ -95,7 +95,7 @@ repositories {
 dependencies {
     // Bukkit
     compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.11-R0.1-SNAPSHOT'
-    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '4.4.0'
+    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '5.0.0-SNAPSHOT'
 
     // Paper
     compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.15.2-R0.1-SNAPSHOT'

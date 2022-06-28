@@ -13,7 +13,6 @@ public class BukkitPaper extends BukkitImplProvider {
 		super(bukkitPlugin);
 	}
 
-
 	@Override
 	public void load() {
 		PaperHandshakeHandler packetHandler = new PaperHandshakeHandler(this);

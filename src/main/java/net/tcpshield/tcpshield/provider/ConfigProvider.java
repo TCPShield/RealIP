@@ -19,16 +19,24 @@ public abstract class ConfigProvider {
 	protected String timestampValidationMode = "htpdate";
 	protected boolean doDebug = true; // Fail-safe default set to true
 	protected boolean geyser = false;
+	protected boolean velocityHandlePreLoginEvent = true;
+
+	// spigot/paper only option
+	protected boolean preferProtocolLib;
 
 	protected File dataFolder;
 	protected File configFile;
 
 	public boolean isOnlyProxy() {
-		return onlyProxy;
+		return this.onlyProxy;
 	}
 
 	public boolean isGeyser() {
-		return geyser;
+		return this.geyser;
+	}
+
+	public boolean handlePreLoginEvent() {
+		return this.velocityHandlePreLoginEvent;
 	}
 
 	public String getTimestampValidationMode() {
@@ -36,7 +44,11 @@ public abstract class ConfigProvider {
 	}
 
 	public boolean doDebug() {
-		return doDebug;
+		return this.doDebug;
+	}
+
+	public boolean preferProtocolLib() {
+		return this.preferProtocolLib;
 	}
 
 	public File getDataFolder() {

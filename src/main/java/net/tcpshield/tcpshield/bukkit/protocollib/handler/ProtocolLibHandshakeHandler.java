@@ -19,7 +19,6 @@ public class ProtocolLibHandshakeHandler extends PacketAdapter {
 		this.bukkitProvider = bukkitProvider;
 	}
 
-
 	@Override
 	public void onPacketReceiving(PacketEvent e) {
 		ProtocolLibPacket packet = new ProtocolLibPacket(e.getPacket());

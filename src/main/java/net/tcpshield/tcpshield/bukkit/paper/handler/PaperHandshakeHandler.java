@@ -19,7 +19,6 @@ public class PaperHandshakeHandler implements Listener {
 		this.bukkitProvider = bukkitProvider;
 	}
 
-
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onHandshake(PlayerHandshakeEvent e) {
 		PaperPacket packet = new PaperPacket(e);
@@ -36,6 +35,8 @@ public class PaperHandshakeHandler implements Listener {
 	public void onServerPing(PaperServerListPingEvent e) {
 		if (e.getClient().isLegacy())
 			e.setCancelled(true);
+
+
 	}
 
 }

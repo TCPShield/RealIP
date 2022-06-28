@@ -1,5 +1,5 @@
 name: TCPShield
-version: 2.5.6
+version: 2.6.0
 main: net.tcpshield.tcpshield.bungee.TCPShieldBungee
 author: https://tcpshield.com
 softdepends:

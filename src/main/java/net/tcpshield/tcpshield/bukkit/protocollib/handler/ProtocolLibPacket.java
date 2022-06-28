@@ -17,7 +17,6 @@ public class ProtocolLibPacket implements PacketProvider {
 		this.rawPayload = packetContainer.getStrings().read(0);
 	}
 
-
 	@Override
 	public String getPayloadString() {
 		return rawPayload;

@@ -66,12 +66,13 @@ public class BukkitConfig extends ConfigProvider {
 		try {
 			loadedConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
-			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode");
+			checkNodes("only-allow-proxy-connections", "timestamp-validation", "debug-mode", "enable-geyser-support", "prefer-protocollib");
 
 			this.onlyProxy = loadedConfiguration.getBoolean("only-allow-proxy-connections");
 			this.timestampValidationMode = loadedConfiguration.getString("timestamp-validation");
 			this.doDebug = loadedConfiguration.getBoolean("debug-mode");
 			this.geyser = loadedConfiguration.getBoolean("enable-geyser-support");
+			this.preferProtocolLib = loadedConfiguration.getBoolean("prefer-protocollib");
 		} catch (Exception e) {
 			throw new ConfigLoadException(e);
 		}
