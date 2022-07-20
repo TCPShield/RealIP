@@ -57,7 +57,7 @@ public class PaperPlayer implements PlayerProvider {
 	@Override
 	public void disconnect() {
 		handshakeEvent.setCancelled(false); // Caused issues with newer versions of Paper (Thanks https://github.com/realDragonium)
-		handshakeEvent.setFailMessage("Connection failed. Please try again or contract an administrator.");
+		handshakeEvent.setFailMessage("Connection failed. Please try again or contact an administrator.");
 		handshakeEvent.setFailed(true);
 	}
 
