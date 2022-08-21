@@ -62,7 +62,7 @@ public abstract class ConfigProvider {
 	/*
 	 * Plugin Constants
 	 */
-	protected final long maxTimestampDifference = 3; // In Unix Timesteps (Seconds)
+	protected final long maxTimestampDifference = 3; // In Unix Timestamps (Seconds)
 
 
 	public long getMaxTimestampDifference() {
@@ -74,7 +74,7 @@ public abstract class ConfigProvider {
 	 */
 
 	/**
-	 * Deletes the current config saved to the disk and reinstalls the default config
+	 * Deletes the current config saved to the disk and installs the default config
 	 * @throws ConfigResetException Thrown if resetting fails
 	 */
 	protected abstract void reset() throws ConfigResetException;
@@ -94,7 +94,7 @@ public abstract class ConfigProvider {
 	/**
 	 * Checks the provided nodes to see if they exist in the config
 	 * @param nodes The nodes to check
-	 * @throws ConfigException Thrown when a node isnt found
+	 * @throws ConfigException Thrown when a node isn't found
 	 */
 	protected abstract void checkNodes(String... nodes) throws ConfigException;
 

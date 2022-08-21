@@ -9,10 +9,8 @@ import net.tcpshield.tcpshield.util.exception.config.ConfigLoadException;
 import net.tcpshield.tcpshield.util.exception.config.ConfigReloadException;
 import net.tcpshield.tcpshield.util.exception.config.ConfigResetException;
 import net.tcpshield.tcpshield.util.exception.phase.ConfigException;
-import net.tcpshield.tcpshield.velocity.VelocityConfig;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 

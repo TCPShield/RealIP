@@ -18,7 +18,7 @@ public class CIDRValidator {
 	private final File ipWhitelistFolder;
 
 	private final List<CIDRMatcher> cidrMatchers;
-	private final Set<String> cache = new HashSet<>(); // Max potential size is equilivent to the amount of whitelisted IP's
+	private final Set<String> cache = new HashSet<>(); // Max potential size is equivalent to the amount of whitelisted IP's
 
 	public CIDRValidator(TCPShieldPlugin plugin) throws CIDRException {
 		this.plugin = plugin;
@@ -43,7 +43,7 @@ public class CIDRValidator {
 			try {
 				matchers.add(CIDRMatcher.create(whitelist));
 			} catch (Exception e) {
-				plugin.getDebugger().warn("Exception occured while creating CIDRMatcher for \"%s\". Ignoring it.", whitelist);
+				plugin.getDebugger().warn("Exception occurred while creating CIDRMatcher for \"%s\". Ignoring it.", whitelist);
 				plugin.getDebugger().exception(e);
 			}
 

@@ -8,7 +8,7 @@ import net.tcpshield.tcpshield.util.exception.TCPShieldException;
 public class ReflectionException extends TCPShieldException {
 
 	public ReflectionException(Throwable throwable) {
-		super("An exception occured during the reflection process", throwable);
+		super("An exception occurred during the reflection process", throwable);
 	}
 
 
