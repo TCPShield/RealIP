@@ -16,6 +16,17 @@ public class VelocityHandshakeHandler {
 
 	private final TCPShieldPlugin plugin;
 
+
+	private static Class<?> CONNECTED_PLAYER_CONNECTION_CLASS;
+
+	static {
+		try {
+			CONNECTED_PLAYER_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.ConnectedPlayer");
+		} catch (Exception e) {
+			// ignore for old velocity versions
+		}
+	}
+
 	public VelocityHandshakeHandler(TCPShieldPlugin plugin) {
 		this.plugin = plugin;
 	}
@@ -42,6 +53,12 @@ public class VelocityHandshakeHandler {
 	@Subscribe(order = PostOrder.FIRST)
 	public void onProxyPing(ProxyPingEvent e) {
 		InboundConnection connection = e.getConnection();
+
+		if (connection.getClass() == CONNECTED_PLAYER_CONNECTION_CLASS) {
+			// new ServerData (0x42) packet on connect, we don't care about it
+			return;
+		}
+
 		handleEvent(connection, "onProxyPing");
 	}
 

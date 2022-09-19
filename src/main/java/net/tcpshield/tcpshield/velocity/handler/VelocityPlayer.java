@@ -4,7 +4,6 @@ import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationException;
-import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
 
@@ -27,6 +26,7 @@ public class VelocityPlayer implements PlayerProvider {
 	private static final Method CLOSE_CHANNEL_METHOD;
 
 	// new velocity support
+
 	private static Class<?> LOGIN_INBOUND_CONNECTION_CLASS;
 	private static Field LOGIN_INBOUND_CONNECTION_DELEGATE_FIELD;
 
@@ -149,7 +149,7 @@ public class VelocityPlayer implements PlayerProvider {
 	}
 
 	enum ConnectionType {
-		LOGIN_INBOUND, INITIAL_INBOUND, LEGACY;
+		LOGIN_INBOUND, INITIAL_INBOUND, LEGACY
 	}
 
 }
