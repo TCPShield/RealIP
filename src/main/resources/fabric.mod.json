@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "tcp-shield",
+  "version": "2.5",
+  "name": "TCPShield",
+  "description": "TCPShield support for Fabric",
+  "authors": [
+    "TCPShield"
+  ],
+  "contact": {
+    "homepage": "https://tcpshield.com"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      "net.tcpshield.tcpshield.fabric.TCPShieldFabric"
+    ]
+  },
+  "mixins": [
+    "tcpshield.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "*"
+  }
+}
