@@ -31,7 +31,15 @@ public class VelocityPacket implements PacketProvider {
 			Class<?> inboundConnection = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
 
 			HANDSHAKE_FIELD = ReflectionUtil.getPrivateField(inboundConnection, "handshake");
-			HOSTNAME_FIELD = ReflectionUtil.getPrivateField(Class.forName("com.velocitypowered.proxy.protocol.packet.Handshake"), "serverAddress");
+
+			Field hostnameField;
+			try {
+				hostnameField = ReflectionUtil.getPrivateField(Class.forName("com.velocitypowered.proxy.protocol.packet.HandshakePacket"), "serverAddress");
+			} catch (Exception e) {
+				hostnameField = ReflectionUtil.getPrivateField(Class.forName("com.velocitypowered.proxy.protocol.packet.Handshake"), "serverAddress");
+			}
+			HOSTNAME_FIELD = hostnameField;
+
 			CLEANED_ADDRESS_FIELD = ReflectionUtil.getPrivateField(inboundConnection, "cleanedAddress");
 		} catch (Exception e) {
 			throw new InitializationException(new ReflectionException(e));
