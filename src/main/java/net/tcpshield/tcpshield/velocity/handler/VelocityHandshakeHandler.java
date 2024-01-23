@@ -45,6 +45,14 @@ public class VelocityHandshakeHandler {
 	}
 
 	@Subscribe(order = PostOrder.FIRST)
+	public void onPreLoginEvent(PreLoginEvent event) {
+		VelocityPlayer player = new VelocityPlayer(event.getConnection());
+		VelocityPacket packet = new VelocityPacket(event.getConnection());
+
+		plugin.getPacketHandler().handleHandshake(packet, player, true);
+	}
+
+	@Subscribe(order = PostOrder.FIRST)
 	public void onHandshake(ConnectionHandshakeEvent e) {
 		InboundConnection connection = e.getConnection();
 		handleEvent(connection, "onHandshake");
@@ -74,7 +82,7 @@ public class VelocityHandshakeHandler {
 		this.plugin.getDebugger().warn("Velocity: " + debugSource + " Raw player hostname: " + packet.getPayloadString());
 
 		try {
-			plugin.getPacketHandler().handleHandshake(packet, player);
+			plugin.getPacketHandler().handleHandshake(packet, player, false);
 		} catch (HandshakeException exception) {
 			plugin.getDebugger().exception(exception);
 		}

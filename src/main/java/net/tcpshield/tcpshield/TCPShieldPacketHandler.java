@@ -87,7 +87,7 @@ public class TCPShieldPacketHandler {
 	 * @param packet The handshake packet
 	 * @param player The involved player
 	 */
-	public void handleHandshake(PacketProvider packet, PlayerProvider player) throws HandshakeException {
+	public void handleHandshake(PacketProvider packet, PlayerProvider player, boolean ignoreInvalidPayload) throws HandshakeException {
 		try {
 			InetAddress inetAddress = InetAddress.getByName(player.getIP());
 
@@ -95,7 +95,7 @@ public class TCPShieldPacketHandler {
 			String[] payload = packet.getPayloadString().split("///");
 
 			if (payload.length != 4)
-				if (cidrValidator.validate(inetAddress))
+				if (cidrValidator.validate(inetAddress) || ignoreInvalidPayload)
 					return; // Allow connection with no processing
 				else
 					throw new InvalidPayloadException("length: " + payload.length + ", payload: " + Arrays.toString(payload) + ", raw payload: " + packet.getPayloadString());
