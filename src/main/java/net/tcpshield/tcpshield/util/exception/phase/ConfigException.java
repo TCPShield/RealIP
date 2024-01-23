@@ -3,12 +3,12 @@ package net.tcpshield.tcpshield.util.exception.phase;
 import net.tcpshield.tcpshield.util.exception.TCPShieldException;
 
 /**
- * An exception thrown during the config loading, reloeading, saving, etc. process of TCPShield
+ * An exception thrown during the config loading, reloading, saving, etc. process of TCPShield
  */
 public class ConfigException extends TCPShieldException {
 
 	public ConfigException(Throwable throwable) {
-		super("An exception occured during the config process", throwable);
+		super("An exception occurred during the config process", throwable);
 	}
 
 

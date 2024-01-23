@@ -4,7 +4,6 @@ import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.provider.PacketProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PacketManipulationException;
-import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
 
@@ -95,7 +94,7 @@ public class VelocityPacket implements PacketProvider {
 	}
 
 	/**
-	 * Adapted from https://github.com/VelocityPowered/Velocity/blob/17e6944daea8130e03903ccdfbf63f111c573849/proxy/src/main/java/com/velocitypowered/proxy/connection/client/HandshakeSessionHandler.java
+	 * Adapted from <a href="https://github.com/VelocityPowered/Velocity/blob/17e6944daea8130e03903ccdfbf63f111c573849/proxy/src/main/java/com/velocitypowered/proxy/connection/client/HandshakeSessionHandler.java">GitHub</a>
 	 */
 	private String cleanAddress(String hostname) {
 		// Clean out any anything after any zero bytes (this includes BungeeCord forwarding and the

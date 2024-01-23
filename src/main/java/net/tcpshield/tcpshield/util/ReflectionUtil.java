@@ -7,7 +7,7 @@ import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
 import java.lang.reflect.Field;
 
 /**
- * A util for reflection and manipulation
+ * An util for reflection and manipulation
  */
 public class ReflectionUtil {
 
@@ -46,7 +46,7 @@ public class ReflectionUtil {
 //			if (modifiersField == null) {
 //				try {
 //					modifiersField = getDeclaredField(Field.class, "modifiers");
-//				} catch (ReflectionException e) { // workaround for when searching for the modifiers field on Java 12 or higher
+//				} catch (ReflectionException e) { // workaround for when searching for the modifiers' field on Java 12 or higher
 //					try {
 //						Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
 //						getDeclaredFields0.setAccessible(true);
