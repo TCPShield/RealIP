@@ -11,4 +11,4 @@ debug-mode: false
 enable-geyser-support: false
 
 # Spigot/Paper option only, does not affect bungeecord
-prefer-protocollib: true
+prefer-protocollib: false
