@@ -38,7 +38,7 @@ public class BungeeHandshakeHandler implements Listener {
 		this.plugin.getDebugger().warn("BungeeCord: Raw player hostname: " + packet.getPayloadString());
 
 		try {
-			plugin.getPacketHandler().handleHandshake(packet, player);
+			plugin.getPacketHandler().handleHandshake(packet, player, true);
 		} catch (HandshakeException exception) {
 			plugin.getDebugger().exception(exception);
 		}

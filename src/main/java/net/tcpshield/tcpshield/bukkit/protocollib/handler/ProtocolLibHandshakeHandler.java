@@ -25,7 +25,7 @@ public class ProtocolLibHandshakeHandler extends PacketAdapter {
 		ProtocolLibPlayer player = new ProtocolLibPlayer(e.getPlayer());
 
 		try {
-			bukkitProvider.getPlugin().getPacketHandler().handleHandshake(packet, player);
+			bukkitProvider.getPlugin().getPacketHandler().handleHandshake(packet, player, true);
 		} catch (HandshakeException exception) {
 			bukkitProvider.getPlugin().getDebugger().exception(exception);
 		}
