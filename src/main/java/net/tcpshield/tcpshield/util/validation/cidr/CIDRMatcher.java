@@ -13,7 +13,7 @@ public abstract class CIDRMatcher {
 	/**
 	 * Creates a CIDRMatcher from a CIDR matching regex
 	 * @param cidrMatchString The string containing the CIDR matching regex
-	 * @return The corrosponding CIDRMatcher
+	 * @return The corresponding CIDRMatcher
 	 */
 	public static CIDRMatcher create(String cidrMatchString) {
 		return new CIDRMatcher(cidrMatchString) {

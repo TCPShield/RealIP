@@ -8,7 +8,7 @@ import net.tcpshield.tcpshield.util.exception.TCPShieldException;
 public class InitializationException extends TCPShieldException {
 
 	public InitializationException(Throwable throwable) {
-		super("An exception occured during the initalization process", throwable);
+		super("An exception occurred during the initialization process", throwable);
 	}
 
 

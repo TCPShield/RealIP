@@ -8,7 +8,7 @@ import net.tcpshield.tcpshield.util.exception.TCPShieldException;
 public class HandshakeException extends TCPShieldException {
 
 	public HandshakeException(Throwable throwable) {
-		super("An exception occured during the handshake process", throwable);
+		super("An exception occurred during the handshake process", throwable);
 	}
 
 
