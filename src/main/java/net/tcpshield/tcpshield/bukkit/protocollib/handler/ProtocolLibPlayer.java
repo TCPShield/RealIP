@@ -1,6 +1,6 @@
 package net.tcpshield.tcpshield.bukkit.protocollib.handler;
 
-import com.comphenix.protocol.injector.temporary.MinimalInjector;
+import com.comphenix.protocol.injector.netty.Injector;
 import com.comphenix.protocol.injector.temporary.TemporaryPlayerFactory;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
@@ -71,13 +71,12 @@ public class ProtocolLibPlayer implements PlayerProvider {
 		try {
 			this.ip = ip.getAddress().getHostAddress();
 
-			MinimalInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
-			Object injector = ReflectionUtil.getObjectInPrivateField(ignored, "injector");
-			Object networkManager = ReflectionUtil.getObjectInPrivateField(injector, "networkManager");
+			Injector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
+			Object networkManager = ReflectionUtil.getObjectInPrivateField(ignored, "networkManager");
 
 			ReflectionUtil.setFinalField(networkManager, ReflectionUtil.searchFieldByClass(networkManager.getClass(), SocketAddress.class), ip);
 
-			Object channel = ReflectionUtil.getObjectInPrivateField(injector, "wrappedChannel");
+			Object channel = ReflectionUtil.getObjectInPrivateField(ignored, "channel");
 			ReflectionUtil.setFinalField(channel, ReflectionUtil.getDeclaredField(abstractChannelClass, "remoteAddress"), ip);
 		} catch (Exception e) {
 			throw new PlayerManipulationException(e);

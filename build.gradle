@@ -26,7 +26,7 @@ plugins {
 // --
 // Variables
 // --
-version = '2.8.0'
+version = '2.8.1'
 group = 'net.tcpshield.tcpshield'
 archivesBaseName = 'TCPShield'
 
@@ -91,7 +91,9 @@ repositories {
 
 dependencies {
     // Bukkit
-    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '5.1.0'
+//    compileOnly group: 'com.comphenix.protocol', name: 'ProtocolLib', version: '5.3.0-SNAPSHOT'
+
+    compileOnly(files("libs/ProtocolLib.jar")) // Temporary, currently using build #726 from the CI server since the maven repository is out of date.
 
     // Paper - 1.19.4 so we can bump from JDK 8 -> JDK 17, using 1.20.x as a dependency would require bumping from JDK 8 -> JDK 21
     compileOnly group: 'io.papermc.paper', name: 'paper-api', version: '1.19.4-R0.1-SNAPSHOT'
