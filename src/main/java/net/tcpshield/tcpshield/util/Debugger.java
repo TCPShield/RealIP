@@ -76,7 +76,7 @@ public abstract class Debugger {
 	protected final Logger logger;
 
 	/**
-	 * Non-accessable constructor for creating a debugger
+	 * Non-accessible constructor for creating a debugger
 	 * @param logger The plugin's logger
 	 */
 	private Debugger(Logger logger) {
@@ -87,21 +87,21 @@ public abstract class Debugger {
 	/**
 	 * Outputs debug information with log level "INFO"
 	 * @param format The output string to be formatted
-	 * @param formats The formarts for the string
+	 * @param formats The formats for the string
 	 */
 	public abstract void info(String format, Object... formats);
 
 	/**
 	 * Outputs debug information with log level "WARNING"
 	 * @param format The output string to be formatted
-	 * @param formats The formarts for the string
+	 * @param formats The formats for the string
 	 */
 	public abstract void warn(String format, Object... formats);
 
 	/**
 	 * Outputs debug information with log level "SEVERE"
 	 * @param format The output string to be formatted
-	 * @param formats The formarts for the string
+	 * @param formats The formats for the string
 	 */
 	public abstract void error(String format, Object... formats);
 

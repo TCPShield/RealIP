@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * A timestamp validator that offsets system time with Google's to sync
- * tiemstamps
+ * timestamps
  */
 public class HTPDateTimestampValidator extends TimestampValidator {
 

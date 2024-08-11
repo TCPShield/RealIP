@@ -20,7 +20,7 @@ public class PaperPlayer implements PlayerProvider {
 
 	/**
 	 * Trys to grab the UUID of the handshake
-	 * @return If found, the corrosponding uuid, if not, unknown
+	 * @return If found, the corresponding uuid, if not, unknown
 	 */
 	@Override
 	public String getUUID() {

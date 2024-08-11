@@ -49,7 +49,7 @@ public interface TCPShieldPlugin {
 			String[] versionParts = jvmVersion.split("\\.");
 			int baseVersion = Integer.parseInt(versionParts[0]);
 			if (baseVersion < 11) // Java 8, and below, starts with 1, but since we are using Java 11 we can ignore sub values
-				this.getDebugger().warn("The Java version you are running is outdated for TCPShield and may cause issues. Update to atleast Java 11. Your version: Java %s", jvmVersion);
+				this.getDebugger().warn("The Java version you are running is outdated for TCPShield and may cause issues. Update to at least Java 11. Your version: Java %s", jvmVersion);
 		} catch (Throwable t) {
 			this.getDebugger().error("Failed to check java version for string: " + jvmVersion);
 		}
