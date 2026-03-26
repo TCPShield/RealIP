@@ -4,10 +4,8 @@ import com.velocitypowered.api.proxy.InboundConnection;
 import net.tcpshield.tcpshield.provider.PacketProvider;
 import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PacketManipulationException;
-import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
-
 import java.lang.reflect.Field;
 
 /**
