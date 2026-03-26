@@ -1,6 +1,5 @@
 package net.tcpshield.tcpshield.bukkit;
 
-import java.util.logging.Logger;
 import net.tcpshield.tcpshield.TCPShieldPacketHandler;
 import net.tcpshield.tcpshield.TCPShieldPlugin;
 import net.tcpshield.tcpshield.bukkit.paper.BukkitPaper;
@@ -12,6 +11,7 @@ import net.tcpshield.tcpshield.util.Debugger;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.util.logging.Logger;
 
 /**
  * The entry point for Bukkit servers
