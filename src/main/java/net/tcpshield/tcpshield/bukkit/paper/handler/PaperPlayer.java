@@ -1,6 +1,7 @@
 package net.tcpshield.tcpshield.bukkit.paper.handler;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
+import net.kyori.adventure.text.Component;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
 import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationException;
 
@@ -57,7 +58,7 @@ public class PaperPlayer implements PlayerProvider {
 	@Override
 	public void disconnect() {
 		handshakeEvent.setCancelled(false); // Caused issues with newer versions of Paper (Thanks https://github.com/realDragonium)
-		handshakeEvent.setFailMessage("Connection failed. Please try again or contact an administrator.");
+		handshakeEvent.failMessage(Component.text("Connection failed. Please try again or contact an administrator."));
 		handshakeEvent.setFailed(true);
 	}
 

@@ -8,9 +8,6 @@ build/
 
 # Gradle
 .gradle/
-gradle/
-gradlew
-gradlew.bat
+.gradle-user-home/
 
 libs/
-

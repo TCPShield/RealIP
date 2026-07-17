@@ -31,10 +31,19 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 			debugger = Debugger.createDebugger(this);
 			packetHandler = new TCPShieldPacketHandler(this);
 
-			// check force plib option -> paper -> plib -> error
-			if (this.configProvider.preferProtocolLib() && getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+			// Folia always uses Paper's native handshake event. It runs before a
+			// Bukkit Player exists and does not touch region-owned game state.
+			if (BukkitImplProvider.isFolia()) {
+				if (!BukkitImplProvider.hasPaperEvent()) {
+					throw new InitializationException("Folia is missing Paper's PlayerHandshakeEvent");
+				}
+				if (this.configProvider.preferProtocolLib()) {
+					getLogger().warning("Ignoring prefer-protocollib on Folia; using Paper's native handshake event.");
+				}
+				bukkitImpl = new BukkitPaper(this);
+			} else if (this.configProvider.preferProtocolLib() && getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
 				try {
-					String[] protocolLibVersion = getServer().getPluginManager().getPlugin("ProtocolLib").getDescription().getVersion().split("-")[0].split("\\.");
+					String[] protocolLibVersion = getServer().getPluginManager().getPlugin("ProtocolLib").getPluginMeta().getVersion().split("-")[0].split("\\.");
 					int major = Integer.parseInt(protocolLibVersion[0]);
 					int minor = Integer.parseInt(protocolLibVersion[1]);
 					int patch = Integer.parseInt(protocolLibVersion[2]);

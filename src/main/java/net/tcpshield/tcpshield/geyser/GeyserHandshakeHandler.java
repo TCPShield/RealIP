@@ -5,6 +5,7 @@ import org.geysermc.floodgate.api.InstanceHolder;
 
 import java.util.Arrays;
 
+@SuppressWarnings("deprecation") // Floodgate exposes no replacement handshake mutation API yet.
 public class GeyserHandshakeHandler {
 
 	private final TCPShieldPlugin plugin;

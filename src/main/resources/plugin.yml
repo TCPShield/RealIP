@@ -1,9 +1,13 @@
 name: TCPShield
-version: 2.8.1
+version: ${version}
 main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
+api-version: '26.1.2'
+folia-supported: true
 softdepend:
-- ProtocolLib
-- floodgate
-author: https://tcpshield.com
-description: TCPShield IP parsing capabilities for Velocity
-api-version: 1.16
+  - ProtocolLib
+  - floodgate
+authors:
+  - TCPShield
+  - Luxorium
+website: https://github.com/Luxorium/RealIP
+description: TCPShield real-IP validation for Paper and Folia 26.1.2.

@@ -37,4 +37,20 @@ public abstract class BukkitImplProvider {
 		}
 	}
 
+	/**
+	 * Checks whether the plugin is running on Folia. Folia must use Paper's
+	 * native handshake event so packet processing stays independent of
+	 * ProtocolLib's server-thread assumptions.
+	 *
+	 * @return whether Folia's regionized server implementation is present
+	 */
+	public static boolean isFolia() {
+		try {
+			Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
 }

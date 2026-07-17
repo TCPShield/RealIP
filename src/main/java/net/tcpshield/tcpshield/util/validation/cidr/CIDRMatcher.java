@@ -31,28 +31,28 @@ public abstract class CIDRMatcher {
 	private final InetAddress cidrAddress;
 
 	private CIDRMatcher(String cidrMatchString) {
-		String[] split = cidrMatchString.split("/");
-
-		String parsedIPAddress;
-		if (split.length != 0) {
-			parsedIPAddress = split[0];
-
-			this.maskBits = Integer.parseInt(split[1]);
-			this.simpleCIDR = maskBits == 32;
-		} else {
-			parsedIPAddress = cidrMatchString;
-
-			this.maskBits = -1;
-			this.simpleCIDR = true;
+		String[] split = cidrMatchString.split("/", -1);
+		if (split.length > 2 || split[0].isBlank()) {
+			throw new CIDRException("Invalid CIDR: " + cidrMatchString);
 		}
-
-		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
-
 		try {
-			cidrAddress = InetAddress.getByName(parsedIPAddress);
-		} catch (UnknownHostException e) {
+			cidrAddress = InetAddress.getByName(split[0]);
+		} catch (UnknownHostException | SecurityException e) {
 			throw new CIDRException(e);
 		}
+
+		int addressBits = cidrAddress.getAddress().length * Byte.SIZE;
+		try {
+			maskBits = split.length == 2 ? Integer.parseInt(split[1]) : addressBits;
+		} catch (NumberFormatException e) {
+			throw new CIDRException("Invalid CIDR mask: " + cidrMatchString, e);
+		}
+		if (maskBits < 0 || maskBits > addressBits) {
+			throw new CIDRException("CIDR mask is outside 0-" + addressBits + ": " + cidrMatchString);
+		}
+
+		simpleCIDR = maskBits == addressBits;
+		maskBytes = maskBits / Byte.SIZE;
 	}
 
 	/**

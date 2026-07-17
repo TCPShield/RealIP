@@ -7,6 +7,7 @@ import net.tcpshield.tcpshield.util.ReflectionUtil;
 import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationException;
 import net.tcpshield.tcpshield.util.exception.phase.InitializationException;
 import net.tcpshield.tcpshield.util.exception.phase.ReflectionException;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.net.InetSocketAddress;
@@ -85,7 +86,7 @@ public class ProtocolLibPlayer implements PlayerProvider {
 
 	@Override
 	public void disconnect() {
-		player.kickPlayer("");
+		player.kick(Component.empty());
 	}
 
 }

@@ -1,34 +1,41 @@
-# TCPShield
-TCPShield is the plugin for the same named DDoS mitigation service [TCPShield](https://tcpshield.com).
+# TCPShield RealIP — Luxorium Folia fork
 
-This plugin is responsible for validating clients join via the TCPShield network.
-It also parses passed IP addresses so the server is aware of the real player IP address.  
+This is Luxorium's fork of [TCPShield/RealIP](https://github.com/TCPShield/RealIP), updated for Paper and Folia 26.1.2. It validates TCPShield handshake payloads, rejects unauthorized direct connections when configured to do so, and replaces the proxy address with the player's real address.
 
-### Compatibility
+## Compatibility
 
-TCPShield is compatible with Spigot / CraftBukkit, BungeeCord and Velocity.
+- Folia 26.1.2 and Paper 26.1.2
+- Java 25 or newer
+- BungeeCord and Velocity entry points are retained from upstream
+- Floodgate support remains optional
+- ProtocolLib remains an optional fallback for non-Folia Bukkit servers
 
-When using Spigot / CraftBukkit, [ProtocolLib](https://github.com/aadnk/ProtocolLib) needs to be installed.
+Folia always uses Paper's native `PlayerHandshakeEvent`. The handler does not access entities, chunks, worlds, or Bukkit schedulers, so it does not cross region ownership boundaries. See [the Folia compatibility notes](docs/FOLIA.md) for details.
 
-### Setup
-Setting up the plugin is easy as pie. Please follow [these](https://docs.tcpshield.com/panel/tcpshield-plugin) guidelines. 
+## Installation
 
-### Compiling
-In order to compile TCPShield, [install Gradle](https://docs.gradle.org/current/userguide/installation.html) and run the following command in the project folder:
+1. Build the plugin or obtain the fork's release JAR.
+2. Put the JAR on the public frontend that receives TCPShield connections.
+3. Start the server once and review `plugins/TCPShield/config.yml`.
+4. Keep `only-allow-proxy-connections: true` in production.
+5. Firewall the backend so the Minecraft port accepts traffic only from TCPShield's published networks.
+
+Do not install the plugin on both a proxy and its downstream game server. Install it only on the frontend that receives TCPShield's handshake.
+
+## Building
+
+The repository includes a pinned Gradle wrapper. Keep Gradle's cache inside the repository when building in a sandbox:
+
+```bash
+GRADLE_USER_HOME=.gradle-user-home ./gradlew clean build
 ```
-gradle build
-```
 
-The dependencies should install themselves automatically. After the build has finished, the compiled jar file can be found under `/build/libs`.
+The reproducible JAR is written to `build/libs/TCPShield-Folia-2.9.0-folia.1.jar`.
 
-### Support
-See [Contact](https://tcpshield.com/#contact)
+## Upstream service documentation
 
-### Contributors
+Follow TCPShield's [plugin setup guide](https://docs.tcpshield.com/panel/tcpshield-plugin) and [backend setup checklist](https://docs.tcpshield.com/troubleshooting/setup-checklist). This fork is maintained by Luxorium and is not an official TCPShield release.
 
-These wonderful contributors have helped TCPShield make this plugin better! 
+## License
 
-* [Dylan Keir](https://github.com/DylanKeir)
-* [Paul Zhang](https://github.com/paulzhng)
-* [RyanDeLap](https://github.com/RyanDeLap)
-* [PlumpOrange](https://github.com/xPlumpOrange/)
+The upstream project and this fork are available under the MIT License. See [LICENSE](LICENSE).

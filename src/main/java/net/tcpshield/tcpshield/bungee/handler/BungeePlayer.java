@@ -20,7 +20,7 @@ public class BungeePlayer implements PlayerProvider {
 
 	public BungeePlayer(PendingConnection pendingConnection) {
 		this.pendingConnection = pendingConnection;
-		this.ip = pendingConnection.getAddress().getAddress().getHostAddress();
+		this.ip = ((InetSocketAddress) pendingConnection.getSocketAddress()).getAddress().getHostAddress();
 	}
 
 

@@ -12,6 +12,7 @@ import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
 /**
  * The handshake handler for Velocity
  */
+@SuppressWarnings("deprecation") // PostOrder preserves the ordering contract supported by upstream RealIP.
 public class VelocityHandshakeHandler {
 
 	private final TCPShieldPlugin plugin;
