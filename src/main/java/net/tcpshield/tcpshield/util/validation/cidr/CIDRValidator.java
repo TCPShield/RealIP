@@ -5,7 +5,9 @@ import net.tcpshield.tcpshield.util.exception.phase.CIDRException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,10 +29,9 @@ public class CIDRValidator {
 		this.plugin = plugin;
 
 		ipWhitelistFolder = new File(plugin.getConfigProvider().getDataFolder(), "ip-whitelist");
-		if (!ipWhitelistFolder.exists())
-			ipWhitelistFolder.mkdir();
 
 		try {
+			Files.createDirectories(ipWhitelistFolder.toPath());
 			List<String> whitelists = loadWhitelists();
 			cidrMatchers = loadCIDRMatchers(whitelists);
 		} catch (Exception e) {
@@ -55,8 +56,12 @@ public class CIDRValidator {
 
 	private List<String> loadWhitelists() throws FileNotFoundException {
 		List<String> whitelists = new ArrayList<>();
+		File[] whitelistFiles = ipWhitelistFolder.listFiles();
+		if (whitelistFiles == null) {
+			throw new CIDRException(new IOException("Unable to list whitelist directory: " + ipWhitelistFolder));
+		}
 
-		for (File file : Objects.requireNonNull(ipWhitelistFolder.listFiles())) {
+		for (File file : whitelistFiles) {
 			if (file.isDirectory())
 				continue;
 

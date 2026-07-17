@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.tcpshield.tcpshield'
-version = '2.9.0-folia.1'
+version = '2.9.0-folia.2'
 def pluginVersion = version.toString()
 
 base {

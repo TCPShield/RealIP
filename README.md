@@ -30,7 +30,7 @@ The repository includes a pinned Gradle wrapper. Keep Gradle's cache inside the 
 GRADLE_USER_HOME=.gradle-user-home ./gradlew clean build
 ```
 
-The reproducible JAR is written to `build/libs/TCPShield-Folia-2.9.0-folia.1.jar`.
+The reproducible JAR is written to `build/libs/TCPShield-Folia-2.9.0-folia.2.jar`.
 
 ## Upstream service documentation
 

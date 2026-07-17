@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Always select Paper's native handshake event on Folia, ignoring the ProtocolLib preference there.
 - Make the concurrent handshake IP allowlist cache thread-safe.
 - Accept bare IPv4 and IPv6 addresses as single-host allowlist entries and reject invalid masks cleanly.
+- Fail with a descriptive CIDR initialization error when the whitelist directory cannot be created or listed.
 - Use current Paper Adventure disconnect messages and current BungeeCord socket-address accessors.
 - Resolve ProtocolLib, BungeeCord, Velocity, and Floodgate APIs from Maven instead of requiring a local JAR.
 
