@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A CIDR validator for TCPShield
@@ -20,10 +19,9 @@ public class CIDRValidator {
 
 	private final File ipWhitelistFolder;
 
+	// Effectively immutable after construction, so concurrent handshakes on Folia's
+	// network threads can read it without synchronisation.
 	private final List<CIDRMatcher> cidrMatchers;
-	// Handshake events can run concurrently on network threads. A concurrent set
-	// avoids corrupting the cache without introducing a global connection lock.
-	private final Set<String> cache = ConcurrentHashMap.newKeySet();
 
 	public CIDRValidator(TCPShieldPlugin plugin) throws CIDRException {
 		this.plugin = plugin;
@@ -51,7 +49,8 @@ public class CIDRValidator {
 				plugin.getDebugger().exception(e);
 			}
 
-		return matchers;
+		// Frozen so the final field is safely published to every network thread.
+		return List.copyOf(matchers);
 	}
 
 	private List<String> loadWhitelists() throws FileNotFoundException {
@@ -82,16 +81,12 @@ public class CIDRValidator {
 	 * @return Boolean stating if the InetAddress is validated with CIDR
 	 */
 	public boolean validate(InetAddress inetAddress) {
-		String ip = inetAddress.getHostAddress();
-
-		if (cache.contains(ip))
-			return true;
-
-		for (CIDRMatcher cidrMatcher : cidrMatchers)
-			if (cidrMatcher.match(inetAddress)) {
-				cache.add(ip);
+		// Matching is a handful of byte comparisons per entry. A memoisation cache
+		// keyed on the source IP would cost a string allocation per call and grow
+		// without bound under attacker-chosen addresses, so match directly.
+		for (int i = 0, size = cidrMatchers.size(); i < size; i++)
+			if (cidrMatchers.get(i).match(inetAddress))
 				return true;
-			}
 
 		return false;
 	}

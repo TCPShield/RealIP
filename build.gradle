@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.tcpshield.tcpshield'
-version = '2.9.0-folia.2'
+version = '2.9.0-folia.3'
 def pluginVersion = version.toString()
 
 base {
@@ -13,9 +13,10 @@ base {
 
 java {
     toolchain {
-        // Use the current JDK 26 compiler; --release 25 below keeps the
-        // resulting plugin compatible with the Java 25 server baseline.
-        languageVersion = JavaLanguageVersion.of(26)
+        // Folia 26.2's baseline is Java 25, and --release 25 below pins the
+        // bytecode target regardless of compiler version. Requiring JDK 25
+        // (rather than 26) lets the plugin build on the same JDK that runs it.
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -39,8 +40,8 @@ repositories {
 }
 
 dependencies {
-    // Exact Paper/Folia API build used by the Luxorium 26.1.2 plugin suite.
-    compileOnly 'io.papermc.paper:paper-api:26.1.2.build.74-stable'
+    // Exact Paper/Folia API build used by the Luxorium 26.2 plugin suite.
+    compileOnly 'io.papermc.paper:paper-api:26.2.build.92-stable'
 
     // Retained for compatibility on non-Folia Bukkit servers. Folia always uses
     // Paper's native handshake event and never selects the ProtocolLib handler.

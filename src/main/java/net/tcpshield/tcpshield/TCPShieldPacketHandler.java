@@ -21,11 +21,16 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Packet handler for TCPShield's plugins
  */
 public class TCPShieldPacketHandler {
+
+	// "///" is too long for String.split's single-character fast path, so calling
+	// it directly would compile a fresh Pattern for every connection.
+	private static final Pattern PAYLOAD_SEPARATOR = Pattern.compile("///");
 
 	private final TCPShieldPlugin plugin;
 
@@ -89,13 +94,15 @@ public class TCPShieldPacketHandler {
 	 */
 	public void handleHandshake(PacketProvider packet, PlayerProvider player) throws HandshakeException {
 		try {
-			InetAddress inetAddress = InetAddress.getByName(player.getIP());
-
 			String extraData = null;
-			String[] payload = packet.getPayloadString().split("///");
+			String[] payload = PAYLOAD_SEPARATOR.split(packet.getPayloadString());
 
+			// Only unrecognised payloads need the source address resolved. Keeping
+			// InetAddress.getByName off the common path matters on Folia: the
+			// handshake runs on a Netty event-loop thread, where a name lookup that
+			// is not a literal address blocks every other connection on that loop.
 			if (payload.length != 4)
-				if (cidrValidator.validate(inetAddress))
+				if (cidrValidator.validate(InetAddress.getByName(player.getIP())))
 					return; // Allow connection with no processing
 				else
 					throw new InvalidPayloadException("length: " + payload.length + ", payload: " + Arrays.toString(payload) + ", raw payload: " + packet.getPayloadString());

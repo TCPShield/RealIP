@@ -1,7 +1,7 @@
 name: TCPShield
 version: ${version}
 main: net.tcpshield.tcpshield.bukkit.TCPShieldBukkit
-api-version: '26.1.2'
+api-version: '26.2'
 folia-supported: true
 softdepend:
   - ProtocolLib
@@ -10,4 +10,4 @@ authors:
   - TCPShield
   - Luxorium
 website: https://github.com/Luxorium/RealIP
-description: TCPShield real-IP validation for Paper and Folia 26.1.2.
+description: TCPShield real-IP validation for Paper and Folia 26.2.

@@ -24,4 +24,15 @@ public abstract class TCPShieldException extends RuntimeException {
 		super();
 	}
 
+
+	/**
+	 * For exceptions raised per rejected connection, where the throw site is fixed
+	 * and capturing a stack trace is pure overhead on the network threads.
+	 *
+	 * @param writableStackTrace Whether to capture a stack trace
+	 */
+	protected TCPShieldException(String message, Throwable throwable, boolean writableStackTrace) {
+		super(message, throwable, true, writableStackTrace);
+	}
+
 }

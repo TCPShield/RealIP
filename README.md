@@ -1,10 +1,10 @@
 # TCPShield RealIP — Luxorium Folia fork
 
-This is Luxorium's fork of [TCPShield/RealIP](https://github.com/TCPShield/RealIP), updated for Paper and Folia 26.1.2. It validates TCPShield handshake payloads, rejects unauthorized direct connections when configured to do so, and replaces the proxy address with the player's real address.
+This is Luxorium's fork of [TCPShield/RealIP](https://github.com/TCPShield/RealIP), updated for Paper and Folia 26.2. It validates TCPShield handshake payloads, rejects unauthorized direct connections when configured to do so, and replaces the proxy address with the player's real address.
 
 ## Compatibility
 
-- Folia 26.1.2 and Paper 26.1.2
+- Folia 26.2 and Paper 26.2
 - Java 25 or newer
 - BungeeCord and Velocity entry points are retained from upstream
 - Floodgate support remains optional
@@ -30,7 +30,7 @@ The repository includes a pinned Gradle wrapper. Keep Gradle's cache inside the 
 GRADLE_USER_HOME=.gradle-user-home ./gradlew clean build
 ```
 
-The reproducible JAR is written to `build/libs/TCPShield-Folia-2.9.0-folia.2.jar`.
+The reproducible JAR is written to `build/libs/TCPShield-Folia-2.9.0-folia.3.jar`.
 
 ## Upstream service documentation
 

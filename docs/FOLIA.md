@@ -1,4 +1,4 @@
-# Folia 26.1.2 compatibility
+# Folia 26.2 compatibility
 
 ## Native handshake path
 
@@ -15,20 +15,22 @@ It does not access region-owned entities, chunks, blocks, or worlds. It does not
 
 ## Concurrency
 
-Multiple connections can be processed concurrently. The IP allowlist cache therefore uses a concurrent set. Signature validation creates a new JCA `Signature` object for every validation while sharing only the immutable public key.
+Multiple connections can be processed concurrently. The handler keeps no mutable shared state: the IP allowlist is frozen at startup and only read afterwards, and signature validation creates a new JCA `Signature` object per validation while sharing only the immutable public key.
 
-The optional `htpdate` initialization performs its network request outside Folia region threads and publishes its offset through a volatile field.
+The handshake runs on a Netty event-loop thread, so it must not block. Address resolution is therefore confined to the unrecognised-payload branch, where the allowlist is consulted; a valid TCPShield payload is authenticated by its signature and never triggers a name lookup.
+
+The optional `htpdate` initialization performs its network request on a dedicated daemon thread with connect and read timeouts, and publishes its offset through a volatile field. If synchronization fails the offset stays at zero, degrading to plain system time rather than rejecting connections.
 
 ## Metadata and runtime baseline
 
 The Bukkit descriptor declares:
 
 ```yaml
-api-version: '26.1.2'
+api-version: '26.2'
 folia-supported: true
 ```
 
-The project compiles against `paper-api:26.1.2.build.74-stable` and emits Java 25 bytecode.
+The project compiles against `paper-api:26.2.build.92-stable` and emits Java 25 bytecode.
 
 ## Deployment checks
 
