@@ -1,5 +1,6 @@
 package net.tcpshield.tcpshield;
 
+import net.tcpshield.tcpshield.geyser.GeyserUtils;
 import net.tcpshield.tcpshield.provider.ConfigProvider;
 import net.tcpshield.tcpshield.provider.PacketProvider;
 import net.tcpshield.tcpshield.provider.PlayerProvider;
@@ -9,15 +10,22 @@ import net.tcpshield.tcpshield.util.exception.manipulate.PlayerManipulationExcep
 import net.tcpshield.tcpshield.util.exception.parse.InvalidPayloadException;
 import net.tcpshield.tcpshield.util.exception.parse.TimestampValidationException;
 import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
+import net.tcpshield.tcpshield.util.validation.SignatureValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,6 +63,11 @@ public class TCPShieldPacketHandlerTest {
 	public void setUp() throws Exception {
 		onlyProxy = true;
 		handler = createHandler();
+	}
+
+	@AfterEach
+	public void tearDown() {
+		GeyserUtils.GEYSER_SUPPORT_ENABLED = false;
 	}
 
 	private TCPShieldPacketHandler createHandler() throws Exception {
@@ -288,6 +301,112 @@ public class TCPShieldPacketHandlerTest {
 		assertThrows(HandshakeException.class, () -> handler.handleHandshake(new TestPacket("example.com"), player));
 
 		assertTrue(player.disconnected);
+	}
+
+	/**
+	 * Replaces the signature validator with one that accepts everything and records what it was asked to validate
+	 */
+	private List<String> acceptAnySignature() throws Exception {
+		List<String> validated = new ArrayList<>();
+
+		Field field = TCPShieldPacketHandler.class.getDeclaredField("signatureValidator");
+		field.setAccessible(true);
+		field.set(handler, new SignatureValidator() {
+
+			@Override
+			public boolean validate(String str, String signature) {
+				validated.add(str);
+				return true;
+			}
+
+		});
+
+		return validated;
+	}
+
+	private void assertClientAddress(String ipData, String expectedHost, int expectedPort) throws Exception {
+		List<String> validated = acceptAnySignature();
+		long now = System.currentTimeMillis() / 1000;
+		TestPacket packet = new TestPacket("example.com///" + ipData + "///" + now + "///signature");
+		TestPlayer player = new TestPlayer(CLIENT_IP);
+
+		handler.handleHandshake(packet, player);
+
+		assertEquals(new InetSocketAddress(InetAddress.getByName(expectedHost), expectedPort), player.newIP);
+		assertEquals("example.com", packet.hostname);
+		assertEquals(List.of("example.com///" + ipData + "///" + now), validated);
+		assertFalse(player.disconnected);
+	}
+
+	@Test
+	public void ipv4ClientAddressIsApplied() throws Exception {
+		assertClientAddress("203.0.113.7:25565", "203.0.113.7", 25565);
+	}
+
+	@Test
+	public void rawIPv6ClientAddressIsApplied() throws Exception {
+		assertClientAddress("2001:db8::1:25565", "2001:db8::1", 25565);
+		assertClientAddress("2001:db8:0:0:0:0:0:1:1234", "2001:db8::1", 1234);
+		assertClientAddress("::1:25565", "::1", 25565);
+	}
+
+	@Test
+	public void bracketedIPv6ClientAddressIsApplied() throws Exception {
+		assertClientAddress("[2001:db8::1]:25565", "2001:db8::1", 25565);
+		assertClientAddress("[::1]:1", "::1", 1);
+	}
+
+	@Test
+	public void ipv4MappedIPv6ClientAddressIsApplied() throws Exception {
+		assertClientAddress("::ffff:203.0.113.7:25565", "203.0.113.7", 25565);
+		assertClientAddress("[::ffff:203.0.113.7]:25565", "203.0.113.7", 25565);
+		assertTrue(TCPShieldPacketHandler.parseClientAddress("::ffff:203.0.113.7:25565").getAddress() instanceof Inet4Address);
+	}
+
+	@Test
+	public void ipv6ClientAddressOverGeyserIsApplied() throws Exception {
+		GeyserUtils.GEYSER_SUPPORT_ENABLED = true;
+		TestPacket packet = new TestPacket("2001:db8::1:0///" + GeyserUtils.SESSION_SECRET + "///0///example.com");
+		TestPlayer player = new TestPlayer(CLIENT_IP);
+
+		handler.handleHandshake(packet, player);
+
+		assertEquals(new InetSocketAddress(InetAddress.getByName("2001:db8::1"), 0), player.newIP);
+		assertEquals("example.com", packet.hostname);
+	}
+
+	@Test
+	public void malformedClientAddressesAreRejected() throws Exception {
+		acceptAnySignature();
+		String[] malformed = {
+				"1.2.3.4",
+				"2001:db8::1",
+				"[2001:db8::1]",
+				"1.2.3.4:",
+				":25565",
+				"[]:25565",
+				"[:25565",
+				"]:25565",
+				"[2001:db8::1:25565",
+				"2001:db8::1]:25565",
+				"1.2.3.4:port",
+				"[2001:db8::1]:port",
+				"1.2.3.4:99999",
+				"1.2.3.4:-1",
+				":"
+		};
+
+		for (String ipData : malformed) {
+			long now = System.currentTimeMillis() / 1000;
+			TestPacket packet = new TestPacket("example.com///" + ipData + "///" + now + "///signature");
+			TestPlayer player = new TestPlayer(CLIENT_IP);
+
+			assertThrows(HandshakeException.class, () -> handler.handleHandshake(packet, player), ipData);
+
+			assertTrue(player.disconnected, ipData);
+			assertNull(player.newIP, ipData);
+			assertNull(packet.hostname, ipData);
+		}
 	}
 
 }
