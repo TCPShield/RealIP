@@ -34,7 +34,7 @@ public abstract class CIDRMatcher {
 		String[] split = cidrMatchString.split("/");
 
 		String parsedIPAddress;
-		if (split.length != 0) {
+		if (split.length > 1) {
 			parsedIPAddress = split[0];
 
 			this.maskBits = Integer.parseInt(split[1]);
@@ -45,6 +45,9 @@ public abstract class CIDRMatcher {
 			this.maskBits = -1;
 			this.simpleCIDR = true;
 		}
+
+		if (parsedIPAddress.isEmpty())
+			throw new CIDRException("Empty CIDR entry");
 
 		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
 
