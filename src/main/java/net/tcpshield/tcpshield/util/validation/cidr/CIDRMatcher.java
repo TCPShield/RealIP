@@ -34,25 +34,33 @@ public abstract class CIDRMatcher {
 		String[] split = cidrMatchString.split("/");
 
 		String parsedIPAddress;
-		if (split.length != 0) {
+		if (split.length > 1) {
 			parsedIPAddress = split[0];
 
 			this.maskBits = Integer.parseInt(split[1]);
-			this.simpleCIDR = maskBits == 32;
+			if (maskBits < 0)
+				throw new CIDRException("Invalid mask: " + split[1]);
 		} else {
 			parsedIPAddress = cidrMatchString;
 
 			this.maskBits = -1;
-			this.simpleCIDR = true;
 		}
 
-		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
+		if (parsedIPAddress.isEmpty())
+			throw new CIDRException("Empty CIDR entry");
 
 		try {
 			cidrAddress = InetAddress.getByName(parsedIPAddress);
 		} catch (UnknownHostException e) {
 			throw new CIDRException(e);
 		}
+
+		int addressBits = cidrAddress.getAddress().length * 8;
+		if (maskBits > addressBits)
+			throw new CIDRException("Invalid mask: " + maskBits + " is longer than the " + addressBits + " bit address " + parsedIPAddress);
+
+		this.simpleCIDR = maskBits == -1 || maskBits == addressBits;
+		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
 	}
 
 	/**
