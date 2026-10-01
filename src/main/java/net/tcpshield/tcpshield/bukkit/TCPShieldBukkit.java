@@ -39,8 +39,8 @@ public class TCPShieldBukkit extends JavaPlugin implements TCPShieldPlugin {
 					int minor = Integer.parseInt(protocolLibVersion[1]);
 					int patch = Integer.parseInt(protocolLibVersion[2]);
 
-					String paperVersion = Bukkit.getServer().getMinecraftVersion();
-					if (major <= 5 && minor <= 2 && patch <= 1 && (paperVersion.equals("1.20.5") || paperVersion.equals("1.20.6"))) {
+					String minecraftVersion = Bukkit.getBukkitVersion().split("-")[0];
+					if (BukkitImplProvider.hasPaperEvent() && major <= 5 && minor <= 2 && patch <= 1 && (minecraftVersion.equals("1.20.5") || minecraftVersion.equals("1.20.6"))) {
 						getLogger().severe("TCPShield is incompatible with ProtocolLib <= 5.2.1 on Paper 1.20.5/1.20.6 due to lack of support from ProtocolLib. Reverting to default Paper handler to prevent issues. This error can be avoided by disabling 'prefer-protocollib' in the config.");
 						bukkitImpl = new BukkitPaper(this);
 					} else {

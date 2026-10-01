@@ -109,7 +109,7 @@ public class TCPShieldPacketHandler {
 
 			String hostname = payload[0];
 			String ipData = payload[1];
-			int timestamp = Integer.parseInt(payload[2]);
+			long timestamp = Long.parseLong(payload[2]);
 			String signature = payload[3];
 
 			String[] ipParts;
