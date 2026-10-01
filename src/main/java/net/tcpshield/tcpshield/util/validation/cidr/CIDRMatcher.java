@@ -38,24 +38,23 @@ public abstract class CIDRMatcher {
 			parsedIPAddress = split[0];
 
 			this.maskBits = Integer.parseInt(split[1]);
-			this.simpleCIDR = maskBits == 32;
 		} else {
 			parsedIPAddress = cidrMatchString;
 
 			this.maskBits = -1;
-			this.simpleCIDR = true;
 		}
 
 		if (parsedIPAddress.isEmpty())
 			throw new CIDRException("Empty CIDR entry");
-
-		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
 
 		try {
 			cidrAddress = InetAddress.getByName(parsedIPAddress);
 		} catch (UnknownHostException e) {
 			throw new CIDRException(e);
 		}
+
+		this.simpleCIDR = maskBits == -1 || maskBits == cidrAddress.getAddress().length * 8;
+		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
 	}
 
 	/**

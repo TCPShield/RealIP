@@ -31,4 +31,24 @@ public class CIDRMatcherTest {
 		assertThrows(CIDRException.class, () -> CIDRMatcher.create(""));
 	}
 
+	@Test
+	public void ipv6PrefixOf32BitsMatchesTheWholePrefix() throws UnknownHostException {
+		assertTrue(matches("2001:db8::/32", "2001:db8::"));
+		assertTrue(matches("2001:db8::/32", "2001:db8:ffff:ffff:ffff:ffff:ffff:ffff"));
+		assertFalse(matches("2001:db8::/32", "2001:db9::"));
+		assertFalse(matches("2001:db8::/32", "2002:db8::"));
+	}
+
+	@Test
+	public void ipv6PrefixOf128BitsMatchesOnlyItself() throws UnknownHostException {
+		assertTrue(matches("2001:db8::1/128", "2001:db8::1"));
+		assertFalse(matches("2001:db8::1/128", "2001:db8::2"));
+	}
+
+	@Test
+	public void ipv4PrefixOf32BitsMatchesOnlyItself() throws UnknownHostException {
+		assertTrue(matches("203.0.113.7/32", "203.0.113.7"));
+		assertFalse(matches("203.0.113.7/32", "203.0.113.8"));
+	}
+
 }
