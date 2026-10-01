@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A CIDR validator for TCPShield
@@ -18,7 +19,7 @@ public class CIDRValidator {
 	private final File ipWhitelistFolder;
 
 	private final List<CIDRMatcher> cidrMatchers;
-	private final Set<String> cache = new HashSet<>(); // Max potential size is equilivent to the amount of whitelisted IP's
+	private final Set<String> cache = ConcurrentHashMap.newKeySet(); // Max potential size is equilivent to the amount of whitelisted IP's
 
 	public CIDRValidator(TCPShieldPlugin plugin) throws CIDRException {
 		this.plugin = plugin;
