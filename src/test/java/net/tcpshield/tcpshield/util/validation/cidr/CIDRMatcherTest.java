@@ -51,4 +51,15 @@ public class CIDRMatcherTest {
 		assertFalse(matches("203.0.113.7/32", "203.0.113.8"));
 	}
 
+	@Test
+	public void masksLongerThanTheAddressAreRejected() {
+		assertThrows(CIDRException.class, () -> CIDRMatcher.create("203.0.113.0/33"));
+		assertThrows(CIDRException.class, () -> CIDRMatcher.create("2001:db8::/129"));
+	}
+
+	@Test
+	public void negativeMasksAreRejected() {
+		assertThrows(CIDRException.class, () -> CIDRMatcher.create("203.0.113.0/-1"));
+	}
+
 }

@@ -38,6 +38,8 @@ public abstract class CIDRMatcher {
 			parsedIPAddress = split[0];
 
 			this.maskBits = Integer.parseInt(split[1]);
+			if (maskBits < 0)
+				throw new CIDRException("Invalid mask: " + split[1]);
 		} else {
 			parsedIPAddress = cidrMatchString;
 
@@ -53,7 +55,11 @@ public abstract class CIDRMatcher {
 			throw new CIDRException(e);
 		}
 
-		this.simpleCIDR = maskBits == -1 || maskBits == cidrAddress.getAddress().length * 8;
+		int addressBits = cidrAddress.getAddress().length * 8;
+		if (maskBits > addressBits)
+			throw new CIDRException("Invalid mask: " + maskBits + " is longer than the " + addressBits + " bit address " + parsedIPAddress);
+
+		this.simpleCIDR = maskBits == -1 || maskBits == addressBits;
 		this.maskBytes = simpleCIDR ? -1 : maskBits / 8;
 	}
 
