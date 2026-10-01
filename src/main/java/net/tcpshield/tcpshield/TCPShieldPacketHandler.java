@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
@@ -127,7 +129,7 @@ public class TCPShieldPacketHandler {
 				host = ipParts[0];
 				port = Integer.parseInt(ipParts[1]);
 
-				if (!signature.equals(GeyserUtils.SESSION_SECRET)) {
+				if (!MessageDigest.isEqual(signature.getBytes(StandardCharsets.UTF_8), GeyserUtils.SESSION_SECRET.getBytes(StandardCharsets.UTF_8))) {
 					throw new InvalidSecretException("Invalid secret: " + signature);
 				}
 			} else {
