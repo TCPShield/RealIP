@@ -46,3 +46,4 @@ These wonderful contributors have helped TCPShield make this plugin better!
 * [Paul Zhang](https://github.com/paulzhng)
 * [RyanDeLap](https://github.com/RyanDeLap)
 * [PlumpOrange](https://github.com/xPlumpOrange/)
+* [Lewis Gibson](https://github.com/lewisgibson)
