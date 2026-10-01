@@ -112,29 +112,17 @@ public class TCPShieldPacketHandler {
 			long timestamp = Long.parseLong(payload[2]);
 			String signature = payload[3];
 
-			String[] ipParts;
-			String host;
-			int port;
-
 			if (timestamp == 0 && GeyserUtils.GEYSER_SUPPORT_ENABLED) {
 				// Remap the altered layout
 				ipData = payload[0];
 				signature = payload[1];
 				hostname = payload[3];
 
-				// This is annoying having to have this in both blocks but w/e
-				ipParts = ipData.split(":");
-				host = ipParts[0];
-				port = Integer.parseInt(ipParts[1]);
-
 				if (!signature.equals(GeyserUtils.SESSION_SECRET)) {
 					throw new InvalidSecretException("Invalid secret: " + signature);
 				}
 			} else {
-				ipParts = ipData.split(":");
-				host = ipParts[0];
-				port = Integer.parseInt(ipParts[1]);
-				String reconstructedPayload = hostname + "///" + host + ":" + port + "///" + timestamp;
+				String reconstructedPayload = hostname + "///" + ipData + "///" + timestamp;
 
 				if (!timestampValidator.validate(timestamp))
 					throw new TimestampValidationException(timestampValidator, timestamp);
@@ -144,7 +132,7 @@ public class TCPShieldPacketHandler {
 					throw new SignatureValidationException();
 			}
 
-			InetSocketAddress newIP = new InetSocketAddress(host, port);
+			InetSocketAddress newIP = parseClientAddress(ipData);
 			player.setIP(newIP);
 
 			if (extraData != null) hostname = hostname + extraData;
@@ -201,6 +189,38 @@ public class TCPShieldPacketHandler {
 			else
 				throw e;
 		}
+	}
+
+	/**
+	 * Parses the "ip:port" pair of a handshake payload. The pair is split at the last colon so an IPv6 address,
+	 * with or without brackets, is kept whole
+	 *
+	 * @param ipData The "ip:port" pair
+	 * @return The client address
+	 * @throws InvalidPayloadException Thrown when the pair has no port or its address is not valid
+	 */
+	static InetSocketAddress parseClientAddress(String ipData) throws InvalidPayloadException {
+		int separator = ipData.lastIndexOf(':');
+		if (separator == -1)
+			throw new InvalidPayloadException("no port in client address: " + ipData);
+
+		String host = ipData.substring(0, separator);
+		int port = Integer.parseInt(ipData.substring(separator + 1));
+
+		if (host.startsWith("[") != host.endsWith("]"))
+			throw new InvalidPayloadException("unbalanced brackets in client address: " + ipData);
+
+		if (host.startsWith("["))
+			host = host.substring(1, host.length() - 1);
+
+		if (host.isEmpty())
+			throw new InvalidPayloadException("no address in client address: " + ipData);
+
+		InetSocketAddress address = new InetSocketAddress(host, port);
+		if (address.isUnresolved())
+			throw new InvalidPayloadException("unresolvable client address: " + ipData);
+
+		return address;
 	}
 
 }

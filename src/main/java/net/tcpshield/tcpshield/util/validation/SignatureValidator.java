@@ -24,6 +24,10 @@ public class SignatureValidator {
 		publicKey = keyFactory.generatePublic(keySpec);
 	}
 
+	SignatureValidator(PublicKey publicKey) {
+		this.publicKey = publicKey;
+	}
+
 
 	/**
 	 * Validates a String and Signature pair
