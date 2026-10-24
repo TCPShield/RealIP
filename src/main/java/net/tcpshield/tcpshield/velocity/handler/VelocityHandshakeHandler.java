@@ -14,70 +14,74 @@ import net.tcpshield.tcpshield.util.exception.phase.HandshakeException;
  */
 public class VelocityHandshakeHandler {
 
-	private final TCPShieldPlugin plugin;
+    private final TCPShieldPlugin plugin;
 
 
-	private static Class<?> CONNECTED_PLAYER_CONNECTION_CLASS;
+    private static Class<?> CONNECTED_PLAYER_CONNECTION_CLASS;
 
-	static {
-		try {
-			CONNECTED_PLAYER_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.ConnectedPlayer");
-		} catch (Exception e) {
-			// ignore for old velocity versions
-		}
-	}
+    static {
+        try {
+            CONNECTED_PLAYER_CONNECTION_CLASS = Class.forName("com.velocitypowered.proxy.connection.client.ConnectedPlayer");
+        } catch (Exception e) {
+            // ignore for old velocity versions
+        }
+    }
 
-	public VelocityHandshakeHandler(TCPShieldPlugin plugin) {
-		this.plugin = plugin;
-	}
+    public VelocityHandshakeHandler(TCPShieldPlugin plugin) {
+        this.plugin = plugin;
+    }
 
-	// Turns out this event sometimes passes erroneous hostnames
-	// which have the null bytes terminated as FML data which causes
-	// issues with the verification process.
-	@Subscribe(order = PostOrder.FIRST)
-	public void onPreLogin(PreLoginEvent e) {
-		if (!this.plugin.getConfigProvider().handlePreLoginEvent()) {
-			return;
-		}
+    @Subscribe(order = PostOrder.FIRST)
+    public void onPreLogin(PreLoginEvent e) {
+        if (!this.plugin.getConfigProvider().handlePreLoginEvent()) {
+            return;
+        }
 
-		InboundConnection connection = e.getConnection();
-		handleEvent(connection, "onPreLogin");
-	}
+        InboundConnection connection = e.getConnection();
+        handleEvent(connection, "onPreLogin");
+    }
 
-	@Subscribe(order = PostOrder.FIRST)
-	public void onHandshake(ConnectionHandshakeEvent e) {
-		InboundConnection connection = e.getConnection();
-		handleEvent(connection, "onHandshake");
-	}
+    @Subscribe(order = PostOrder.FIRST)
+    public void onHandshake(ConnectionHandshakeEvent e) {
+        InboundConnection connection = e.getConnection();
+        handleEvent(connection, "onHandshake");
+    }
 
-	@Subscribe(order = PostOrder.FIRST)
-	public void onProxyPing(ProxyPingEvent e) {
-		InboundConnection connection = e.getConnection();
+    @Subscribe(order = PostOrder.FIRST)
+    public void onProxyPing(ProxyPingEvent e) {
+        InboundConnection connection = e.getConnection();
 
-		if (connection.getClass() == CONNECTED_PLAYER_CONNECTION_CLASS) {
-			// new ServerData (0x42) packet on connect, we don't care about it
-			return;
-		}
+        if (connection.getClass() == CONNECTED_PLAYER_CONNECTION_CLASS) {
+            // new ServerData (0x42) packet on connect, we don't care about it
+            return;
+        }
 
-		handleEvent(connection, "onProxyPing");
-	}
+        handleEvent(connection, "onProxyPing");
+    }
 
-	private void handleEvent(InboundConnection connection, String debugSource) {
-		VelocityPlayer player = new VelocityPlayer(connection);
-		if (player.getConnectionType() == VelocityPlayer.ConnectionType.LEGACY) {
-			player.disconnect();
-			return;
-		}
+    private void handleEvent(InboundConnection connection, String debugSource) {
+        VelocityPlayer player = new VelocityPlayer(connection);
 
-		VelocityPacket packet = new VelocityPacket(connection);
+        // Unrecognized connection types (e.g. Geyser's ping passthrough connection)
+        // aren't real player connections we can manipulate, so ignore them silently.
+        if (player.getConnectionType() == VelocityPlayer.ConnectionType.UNKNOWN) {
+            return;
+        }
 
-		this.plugin.getDebugger().warn("Velocity: " + debugSource + " Raw player hostname: " + packet.getPayloadString());
+        if (player.getConnectionType() == VelocityPlayer.ConnectionType.LEGACY) {
+            player.disconnect();
+            return;
+        }
 
-		try {
-			plugin.getPacketHandler().handleHandshake(packet, player);
-		} catch (HandshakeException exception) {
-			plugin.getDebugger().exception(exception);
-		}
-	}
+        VelocityPacket packet = new VelocityPacket(connection);
+
+        this.plugin.getDebugger().warn("Velocity: " + debugSource + " Raw player hostname: " + packet.getPayloadString());
+
+        try {
+            plugin.getPacketHandler().handleHandshake(packet, player);
+        } catch (HandshakeException exception) {
+            plugin.getDebugger().exception(exception);
+        }
+    }
 
 }
